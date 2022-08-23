@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.OperationsFragment"
+    android:background="@color/transparent"
+    android:orientation="vertical"
+    android:paddingHorizontal="6sp"
+    android:layout_marginTop="87sp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_equipment"
+        android:fontFamily="@font/bandera_pro_bold"
+        android:textSize="20sp"
+        android:layout_marginTop="46sp"
+        android:layout_marginBottom="29sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/equipment_type"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/equipmentType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/choose_from"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:focusable="false"
+        android:cursorVisible="false"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/equipment_subtype"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/equipmentSubtype"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/choose_from"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:focusable="false"
+        android:cursorVisible="false"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+</LinearLayout>

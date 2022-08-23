@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/operationsFragment">
+
+    <fragment
+        android:id="@+id/operationsFragment"
+        android:name="kz.smrtx.techmerch.fragments.OperationsFragment"
+        android:label="fragment_operations"
+        tools:layout="@layout/fragment_operations" >
+        <action
+            android:id="@+id/action_operationsFragment_to_outletsFragment"
+            app:destination="@id/outletsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/outletsFragment"
+        android:name="kz.smrtx.techmerch.fragments.OutletsFragment"
+        android:label="fragment_outlets"
+        tools:layout="@layout/fragment_outlets" />
+</navigation>

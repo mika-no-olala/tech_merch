@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.OperationsFragment"
+    android:background="@color/transparent"
+    android:orientation="vertical"
+    android:layout_marginTop="87sp"
+    android:paddingHorizontal="6sp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_replace_point"
+        android:fontFamily="@font/bandera_pro_bold"
+        android:textSize="20sp"
+        android:layout_marginVertical="22sp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="17sp"
+        android:checkedButton="@id/guarantee">
+        <RadioButton
+            android:id="@+id/toStorage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/to_storage"
+            android:textSize="20sp"
+            android:fontFamily="@font/bandera_pro_medium"
+            android:buttonTint="@color/old_linen"
+            android:button="@drawable/button_radio_linen"
+            android:paddingStart="10sp"
+            tools:ignore="RtlSymmetry"
+            tools:targetApi="lollipop" />
+
+        <RadioButton
+            android:id="@+id/fromStorage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/from_storage"
+            android:textSize="20sp"
+            android:fontFamily="@font/bandera_pro_medium"
+            android:buttonTint="@color/old_linen"
+            android:button="@drawable/button_radio_linen"
+            android:paddingStart="10sp"
+            tools:ignore="RtlSymmetry"
+            tools:targetApi="lollipop" />
+
+        <RadioButton
+            android:id="@+id/fromOutToOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/from_out_to_out"
+            android:textSize="20sp"
+            android:fontFamily="@font/bandera_pro_medium"
+            android:buttonTint="@color/old_linen"
+            android:button="@drawable/button_radio_linen"
+            android:paddingStart="10sp"
+            tools:ignore="RtlSymmetry"
+            tools:targetApi="lollipop" />
+    </RadioGroup>
+</LinearLayout>

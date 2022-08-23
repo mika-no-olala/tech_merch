@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="black_transparent">#66000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="main_deep_purple">#261245</color>
+    <color name="light_purple">#ADA7B8</color>
+    <color name="old_linen">#EED784</color>
+    <color name="dark_gold">#C0990F</color>
+    <color name="pale_sand">#DCB6A0</color>
+    <color name="marine_green">#89D7B2</color>
+    <color name="marine_green_transparent">#CC89D7B2</color>
+    <color name="pink_antique">#DA7E7E</color>
+    <color name="pink_antique_transparent">#CCDA7E7E</color>
+    <color name="lavender">#FAF9FD</color>
+    <color name="lavender_background">#F9FBFD</color>
+    <color name="light_purple_for_line">#E3E0E8</color>
+</resources>

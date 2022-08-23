@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="15sp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="7sp">
+        <TextView
+            android:id="@+id/code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ALA00015528"
+            android:fontFamily="@font/bandera_pro_medium"
+            android:textSize="12sp"
+            android:layout_marginBottom="4sp"/>
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:text="Евразиан Фудс Корпорэйшн"
+            android:fontFamily="@font/bandera_pro_medium"
+            android:textSize="12sp"
+            android:layout_marginBottom="4sp"/>
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:text="@string/address"
+            android:fontFamily="@font/bandera_pro"
+            android:textSize="12sp"
+            android:layout_marginBottom="4sp"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15sp">
+
+            <TextView
+                android:id="@+id/requests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/request"
+                android:fontFamily="@font/bandera_pro"
+                android:textSize="12sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <ImageView
+                android:layout_width="10sp"
+                android:layout_height="11sp"
+                android:src="@drawable/ic_pin"
+                android:layout_marginRight="4sp"
+                app:layout_constraintRight_toLeftOf="@+id/distance"
+                app:layout_constraintTop_toTopOf="@id/distance"
+                app:layout_constraintBottom_toBottomOf="@+id/distance"/>
+
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:fontFamily="@font/bandera_pro"
+                android:textSize="12sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <View
+        style="@style/line"/>
+
+</LinearLayout>

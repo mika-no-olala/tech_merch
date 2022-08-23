@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background_login"
+    android:padding="64sp"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Название"
+        android:fontFamily="@font/bandera_pro_bold"
+        android:textSize="40sp"
+        android:layout_marginBottom="41sp"/>
+
+    <EditText
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="33sp"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="12sp"
+        android:hint="@string/login"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_login_edit_text"
+        android:imeOptions="actionNext"
+        android:inputType="text"
+        android:layout_marginBottom="17sp"
+        android:padding="10sp"
+        android:importantForAutofill="no" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="33sp"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="12sp"
+        android:hint="@string/password"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_login_edit_text"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:layout_marginBottom="9sp"
+        android:padding="10sp"
+        android:importantForAutofill="no" />
+
+    <TextView
+        android:id="@+id/forgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/forgot_password"
+        android:layout_marginBottom="17sp"
+        android:layout_gravity="end"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/signIn"
+        style="@style/button"
+        android:layout_margin="0sp"
+        android:text="@string/sign_in" />
+
+</LinearLayout>
