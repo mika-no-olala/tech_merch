@@ -9,15 +9,9 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
 
 import kz.smrtx.techmerch.R;
-import kz.smrtx.techmerch.SessionActivity;
-import kz.smrtx.techmerch.adapters.CardAdapterOutlets;
-import kz.smrtx.techmerch.items.Outlet;
+import kz.smrtx.techmerch.activities.SessionActivity;
 
 public class OutletInformationFragment extends Fragment {
 

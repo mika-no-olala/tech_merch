@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import kz.smrtx.techmerch.CreateRequestActivity;
+import kz.smrtx.techmerch.activities.CreateRequestActivity;
 import kz.smrtx.techmerch.R;
 
 public class RCReplaceFragment extends Fragment {

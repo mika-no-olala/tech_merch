@@ -5,14 +5,22 @@
     <string name="sign_in">Войти</string>
     <string name="sign_out">Выход</string>
     <string name="forgot_password">Забыли пароль?</string>
+    <string name="forgot_password_description">Обратитесь к администратору системы</string>
+    <string name="no_server_connection">Нет подключения</string>
+    <string name="no_server_connection_description">Без доступа к серверу - проверьте подключение к интернету</string>
     <string name="fill_field">Заполните поле</string>
     <string name="wrong_data_log_in">Неправильный логин или пароль</string>
+    <string name="error">Ошибка</string>
+    <string name="server_error">Ошибка подключения к серверу</string>
     <string name="success">Успех</string>
     <string name="title">Заголовок</string>
     <string name="text_example">Пример текста, заполнение блока случайным набором букв</string>
     <string name="no">Нет</string>
     <string name="yes">Да</string>
     <string name="ok">Ок</string>
+    <string name="cancel">Отмена</string>
+    <string name="change">Изменить</string>
+    <string name="apply">Применить</string>
     <string name="short_example">Короткий текст</string>
     <string name="start_work">Начать работу</string>
     <string name="start_work_description">Выполнение ежедневных операций с торговыми точками</string>
@@ -25,7 +33,17 @@
     <string name="device_id">Идентификатор устройства</string>
     <string name="device_id_example">65212565256525652</string>
     <string name="change_password">Сменить пароль аккаунта</string>
+    <string name="password_changing">Смена пароля</string>
+    <string name="password_old">Старый пароль</string>
+    <string name="password_new">Новый пароль</string>
+    <string name="password_new_repeat">Повторите новый пароль</string>
+    <string name="password_no_equal">Пароли не совпадают</string>
+    <string name="password_wrong">Неверный пароль</string>
+    <string name="password_success">Пароль успешно изменен</string>
     <string name="app_language">Язык приложения</string>
+    <string name="switching_language">Смена языка</string>
+    <string name="ru_language">Русский</string>
+    <string name="kz_language">Казахский</string>
     <string name="app_language_description">русский / казахский</string>
     <string name="server">Сервер</string>
     <string name="server_description">Сменить подключение на тестовый сервер</string>
@@ -101,6 +119,4 @@
     <string name="comment">Комментарий</string>
     <string name="add_photos">Добавить фотографии</string>
     <string name="send">Отправить</string>
-
-
 </resources>

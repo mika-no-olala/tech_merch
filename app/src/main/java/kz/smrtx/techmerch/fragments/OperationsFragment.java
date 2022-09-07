@@ -7,19 +7,15 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
-
-import java.util.Objects;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
-import kz.smrtx.techmerch.SessionActivity;
+import kz.smrtx.techmerch.activities.SessionActivity;
 
 public class OperationsFragment extends Fragment {
     private FragmentListener listener;
@@ -47,7 +43,7 @@ public class OperationsFragment extends Fragment {
 
         if (getArguments()!=null) {
             if (getArguments().get("USER_ROLE").equals("tmr")) {
-                tmrsRequests.setVisibility(View.INVISIBLE);
+                tmrsRequests.setVisibility(View.GONE);
             }
         }
 

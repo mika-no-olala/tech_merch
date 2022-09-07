@@ -1,16 +1,15 @@
-package kz.smrtx.techmerch;
+package kz.smrtx.techmerch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.fragments.OperationsFragment;
 import kz.smrtx.techmerch.fragments.OperationsOnOutletFragment;
 import kz.smrtx.techmerch.fragments.OutletInformationFragment;

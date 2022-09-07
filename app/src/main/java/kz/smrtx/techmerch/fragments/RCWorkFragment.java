@@ -11,7 +11,7 @@ import android.widget.CompoundButton;
 
 import androidx.fragment.app.Fragment;
 
-import kz.smrtx.techmerch.CreateRequestActivity;
+import kz.smrtx.techmerch.activities.CreateRequestActivity;
 import kz.smrtx.techmerch.R;
 
 public class RCWorkFragment extends Fragment {

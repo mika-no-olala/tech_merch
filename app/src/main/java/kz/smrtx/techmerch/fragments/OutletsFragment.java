@@ -15,9 +15,9 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import kz.smrtx.techmerch.R;
-import kz.smrtx.techmerch.SessionActivity;
+import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.adapters.CardAdapterOutlets;
-import kz.smrtx.techmerch.items.Outlet;
+import kz.smrtx.techmerch.items.entities.Outlet;
 
 public class OutletsFragment extends Fragment {
 

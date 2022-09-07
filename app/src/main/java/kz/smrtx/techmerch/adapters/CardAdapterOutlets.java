@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import kz.smrtx.techmerch.R;
-import kz.smrtx.techmerch.items.Outlet;
+import kz.smrtx.techmerch.items.entities.Outlet;
 
 public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.CardViewHolder> {
 

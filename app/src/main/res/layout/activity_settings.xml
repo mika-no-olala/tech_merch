@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsActivity"
+    tools:context=".activities.SettingsActivity"
     android:background="@color/lavender_background"
     android:orientation="vertical">
 
@@ -39,6 +39,7 @@
                         android:layout_marginHorizontal="7sp"
                         android:layout_marginBottom="5sp"/>
                     <TextView
+                        android:id="@+id/deviceIdCard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/device_id_example"
@@ -57,7 +58,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16sp"
+                    android:paddingTop="16sp"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
@@ -86,7 +87,7 @@
                     android:id="@+id/language"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16sp"
+                    android:paddingTop="16sp"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
@@ -115,7 +116,7 @@
                     android:id="@+id/server"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16sp"
+                    android:paddingTop="16sp"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"

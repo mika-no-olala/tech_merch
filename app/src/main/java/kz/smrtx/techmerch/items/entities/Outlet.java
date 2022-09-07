@@ -1,4 +1,4 @@
-package kz.smrtx.techmerch.items;
+package kz.smrtx.techmerch.items.entities;
 
 public class Outlet {
     private String OUT_CODE;

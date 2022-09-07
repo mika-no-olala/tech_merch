@@ -1,28 +1,21 @@
 package kz.smrtx.techmerch.fragments;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import java.util.Date;
 
-import kz.smrtx.techmerch.CreateRequestActivity;
+import kz.smrtx.techmerch.activities.CreateRequestActivity;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
-import kz.smrtx.techmerch.SessionActivity;
 
 public class RCTypeFragment extends Fragment {
 

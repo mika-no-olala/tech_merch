@@ -9,10 +9,9 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,20 +23,87 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.security.ProviderInstaller;
+
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.net.ssl.SSLContext;
+
 import kz.smrtx.techmerch.adapters.CardAdapterString;
+import kz.smrtx.techmerch.api.ApiService;
+import kz.smrtx.techmerch.items.reqres.LoginResponse;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Ius extends Application {
     private static Ius singleton;
+    private static ApiService apiService;
+
+    public static final String LOGIN = "SUPERADMIN";
+    public static final String PASSWORD = "c1b4f8de804cb1ac668a0e56b5b67b0a8b7c96d3fb0c7828691b941b0e553583";
     public static final String USER_LOGIN = "USER_LOGIN";
+    public static final String USER_ID = "USE_ID";
+    public static final String USER_NAME = "USER_NAME";
+    public static final String USER_ROLE_CODE = "USER_ROLE_CODE";
+    public static final String USER_ROLE_NAME = "USER_ROLE_NAME";
+
+    public static final String DEVICE_ID = "DEVICE_ID";
+    public static final String DATE_LOGIN = "DATE_LOGIN";
+    public static final String TOKEN = "TOKEN";
 
     public static Ius getSingleton() {
         return singleton;
+    }
+
+    public static ApiService getApiService() {
+        return apiService;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        try {
+            // Google Play will install latest OpenSSL
+            ProviderInstaller.installIfNeeded(getApplicationContext());
+            SSLContext sslContext;
+            sslContext = SSLContext.getInstance("TLSv1.2");
+            sslContext.init(null, null, null);
+            sslContext.createSSLEngine();
+        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException
+                | NoSuchAlgorithmException | KeyManagementException e) {
+            e.printStackTrace();
+        }
+
+        setRetrofit();
+    }
+
+    private void setRetrofit() {
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://videobank.t2m.kz/services-manager/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+
+        apiService = retrofit.create(ApiService.class);
     }
 
     public static boolean isEmpty(EditText editText) {
@@ -82,6 +148,7 @@ public class Ius extends Application {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawableResource(R.color.black_transparent);
         dialog.setContentView(R.layout.dialog_window_acception);
+        dialog.setCanceledOnTouchOutside(true);
 
         TextView titleDialog = dialog.findViewById(R.id.title);
         TextView textDialog = dialog.findViewById(R.id.text);
@@ -95,6 +162,13 @@ public class Ius extends Application {
             oneButton.setVisibility(View.INVISIBLE);
             twoButtons.setVisibility(View.VISIBLE);
         }
+
+        oneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
 
         return dialog;
     }
@@ -117,10 +191,39 @@ public class Ius extends Application {
         return dialog;
     }
 
+    public static Dialog createDialog(Context context, int layoutId) {
+        Dialog dialog = new Dialog(context, android.R.style.Theme_Light);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawableResource(R.color.black_transparent);
+        dialog.setContentView(layoutId);
+        dialog.setCanceledOnTouchOutside(true);
+
+        Button cancel = dialog.findViewById(R.id.cancel);
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+
+        return dialog;
+    }
+
     public static SpannableString makeTextUnderlined(String text) {
         SpannableString content = new SpannableString(text);
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
         return content;
+    }
+
+    @SuppressLint("SetTextI18n")
+    public static void setBottomText(TextView text, Context context) {
+        text.setText(
+                readSharedPreferences(context, USER_ID) + " | " +
+                BuildConfig.VERSION_NAME  + " | " +
+                readSharedPreferences(context, DEVICE_ID) + " | " +
+                readSharedPreferences(context, DATE_LOGIN)
+        );
     }
 
     public static String getDateByFormat(Date date, String pattern) {
@@ -134,4 +237,26 @@ public class Ius extends Application {
         cal.add(Calendar.DATE, days);
         return cal.getTime();
     }
+
+    public static void refreshToken(Context context) {
+        getApiService().getToken(LOGIN, PASSWORD).enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("getToken", String.valueOf(response.code()));
+                    createDialogAcception(context, context.getResources().getString(R.string.no_server_connection),
+                            context.getResources().getString(R.string.no_server_connection_description), false);
+                    return;
+                }
+                writeSharedPreferences(context, TOKEN, response.body().getToken());
+            }
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Log.e("onFailure - getToken", t.toString());
+                createDialogAcception(context, context.getResources().getString(R.string.no_server_connection),
+                        context.getResources().getString(R.string.no_server_connection_description), false);
+            }
+        });
+    }
+
 }

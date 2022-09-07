@@ -1,4 +1,4 @@
-package kz.smrtx.techmerch;
+package kz.smrtx.techmerch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.fragments.RCAddressFragment;
 import kz.smrtx.techmerch.fragments.RCEndingFragment;
 import kz.smrtx.techmerch.fragments.RCEquipmentFragment;
