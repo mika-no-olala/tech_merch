@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SettingsActivity"
+    android:background="@color/lavender_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="22sp">
+        <include layout="@layout/top_bar" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_loading"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/animation"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:src="@drawable/loading_gif"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/textSyncInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/short_example"
+                android:textSize="16sp"
+                android:fontFamily="@font/bandera_pro_medium"/>
+        </LinearLayout>
+    </LinearLayout>
+    <include layout="@layout/bottom_bar"/>
+</RelativeLayout>

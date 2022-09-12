@@ -6,6 +6,9 @@ public class User {
     @SerializedName("USE_ID")
     private int id;
 
+    @SerializedName("USE_CODE")
+    private int code;
+
     @SerializedName("USE_NAME")
     private String name;
 
@@ -31,6 +34,10 @@ public class User {
 
     public int getId() {
         return id;
+    }
+
+    public int getCode() {
+        return code;
     }
 
     public String getName() {

@@ -8,7 +8,7 @@ public class StringQuery {
     }
 
     public static String getUser(String login, String password) {
-        return "select u.USE_ID, u.USE_LOGIN, u.USE_PASSWORD, u.USE_NAME, u.USE_USR_CODE," +
+        return "select u.USE_ID, u.USE_CODE, u.USE_LOGIN, u.USE_PASSWORD, u.USE_NAME, u.USE_USR_CODE," +
                 " r.USR_NAME, u.USE_LOC_CODE, u.USE_VERSION_CODE, u.USE_LAST_SYNC_DATE, u.USE_LANG " +
                 "from dbo.ST_USER u, dbo.ST_USER_ROLE r " +
                 "where u.USE_USR_CODE = r.USR_CODE " +

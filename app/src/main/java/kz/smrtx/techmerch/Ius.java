@@ -38,6 +38,7 @@ import javax.net.ssl.SSLContext;
 
 import kz.smrtx.techmerch.adapters.CardAdapterString;
 import kz.smrtx.techmerch.api.ApiService;
+import kz.smrtx.techmerch.api.BasicAuthInterceptor;
 import kz.smrtx.techmerch.items.reqres.LoginResponse;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -55,6 +56,7 @@ public class Ius extends Application {
     public static final String PASSWORD = "c1b4f8de804cb1ac668a0e56b5b67b0a8b7c96d3fb0c7828691b941b0e553583";
     public static final String USER_LOGIN = "USER_LOGIN";
     public static final String USER_ID = "USE_ID";
+    public static final String USER_CODE = "USE_CODE";
     public static final String USER_NAME = "USER_NAME";
     public static final String USER_ROLE_CODE = "USER_ROLE_CODE";
     public static final String USER_ROLE_NAME = "USER_ROLE_NAME";
@@ -89,16 +91,21 @@ public class Ius extends Application {
         setRetrofit();
     }
 
+    public BasicAuthInterceptor basicAuthInterceptor(){
+        return new BasicAuthInterceptor("iViewUser", "hVta7B");
+    }
+
+
     private void setRetrofit() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
+                .addInterceptor(basicAuthInterceptor())
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://videobank.t2m.kz/services-manager/api/")
+                .baseUrl("https://videobank.t2m.kz/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
