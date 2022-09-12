@@ -1,15 +1,23 @@
 package kz.smrtx.techmerch.items.entities;
 
+import androidx.room.Entity;
+
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "ST_USER")
 public class User {
     @SerializedName("USE_ID")
-    private int id;
+    private String id;
+
+    @SerializedName("USE_CODE")
+    private int code;
 
     @SerializedName("USE_NAME")
     private String name;
 
     @SerializedName("USE_USR_CODE")
+    @Expose
     private String roleCode;
 
     @SerializedName("USR_NAME")
@@ -29,8 +37,20 @@ public class User {
         this.versionCode = versionCode;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -71,15 +91,5 @@ public class User {
 
     public void setVersionCode(int versionCode) {
         this.versionCode = versionCode;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "name='" + name + '\'' +
-                ", roleCode='" + roleCode + '\'' +
-                ", locationCode=" + locationCode +
-                ", versionCode=" + versionCode +
-                '}';
     }
 }
