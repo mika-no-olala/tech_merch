@@ -28,4 +28,7 @@ public interface RequestDao {
     @Query("delete from ST_REQUEST")
     void deleteAllRequests();
 
+    @Query("select count(*) from ST_REQUEST where salePointCode=:salePointCode")
+    int selectNumberFromOutlet(String salePointCode);
+
 }

@@ -15,31 +15,78 @@
         android:padding="22sp">
         <include layout="@layout/top_bar" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_loading"/>
-
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             android:gravity="center"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/animation"
-                android:layout_width="100sp"
-                android:layout_height="100sp"
-                android:src="@drawable/loading_gif"
-                android:layout_gravity="center"/>
+            android:layout_marginBottom="50sp">
 
-            <TextView
-                android:id="@+id/textSyncInfo"
+            <LinearLayout
+                android:id="@+id/syncBlock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/short_example"
-                android:textSize="16sp"
-                android:fontFamily="@font/bandera_pro_medium"/>
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/animation"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"
+                    android:src="@drawable/loading_gif"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/animationStopped"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"
+                    android:src="@drawable/loading_gif"
+                    android:layout_gravity="center" />
+
+                <TextView
+                    android:id="@+id/textSyncInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/short_example"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/bandera_pro_medium"/>
+
+                <TextView
+                    android:id="@+id/lastSync"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_example"
+                    android:textSize="16sp"
+                    android:textColor="@color/light_purple"
+                    android:fontFamily="@font/bandera_pro_medium"
+                    android:textAlignment="center"
+                    android:layout_marginTop="10sp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/repeat"
+                    style="@style/button"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_neutral_box"
+                    android:text="@string/repeat"
+                    android:layout_marginRight="10sp"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/start"
+                    style="@style/button"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:text="@string/start_work"
+                    android:layout_marginLeft="10sp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
     <include layout="@layout/bottom_bar"/>

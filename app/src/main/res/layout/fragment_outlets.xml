@@ -25,6 +25,17 @@
         android:layout_marginBottom="14sp"
         tools:targetApi="lollipop" />
 
+    <TextView
+        android:id="@+id/doSync"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_data_do_sync"
+        android:textColor="@color/light_purple"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:padding="50sp"/>
+
     <androidx.cardview.widget.CardView
         style="@style/card"
         android:layout_height="wrap_content">
@@ -35,7 +46,8 @@
             android:layout_height="wrap_content"
             android:paddingVertical="16sp"
             android:paddingHorizontal="13sp"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            tools:listitem="@layout/card_outlet"/>
 
     </androidx.cardview.widget.CardView>
 

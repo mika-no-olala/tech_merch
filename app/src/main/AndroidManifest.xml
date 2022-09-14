@@ -14,7 +14,6 @@
         <activity
             android:name=".activities.CreateRequestActivity"
             android:exported="false">
-
         </activity>
         <activity
             android:name=".activities.SessionActivity"
@@ -25,6 +24,9 @@
             android:exported="false" />
         <activity
             android:name=".activities.StartActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".activities.SyncActivity"
             android:exported="false"/>
         <activity
             android:name=".activities.MainActivity"

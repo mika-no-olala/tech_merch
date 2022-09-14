@@ -9,11 +9,14 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.fragments.OperationsFragment;
 import kz.smrtx.techmerch.fragments.OperationsOnOutletFragment;
 import kz.smrtx.techmerch.fragments.OutletInformationFragment;
 import kz.smrtx.techmerch.fragments.OutletsFragment;
+import kz.smrtx.techmerch.items.entities.Session;
+import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 
 public class SessionActivity extends AppCompatActivity implements OperationsFragment.FragmentListener, OutletsFragment.FragmentListener,
         OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener {
@@ -30,8 +33,11 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         getSupportFragmentManager().beginTransaction().replace(R.id.containerSession, operationsFragment)
                 .addToBackStack(null).commit();
 
+        TextView bottomBarText = findViewById(R.id.bottomBarText);
         pageName = findViewById(R.id.pageName);
         View back = findViewById(R.id.back);
+
+        bottomBarText.setText(Ius.readSharedPreferences(this, Ius.BOTTOM_BAR_TEXT));
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,8 +65,8 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
                 .addToBackStack(null).commit();
     }
 
-    public void openOperationsOnOutlet(String outletName) {
-        OperationsOnOutletFragment operationsOnOutletFragment = OperationsOnOutletFragment.getInstance("tmr", outletName);
+    public void openOperationsOnOutlet(String outletCode) {
+        OperationsOnOutletFragment operationsOnOutletFragment = OperationsOnOutletFragment.getInstance("tmr", outletCode);
         getSupportFragmentManager().beginTransaction().add(R.id.containerSession, operationsOnOutletFragment)
                 .addToBackStack(null).commit();
     }

@@ -20,7 +20,7 @@ public class ChoosePointsViewModel extends AndroidViewModel{
         choosePointsRepository = new ChoosePointsRepository(application);
     }
 
-    public LiveData<List<SalePointItem>> getSalePonts(){return choosePointsRepository.getSalePoints();}
+    public LiveData<List<SalePointItem>> getSalePoints(){return choosePointsRepository.getSalePoints();}
 
     public LiveData<List<SalePointItem>> getSalePointsByFilter(String statement){return choosePointsRepository.getSalePointsByFilter(statement);}
 

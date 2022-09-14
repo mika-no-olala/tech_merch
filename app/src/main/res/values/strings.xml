@@ -26,6 +26,12 @@
     <string name="start_work_description">Выполнение ежедневных операций с торговыми точками</string>
     <string name="synchronization">Синхронизация</string>
     <string name="synchronization_description">Обмен данными с центральным сервером</string>
+    <string name="last_sync">Последняя синхронизация</string>
+    <string name="sync_success">Синхронизация прошла успешно</string>
+    <string name="sync_server_connection">Ошибка: не удалось связаться с сервером</string>
+    <string name="server_timeout">Ошибка: запрос на сервер занял слишком много времени</string>
+    <string name="no_data">Нет данных</string>
+    <string name="no_data_do_sync">Нет данных. Рекомендуется пройти синхронизацию</string>
     <string name="settings">Настройки</string>
     <string name="sync">Синхронизация</string>
     <string name="settings_description">Просмотр IMEI / Обновление приложения</string>
@@ -78,6 +84,7 @@
     <string name="show_route">Показать маршрут</string>
     <string name="km_from_you">км от вас</string>
     <string name="start_work_outlet">Начать работу на точке</string>
+    <string name="repeat">Повторить</string>
     <string name="operations_on_outlet">Операции на торговой точке</string>
     <string name="your_current_outlet">Ваша текущая точка:</string>
     <string name="detail_information">Детальная информация</string>

@@ -2,14 +2,22 @@ package kz.smrtx.techmerch.items.entities;
 
 public class SalePointItem {
 
+    private String code;
     private String id;
     private String name;
     private String house;
-    private String code;
     private String owner;
     private String phone;
     private String longitude;
     private String latitude;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public String getId() {
         return id;
@@ -33,14 +41,6 @@ public class SalePointItem {
 
     public void setHouse(String house) {
         this.house = house;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getOwner() {

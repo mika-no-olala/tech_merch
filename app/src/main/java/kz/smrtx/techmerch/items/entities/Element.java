@@ -1,11 +1,15 @@
 package kz.smrtx.techmerch.items.entities;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "ST_LIST_ELEMENTS")
 public class Element {
+    @PrimaryKey
+    @NonNull
     @SerializedName("ELE_ID")
     private String id;
     @SerializedName("ELE_NAME")

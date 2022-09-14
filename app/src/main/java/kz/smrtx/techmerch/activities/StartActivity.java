@@ -2,46 +2,50 @@ package kz.smrtx.techmerch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import kz.smrtx.techmerch.BuildConfig;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
-import kz.smrtx.techmerch.items.reqres.synctables.SyncTables;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 
 public class StartActivity extends AppCompatActivity {
 
     private final Context context = this;
-    private CardView startWork;
-    private CardView synchronization;
-    private CardView settings;
     private TextView name;
     private TextView role;
     private TextView bottomBarText;
+    private SessionViewModel sessionViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        startWork = findViewById(R.id.startWork);
-        synchronization = findViewById(R.id.synchronization);
-        settings = findViewById(R.id.settings);
+        CardView startWork = findViewById(R.id.startWork);
+        CardView synchronization = findViewById(R.id.synchronization);
+        CardView settings = findViewById(R.id.settings);
         name = findViewById(R.id.name);
         role = findViewById(R.id.role);
         bottomBarText = findViewById(R.id.bottomBarText);
         Button signOut = findViewById(R.id.signOut);
 
         setUser();
+        sessionViewModel = new ViewModelProvider(this).get(SessionViewModel.class);
+        sessionViewModel.deleteAllSessions();
 
         startWork.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,29 +81,59 @@ public class StartActivity extends AppCompatActivity {
         name.setText(Ius.readSharedPreferences(context, Ius.USER_NAME));
         role.setText(Ius.readSharedPreferences(context, Ius.USER_ROLE_NAME));
 
-        Ius.setBottomText(bottomBarText, context);
+        String bottomTextStr =
+                Ius.readSharedPreferences(context, Ius.USER_ID) + " | " +
+                        BuildConfig.VERSION_NAME  + " | " +
+                        Ius.readSharedPreferences(context, Ius.DEVICE_ID) + " | " +
+                        Ius.readSharedPreferences(context, Ius.DATE_LOGIN);
+
+        Ius.writeSharedPreferences(context, Ius.BOTTOM_BAR_TEXT, bottomTextStr);
+        bottomBarText.setText(bottomTextStr);
     }
 
-    private void check() {
-        String code = Ius.readSharedPreferences(context, Ius.USER_CODE);
-        Log.e("user code", code);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new GetSyncData(this, sessionViewModel).execute();
+    }
 
-        Ius.getApiService().getSyncTables(code).enqueue(new Callback<SyncTables>() {
-            @Override
-            public void onResponse(Call<SyncTables> call, Response<SyncTables> response) {
-                if (!response.isSuccessful()) {
-                    Log.e("sss", "not successful");
-                    return;
+    @SuppressLint("StaticFieldLeak")
+    private static class GetSyncData extends AsyncTask<Void, Void, Void> {
+        SessionViewModel sessionViewModel;
+        Activity context;
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+
+        }
+        public GetSyncData(Activity context, SessionViewModel sessionViewModel) {
+            this.context = context;
+            this.sessionViewModel = sessionViewModel;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            check();
+            return null;
+        }
+
+        @SuppressLint("Range")
+        public void check() {
+            SimpleSQLiteQuery query = new SimpleSQLiteQuery("SELECT * FROM ST_SESSION", null);
+            Cursor cursor = sessionViewModel.getCursor(query);
+            Log.e("sss cursor", String.valueOf(cursor==null));
+            if (cursor != null) {
+                if (cursor.getCount() > 0) {
+                    Log.e("sss count", String.valueOf(cursor.getCount()));
+                    while (cursor.moveToNext()) {
+                        Log.e("sss start", cursor.getString(cursor.getColumnIndex("started")));
+                        Log.e("sss finish", cursor.getString(cursor.getColumnIndex("finished")));
+                    }
                 }
-                Log.e("sss", String.valueOf(response.body().getData().size()));
-                Log.e("sss", String.valueOf(response.body().getData().get(0).getMVLVIEWNAME()));
+                cursor.close();
             }
-
-            @Override
-            public void onFailure(Call<SyncTables> call, Throwable t) {
-                Log.e("sss", t.getMessage());
-            }
-        });
+        }
     }
 
     private void openActivitySession() {

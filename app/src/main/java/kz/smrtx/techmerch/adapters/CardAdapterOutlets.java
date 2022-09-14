@@ -1,6 +1,8 @@
 package kz.smrtx.techmerch.adapters;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.items.entities.Outlet;
+import kz.smrtx.techmerch.items.entities.SalePointItem;
+import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 
 public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.CardViewHolder> {
 
-    private ArrayList<Outlet> outlets;
+    private Context context;
+    private List<SalePointItem> outlets;
     private onItemClickListener listener;
 
     public interface onItemClickListener {
@@ -56,8 +62,16 @@ public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.
         }
     }
 
-    public CardAdapterOutlets(ArrayList<Outlet> outlets) {
+    public CardAdapterOutlets(List<SalePointItem> outlets, Context context) {
         this.outlets = outlets;
+        this.context = context;
+    }
+
+    public void setOutletList(List<SalePointItem> outlets) {
+        if (outlets!=null) {
+            this.outlets = outlets;
+            notifyDataSetChanged();
+        }
     }
 
     @NonNull
@@ -70,13 +84,13 @@ public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        Outlet outlet = outlets.get(position);
+        SalePointItem salePointItem = outlets.get(position);
         
-        holder.code.setText(outlet.getOUT_CODE());
-        holder.name.setText(outlet.getOUT_NAME());
-        holder.address.setText(holder.address.getText().toString() + ": " + outlet.getOUT_ADDRESS());
-        holder.requests.setText(holder.requests.getText().toString() + ": " + outlet.getOUT_REQUEST_NUMBER());
-        holder.distance.setText(outlet.getOUT_DISTANCE() + " км");
+        holder.code.setText(salePointItem.getId());
+        holder.name.setText(salePointItem.getName());
+        holder.address.setText(context.getResources().getString(R.string.address) + ": " + salePointItem.getHouse());
+        holder.requests.setText(context.getResources().getString(R.string.requests) + ": " + 0);
+        holder.distance.setText(0 + " км");
         
     }
 

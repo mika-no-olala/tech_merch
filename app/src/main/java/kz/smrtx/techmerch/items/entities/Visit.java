@@ -1,15 +1,20 @@
 package kz.smrtx.techmerch.items.entities;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.type.DateTime;
 
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity(tableName = "ST_VISIT")
 public class Visit implements Serializable {
+    @PrimaryKey
+    @NonNull
     @Expose
     @SerializedName("VIS_CODE")
     private int code;
@@ -39,13 +44,13 @@ public class Visit implements Serializable {
     private int saleId;
     @Expose
     @SerializedName("VIS_CREATED")
-    private Date created;
+    private String created;
     @Expose
     @SerializedName("VIS_START_DATE")
-    private Date start;
+    private String start;
     @Expose
     @SerializedName("VIS_FINISH_DATE")
-    private Date finish;
+    private String finish;
     @Expose
     @SerializedName("VIS_LONGITUDE")
     private String longitude;
@@ -101,15 +106,15 @@ public class Visit implements Serializable {
         return saleId;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public Date getStart() {
+    public String getStart() {
         return start;
     }
 
-    public Date getFinish() {
+    public String getFinish() {
         return finish;
     }
 
@@ -135,5 +140,77 @@ public class Visit implements Serializable {
 
     public int getLeaCode() {
         return leaCode;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public void setParentCode(int parentCode) {
+        this.parentCode = parentCode;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public void setParentNumber(String parentNumber) {
+        this.parentNumber = parentNumber;
+    }
+
+    public void setUserCode(int userCode) {
+        this.userCode = userCode;
+    }
+
+    public void setVitCode(int vitCode) {
+        this.vitCode = vitCode;
+    }
+
+    public void setVitId(int vitId) {
+        this.vitId = vitId;
+    }
+
+    public void setSaleCode(int saleCode) {
+        this.saleCode = saleCode;
+    }
+
+    public void setSaleId(int saleId) {
+        this.saleId = saleId;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    public void setFinish(String finish) {
+        this.finish = finish;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setSyncId(String syncId) {
+        this.syncId = syncId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public void setFusCode(int fusCode) {
+        this.fusCode = fusCode;
+    }
+
+    public void setLeaCode(int leaCode) {
+        this.leaCode = leaCode;
     }
 }

@@ -10,6 +10,7 @@ import kz.smrtx.techmerch.items.dao.ChoosePointsDao;
 import kz.smrtx.techmerch.items.dao.ElementDao;
 import kz.smrtx.techmerch.items.dao.RequestDao;
 import kz.smrtx.techmerch.items.dao.SalePointDao;
+import kz.smrtx.techmerch.items.dao.SessionDao;
 import kz.smrtx.techmerch.items.dao.UserDao;
 import kz.smrtx.techmerch.items.dao.VisitDao;
 
@@ -18,7 +19,8 @@ import kz.smrtx.techmerch.items.dao.VisitDao;
         SalePointFts.class,
         User.class,
         Element.class,
-        Request.class}, version = 1)
+        Request.class,
+        Session.class}, version = 4)
 public abstract class TechDatabase extends RoomDatabase {
 
     private static TechDatabase instance;
@@ -29,6 +31,7 @@ public abstract class TechDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract ElementDao elementDao();
     public abstract RequestDao requestDao();
+    public abstract SessionDao sessionDao();
 
     public static synchronized TechDatabase getInstance(Context context) {
         if (instance == null) {

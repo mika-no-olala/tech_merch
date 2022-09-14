@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -33,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 import javax.net.ssl.SSLContext;
 
@@ -54,16 +56,19 @@ public class Ius extends Application {
 
     public static final String LOGIN = "SUPERADMIN";
     public static final String PASSWORD = "c1b4f8de804cb1ac668a0e56b5b67b0a8b7c96d3fb0c7828691b941b0e553583";
-    public static final String USER_LOGIN = "USER_LOGIN";
+
     public static final String USER_ID = "USE_ID";
     public static final String USER_CODE = "USE_CODE";
     public static final String USER_NAME = "USER_NAME";
     public static final String USER_ROLE_CODE = "USER_ROLE_CODE";
     public static final String USER_ROLE_NAME = "USER_ROLE_NAME";
 
+    public static final String BOTTOM_BAR_TEXT = "BOTTOM_BAR_TEXT";
+    // remove this
     public static final String DEVICE_ID = "DEVICE_ID";
     public static final String DATE_LOGIN = "DATE_LOGIN";
     public static final String TOKEN = "TOKEN";
+    public static final String LAST_SYNC = "LAST_SYNC";
 
     public static Ius getSingleton() {
         return singleton;
@@ -107,6 +112,7 @@ public class Ius extends Application {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://videobank.t2m.kz/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)
                 .build();
 
@@ -223,16 +229,6 @@ public class Ius extends Application {
         return content;
     }
 
-    @SuppressLint("SetTextI18n")
-    public static void setBottomText(TextView text, Context context) {
-        text.setText(
-                readSharedPreferences(context, USER_ID) + " | " +
-                BuildConfig.VERSION_NAME  + " | " +
-                readSharedPreferences(context, DEVICE_ID) + " | " +
-                readSharedPreferences(context, DATE_LOGIN)
-        );
-    }
-
     public static String getDateByFormat(Date date, String pattern) {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(pattern, new Locale("ru"));
         return sdf.format(date);
@@ -243,6 +239,15 @@ public class Ius extends Application {
         cal.setTime(date);
         cal.add(Calendar.DATE, days);
         return cal.getTime();
+    }
+
+    public static String generateUniqueCode(Context context, String type) {
+        Random random = new Random();
+        int low = 100;
+        int high = 999;
+        int result = random.nextInt(high-low) + low;
+        String currentDate = getDateByFormat(new Date(), "ddMMyyyyHHmmss");
+        return type + result + "u" + readSharedPreferences(context, USER_CODE) + "t" + currentDate;
     }
 
     public static void refreshToken(Context context) {

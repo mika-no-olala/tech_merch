@@ -1,16 +1,25 @@
 package kz.smrtx.techmerch.items.entities;
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
 @Entity(tableName = "ST_REQUEST")
 public class Request {
+    @PrimaryKey
+    @NonNull
     @SerializedName("REQ_ID")
     private String id;
+    @SerializedName("REQ_SAL_CODE")
+    private String salePointCode;
+    @SerializedName("REQ_SAL_NAME")
+    private String salePointName;
     @SerializedName("REQ_CREATED")
-    private Date created;
+    private String created;
     @SerializedName("REQ_DEADLINE")
-    private Date deadline;
+    private String deadline;
     @SerializedName("REQ_TYPE")
     private String type;
     @SerializedName("REQ_EQUIPMENT")
@@ -44,19 +53,35 @@ public class Request {
         this.id = id;
     }
 
-    public Date getCreated() {
+    public String getSalePointCode() {
+        return salePointCode;
+    }
+
+    public void setSalePointCode(String salePointCode) {
+        this.salePointCode = salePointCode;
+    }
+
+    public String getSalePointName() {
+        return salePointName;
+    }
+
+    public void setSalePointName(String salePointName) {
+        this.salePointName = salePointName;
+    }
+
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 
-    public Date getDeadline() {
+    public String getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(Date deadline) {
+    public void setDeadline(String deadline) {
         this.deadline = deadline;
     }
 

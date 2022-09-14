@@ -1,6 +1,7 @@
 
 package kz.smrtx.techmerch.items.entities;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -12,6 +13,8 @@ import java.io.Serializable;
 
 @Entity(tableName = "ST_SALEPOINT")
 public class SalePoint implements Serializable{
+    @PrimaryKey
+    @NonNull
     @SerializedName("SAL_CODE")
     @Expose
     private int code;

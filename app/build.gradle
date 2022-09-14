@@ -37,7 +37,13 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.5.1'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.6.2"
     implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
+
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
+
+
     implementation 'com.google.android.gms:play-services-basement:18.1.0'
     implementation 'com.google.firebase:protolite-well-known-types:18.0.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17'

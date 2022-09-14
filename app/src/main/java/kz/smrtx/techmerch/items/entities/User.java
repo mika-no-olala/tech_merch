@@ -1,6 +1,8 @@
 package kz.smrtx.techmerch.items.entities;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -10,6 +12,8 @@ public class User {
     @SerializedName("USE_ID")
     private String id;
 
+    @PrimaryKey
+    @NonNull
     @SerializedName("USE_CODE")
     private int code;
 
@@ -91,5 +95,18 @@ public class User {
 
     public void setVersionCode(int versionCode) {
         this.versionCode = versionCode;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", code=" + code +
+                ", name='" + name + '\'' +
+                ", roleCode='" + roleCode + '\'' +
+                ", roleName='" + roleName + '\'' +
+                ", locationCode=" + locationCode +
+                ", versionCode=" + versionCode +
+                '}';
     }
 }

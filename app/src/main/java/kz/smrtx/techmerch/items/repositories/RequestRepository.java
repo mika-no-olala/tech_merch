@@ -35,6 +35,7 @@ public class RequestRepository {
     public void deleteAllRequests() {
         new DeleteAllRequestsAsyncTask(requestDao).execute();
     }
+    public int selectNumberFromOutlets(String code) { return requestDao.selectNumberFromOutlet(code); }
 
     private static class InsertRequestAsyncTask extends AsyncTask<Request, Void, Void> {
         private final RequestDao requestDao;

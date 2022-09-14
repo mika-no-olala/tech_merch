@@ -78,7 +78,7 @@
                 style="@style/bold_text_info"
                 android:text="@string/tasks_on_outlet" />
             <TextView
-                android:id="@+id/code"
+                android:id="@+id/tasks"
                 style="@style/regular_text_info"
                 android:text=": 2" />
         </LinearLayout>

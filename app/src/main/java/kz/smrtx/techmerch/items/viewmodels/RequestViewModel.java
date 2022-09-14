@@ -35,4 +35,7 @@ public class RequestViewModel extends AndroidViewModel {
     public void deleteAllRequests() {
         requestRepository.deleteAllRequests();
     }
+    public int selectNumberFromOutlets(String code) {
+        return requestRepository.selectNumberFromOutlets(code);
+    }
 }
