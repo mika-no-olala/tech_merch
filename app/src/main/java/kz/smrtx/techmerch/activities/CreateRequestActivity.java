@@ -3,6 +3,7 @@ package kz.smrtx.techmerch.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -12,7 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
+import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.fragments.RCAddressFragment;
 import kz.smrtx.techmerch.fragments.RCEndingFragment;
@@ -22,12 +25,20 @@ import kz.smrtx.techmerch.fragments.RCTypeFragment;
 import kz.smrtx.techmerch.fragments.RCWorkFragment;
 import kz.smrtx.techmerch.fragments.RCWorkSubtypeFragment;
 import kz.smrtx.techmerch.items.RequestPages;
+import kz.smrtx.techmerch.items.entities.Request;
+import kz.smrtx.techmerch.items.entities.Visit;
+import kz.smrtx.techmerch.items.viewmodels.ElementViewModel;
+import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
+import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
 
 public class CreateRequestActivity extends AppCompatActivity {
 
-    private String currentOutlet = "";
-    private ArrayList<RequestPages> pages = new ArrayList<>();
+    private String currentVisitNumber = "";
+    private final ArrayList<RequestPages> pages = new ArrayList<>();
     private int pageIndex = 0;
+    private VisitViewModel visitViewModel;
+    private RequestViewModel requestViewModel;
+    private Request request;
 
     private boolean guarantee = true;
     private boolean repair = false;
@@ -35,19 +46,21 @@ public class CreateRequestActivity extends AppCompatActivity {
     private boolean fromOutToOut = false;
 
     private TextView percentage;
+    private Button next;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_request);
 
-        Bundle extra = getIntent().getExtras();
-        if (extra != null)
-            currentOutlet = extra.getString("OUT_ID");
+        currentVisitNumber = Ius.readSharedPreferences(this, Ius.LAST_VISIT_NUMBER);
+        Log.i("Opened request", currentVisitNumber);
 
-        Log.i("Opened request", currentOutlet);
+        visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
+        requestViewModel = new ViewModelProvider(this).get(RequestViewModel.class);
 
         createPagesRoute();
+
         RCTypeFragment rcTypeFragment = RCTypeFragment.getInstance();
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_up, R.anim.exit_to_down, R.anim.enter_from_down, R.anim.exit_to_up)
@@ -55,10 +68,12 @@ public class CreateRequestActivity extends AppCompatActivity {
                 .addToBackStack(null).commit();
 
         View back = findViewById(R.id.back);
-        Button next = findViewById(R.id.next);
+        next = findViewById(R.id.next);
         percentage = findViewById(R.id.percentage);
 
         setPercentage(pageIndex);
+
+        initializeVisit();
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +94,33 @@ public class CreateRequestActivity extends AppCompatActivity {
                 setPercentage(routeBackIndex);
                 getSupportFragmentManager().popBackStackImmediate();
             }
+        });
+    }
+
+    private void createRequest(Visit visit) {
+        request = new Request();
+        String created = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
+        String deadline = Ius.getDateByFormat(Ius.plusDaysToDate(new Date(), 3), "dd.MM.yyyy HH:mm:ss");
+        String code = Ius.generateUniqueCode(this, "r");
+
+        Log.e("sss initVisitReq", String.valueOf(visit.getSaleCode()));
+        request.setCode(code);
+        request.setSalePointCode(visit.getSaleCode());
+        request.setCreated(created);
+        request.setDeadline(deadline);
+        request.setStatusId(1);
+        request.setVisitNumber(visit.getNumber());
+    }
+
+    private void initializeVisit() {
+        visitViewModel.getVisitByNumber(currentVisitNumber).observe(this, v -> {
+            if (v==null) {
+                Log.e("CreateRequest", "cannot find visit");
+                next.setEnabled(false);
+                return;
+            }
+            Log.e("sss initVisit", String.valueOf(v.getSaleCode()));
+            createRequest(v);
         });
     }
 
@@ -162,14 +204,29 @@ public class CreateRequestActivity extends AppCompatActivity {
 
     public void setType(boolean guarantee) {
         this.guarantee = guarantee;
+        if (guarantee)
+            request.setType("Гарантийная");
+        else
+            request.setType("Негарантийная");
+    }
+
+    public void setEquipment(String equipment) {
+        request.setEquipment(equipment);
+    }
+
+    public void setEquipmentSubtype(String equipmentSubtype) {
+        request.setEquipmentSubtype(equipmentSubtype);
+        Log.e("sss", equipmentSubtype);
     }
 
     public void setRepair(boolean repair) {
         this.repair = repair;
+        request.setWork("Ремонт");
     }
 
     public void setReplace(boolean replace) {
         this.replace = replace;
+        request.setWork("Перемещение");
     }
 
     public void setFromOutToOut(boolean fromOutToOut) {

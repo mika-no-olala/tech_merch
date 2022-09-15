@@ -1,13 +1,17 @@
 package kz.smrtx.techmerch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
@@ -23,26 +27,35 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
 
     private TextView pageName;
     private ArrayList<String> pageNames = new ArrayList<>();
+    private String dateStarted;
+    private SessionViewModel sessionViewModel;
+    private Session session;
+    private int fragmentIndex = 0;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_session);
 
-        OperationsFragment operationsFragment = OperationsFragment.getInstance("tmr");
-        getSupportFragmentManager().beginTransaction().replace(R.id.containerSession, operationsFragment)
-                .addToBackStack(null).commit();
+        dateStarted = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
+
+        openOperations();
 
         TextView bottomBarText = findViewById(R.id.bottomBarText);
         pageName = findViewById(R.id.pageName);
         View back = findViewById(R.id.back);
-
+        sessionViewModel = new ViewModelProvider(this).get(SessionViewModel.class);
         bottomBarText.setText(Ius.readSharedPreferences(this, Ius.BOTTOM_BAR_TEXT));
+
+        generateSession();
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                if (fragmentIndex<1)
+                    openDialog();
+                else
+                    onBackPressed();
             }
         });
     }
@@ -51,6 +64,20 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
     public void getPageName(String name) {
         pageName.setText(name);
         pageNames.add(name);
+    }
+
+    public void generateSession() {
+        session = new Session();
+        session.setCode(Ius.generateUniqueCode(this, "s"));
+        session.setStarted(dateStarted);
+        session.setUserId(Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_ID)));
+        sessionViewModel.insert(session);
+    }
+
+    public void openOperations() {
+        OperationsFragment operationsFragment = OperationsFragment.getInstance(dateStarted);
+        getSupportFragmentManager().beginTransaction().replace(R.id.containerSession, operationsFragment)
+                .addToBackStack(null).commit();
     }
 
     public void openOutlets() {
@@ -73,7 +100,6 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
 
     public void openActivityCreateRequest() {
         Intent intent = new Intent(this, CreateRequestActivity.class);
-        intent.putExtra("OUT_ID", "ул. Фурманова 117");
         startActivity(intent);
     }
 
@@ -86,15 +112,36 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
 //        FragmentManager.BackStackEntry lastEntry = (FragmentManager.BackStackEntry) getFragmentManager().getBackStackEntryAt(index);
 //        FragmentManager.BackStackEntry secondLastEntry = (FragmentManager.BackStackEntry) getFragmentManager().getBackStackEntryAt(index - 1);
 //        Log.e(String.valueOf(getSupportFragmentManager().getBackStackEntryCount()), pageNames.get(getSupportFragmentManager().getBackStackEntryCount() - 1));
-        int index = getSupportFragmentManager().getBackStackEntryCount();
-        if (index!=0) {
-            getSupportFragmentManager().popBackStack(index - 1, 0);
-            pageName.setText(pageNames.get(index-1));
-            pageNames.remove(index);
-        }
-        else {
-            finish();
-        }
+            fragmentIndex = getSupportFragmentManager().getBackStackEntryCount();
+            getSupportFragmentManager().popBackStack(fragmentIndex - 1, 0);
+            pageName.setText(pageNames.get(fragmentIndex-1));
+            pageNames.remove(fragmentIndex);
+    }
+
+    public void openDialog() {
+        Dialog dialog = Ius.createDialogAcception(this, getResources().getString(R.string.finishing_work),
+                getResources().getString(R.string.finishing_work_question), true);
+
+        Button yes = dialog.findViewById(R.id.positive);
+        Button no = dialog.findViewById(R.id.negative);
+
+        dialog.show();
+
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                session.setFinished(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
+                sessionViewModel.update(session);
+                dialog.cancel();
+                finish();
+            }
+        });
     }
 
 

@@ -10,12 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.items.entities.Element;
 
 public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.CardViewHolder> {
 
-    private final ArrayList<String> strings;
+    private final List<Element> elements;
     private onItemClickListener listener;
 
     public interface onItemClickListener {
@@ -47,8 +49,8 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
         }
     }
 
-    public CardAdapterString(ArrayList<String> strings) {
-        this.strings = strings;
+    public CardAdapterString(List<Element> elements) {
+        this.elements = elements;
     }
 
     @NonNull
@@ -61,14 +63,14 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        String str = strings.get(position);
+        String str = elements.get(position).getName();
         
         holder.text.setText(str);
     }
 
     @Override
     public int getItemCount() {
-        return strings.size();
+        return elements.size();
     }
 
 }

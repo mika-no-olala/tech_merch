@@ -2,13 +2,16 @@ package kz.smrtx.techmerch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,6 +49,10 @@ public class StartActivity extends AppCompatActivity {
         setUser();
         sessionViewModel = new ViewModelProvider(this).get(SessionViewModel.class);
         sessionViewModel.deleteAllSessions();
+
+        check();
+
+        Ius.checkPermissions(this);
 
         startWork.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,12 +135,26 @@ public class StartActivity extends AppCompatActivity {
                     Log.e("sss count", String.valueOf(cursor.getCount()));
                     while (cursor.moveToNext()) {
                         Log.e("sss start", cursor.getString(cursor.getColumnIndex("started")));
-                        Log.e("sss finish", cursor.getString(cursor.getColumnIndex("finished")));
+                        Log.e("sss finished", cursor.getString(cursor.getColumnIndex("finished")));
                     }
                 }
                 cursor.close();
             }
         }
+    }
+
+    private void check() {
+        double lat = 50;
+        double lon = 50;
+        double latPoint = 100;
+        double lonPoint = 100;
+        int distance = 0;
+
+        double latKM = Math.abs((latPoint - lat)*111.32);
+        double lonKM = Math.abs(lonPoint - lon) * 40075 * Math.cos(Math.abs(latPoint-lat))/360;
+        distance = (int) Math.pow(Math.pow(latKM, 2) + Math.pow(lonKM, 2), 0.5);
+
+        Log.e("sss", String.valueOf(distance));
     }
 
     private void openActivitySession() {

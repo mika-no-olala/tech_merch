@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import kz.smrtx.techmerch.GPSTracker;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.items.entities.Outlet;
 import kz.smrtx.techmerch.items.entities.SalePointItem;
@@ -22,6 +23,8 @@ import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.CardViewHolder> {
 
     private Context context;
+    private double lat = 0;
+    private double lon = 0;
     private List<SalePointItem> outlets;
     private onItemClickListener listener;
 
@@ -74,6 +77,11 @@ public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.
         }
     }
 
+    public void setCoordinates(double latitude, double longitude) {
+        lat = latitude;
+        lon = longitude;
+    }
+
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -85,12 +93,24 @@ public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         SalePointItem salePointItem = outlets.get(position);
+        double distance = 0;
+        if (lat!=0 && lon!=0) {
+            if (salePointItem.getLatitude()!=null && salePointItem.getLongitude()!=null) {
+                double latPoint = Double.parseDouble(salePointItem.getLatitude());
+                double lonPoint = Double.parseDouble(salePointItem.getLongitude());
+
+                double latKM = Math.abs((latPoint - lat)*111.32);
+                double lonKM = Math.abs(lonPoint - lon) * 40075 * Math.cos(Math.abs(latPoint-lat))/360;
+                distance = Math.pow(Math.pow(latKM, 2) + Math.pow(lonKM, 2), 0.5);
+                distance = Math.floor(distance * 10) / 10;
+            }
+        }
         
         holder.code.setText(salePointItem.getId());
         holder.name.setText(salePointItem.getName());
         holder.address.setText(context.getResources().getString(R.string.address) + ": " + salePointItem.getHouse());
         holder.requests.setText(context.getResources().getString(R.string.requests) + ": " + 0);
-        holder.distance.setText(0 + " км");
+        holder.distance.setText(distance + " км");
         
     }
 

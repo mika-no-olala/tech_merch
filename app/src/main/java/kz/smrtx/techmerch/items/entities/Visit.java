@@ -13,14 +13,14 @@ import java.util.Date;
 
 @Entity(tableName = "ST_VISIT")
 public class Visit implements Serializable {
-    @PrimaryKey
-    @NonNull
     @Expose
     @SerializedName("VIS_CODE")
     private int code;
     @Expose
     @SerializedName("VIS_PARENT_CODE")
     private int parentCode;
+    @PrimaryKey
+    @NonNull
     @Expose
     @SerializedName("VIS_NUMBER")
     private String number;
@@ -41,7 +41,7 @@ public class Visit implements Serializable {
     private int saleCode;
     @Expose
     @SerializedName("VIS_SAL_ID")
-    private int saleId;
+    private String saleId;
     @Expose
     @SerializedName("VIS_CREATED")
     private String created;
@@ -63,6 +63,9 @@ public class Visit implements Serializable {
     @Expose
     @SerializedName("VIS_DEVICE_ID")
     private String deviceId;
+    @Expose
+    @SerializedName("VIS_APP_VERSION")
+    private String appVersion;
     @Expose
     @SerializedName("VIS_FUS_CODE")
     private int fusCode;
@@ -102,7 +105,7 @@ public class Visit implements Serializable {
         return saleCode;
     }
 
-    public int getSaleId() {
+    public String getSaleId() {
         return saleId;
     }
 
@@ -174,7 +177,7 @@ public class Visit implements Serializable {
         this.saleCode = saleCode;
     }
 
-    public void setSaleId(int saleId) {
+    public void setSaleId(String saleId) {
         this.saleId = saleId;
     }
 
@@ -212,5 +215,13 @@ public class Visit implements Serializable {
 
     public void setLeaCode(int leaCode) {
         this.leaCode = leaCode;
+    }
+
+    public String getAppVersion() {
+        return appVersion;
+    }
+
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
     }
 }

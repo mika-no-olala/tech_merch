@@ -11,21 +11,21 @@ public class Element {
     @PrimaryKey
     @NonNull
     @SerializedName("ELE_ID")
-    private String id;
+    private int id;
     @SerializedName("ELE_NAME")
     private String name;
     @SerializedName("ELE_CATEGORY_CODE")
-    private String categoryCode;
+    private int categoryCode;
     @SerializedName("ELE_CATEGORY_NAME")
     private String categoryName;
     @SerializedName("ELE_SUBTYPE_FROM")
-    private String subtypeFrom;
+    private int subtypeFrom;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -37,11 +37,11 @@ public class Element {
         this.name = name;
     }
 
-    public String getCategoryCode() {
+    public int getCategoryCode() {
         return categoryCode;
     }
 
-    public void setCategoryCode(String categoryCode) {
+    public void setCategoryCode(int categoryCode) {
         this.categoryCode = categoryCode;
     }
 
@@ -53,11 +53,22 @@ public class Element {
         this.categoryName = categoryName;
     }
 
-    public String getSubtypeFrom() {
+    public int getSubtypeFrom() {
         return subtypeFrom;
     }
 
-    public void setSubtypeFrom(String subtypeFrom) {
+    public void setSubtypeFrom(int subtypeFrom) {
         this.subtypeFrom = subtypeFrom;
+    }
+
+    @Override
+    public String toString() {
+        return "Element{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", categoryCode=" + categoryCode +
+                ", categoryName='" + categoryName + '\'' +
+                ", subtypeFrom=" + subtypeFrom +
+                '}';
     }
 }

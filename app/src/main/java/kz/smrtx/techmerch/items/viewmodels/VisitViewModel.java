@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import kz.smrtx.techmerch.items.repositories.VisitRepository;
@@ -30,5 +31,6 @@ public class VisitViewModel extends AndroidViewModel {
     public void deleteAllVisits() {
         repository.deleteAllVisits();
     }
+    public LiveData<Visit> getVisitByNumber(String number) { return repository.getVisitByNumber(number); }
     public Cursor getCursor(SimpleSQLiteQuery query){ return repository.getSyncData(query);}
 }

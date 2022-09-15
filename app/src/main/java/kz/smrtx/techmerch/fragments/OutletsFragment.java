@@ -20,6 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import kz.smrtx.techmerch.GPSTracker;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.adapters.CardAdapterOutlets;
@@ -104,6 +105,15 @@ public class OutletsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this.getContext());
         cardAdapter = new CardAdapterOutlets(outlets, this.getContext());
+
+        GPSTracker gps = new GPSTracker(this.getContext());
+        double lat = 0;
+        double lon = 0;
+        if (gps.getIsGPSTrackingEnabled()) {
+            lat = gps.getLatitude();
+            lon = gps.getLongitude();
+        }
+        cardAdapter.setCoordinates(lat, lon);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(cardAdapter);

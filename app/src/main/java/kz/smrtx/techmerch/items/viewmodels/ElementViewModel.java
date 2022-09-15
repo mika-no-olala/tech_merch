@@ -24,7 +24,7 @@ public class ElementViewModel extends AndroidViewModel {
     public void deleteElements() {
         elementRepository.deleteElements();
     }
-    public LiveData<List<Element>> getElementList(String elementCode) {
+    public List<Element> getElementList(int elementCode) {
         return elementRepository.getElementList(elementCode);
     }
 }

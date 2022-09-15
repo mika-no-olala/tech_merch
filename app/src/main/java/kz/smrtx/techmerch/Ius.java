@@ -1,10 +1,13 @@
 package kz.smrtx.techmerch;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.text.SpannableString;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,11 +68,11 @@ public class Ius extends Application {
     public static final String USER_ROLE_NAME = "USER_ROLE_NAME";
 
     public static final String BOTTOM_BAR_TEXT = "BOTTOM_BAR_TEXT";
-    // remove this
     public static final String DEVICE_ID = "DEVICE_ID";
     public static final String DATE_LOGIN = "DATE_LOGIN";
     public static final String TOKEN = "TOKEN";
     public static final String LAST_SYNC = "LAST_SYNC";
+    public static final String LAST_VISIT_NUMBER = "LAST_VISIT_NUMBER";
 
     public static Ius getSingleton() {
         return singleton;
@@ -248,6 +252,21 @@ public class Ius extends Application {
         int result = random.nextInt(high-low) + low;
         String currentDate = getDateByFormat(new Date(), "ddMMyyyyHHmmss");
         return type + result + "u" + readSharedPreferences(context, USER_CODE) + "t" + currentDate;
+    }
+
+    public static void requestPermission(Activity activity) {
+        ActivityCompat.requestPermissions(activity, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+        }, 1);
+    }
+
+    public static void checkPermissions(Activity activity) {
+        if (ActivityCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermission(activity);
+        }
     }
 
     public static void refreshToken(Context context) {

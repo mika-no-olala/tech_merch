@@ -4,16 +4,17 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
-import java.util.Date;
 
 @Entity(tableName = "ST_REQUEST")
 public class Request {
-    @PrimaryKey
-    @NonNull
     @SerializedName("REQ_ID")
     private String id;
+    @PrimaryKey
+    @NonNull
+    @SerializedName("REQ_CODE")
+    private String code;
     @SerializedName("REQ_SAL_CODE")
-    private String salePointCode;
+    private int salePointCode;
     @SerializedName("REQ_SAL_NAME")
     private String salePointName;
     @SerializedName("REQ_CREATED")
@@ -40,10 +41,16 @@ public class Request {
     private String workSpecial;
     @SerializedName("REQ_COMMENT")
     private String comment;
+    @SerializedName("REQ_STATUS_ID")
+    private int statusId;
+    @SerializedName("REQ_USE_RESPONSIBLE_CODE")
+    private int responsibleCode;
     @SerializedName("REQ_STATUS")
     private String status;
     @SerializedName("REQ_USE_RESPONSIBLE")
     private String responsible;
+    @SerializedName("REQ_VIS_NUMBER")
+    private String visitNumber;
 
     public String getId() {
         return id;
@@ -53,11 +60,20 @@ public class Request {
         this.id = id;
     }
 
-    public String getSalePointCode() {
+    @NonNull
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(@NonNull String code) {
+        this.code = code;
+    }
+
+    public int getSalePointCode() {
         return salePointCode;
     }
 
-    public void setSalePointCode(String salePointCode) {
+    public void setSalePointCode(int salePointCode) {
         this.salePointCode = salePointCode;
     }
 
@@ -165,6 +181,22 @@ public class Request {
         this.comment = comment;
     }
 
+    public int getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
+    }
+
+    public int getResponsibleCode() {
+        return responsibleCode;
+    }
+
+    public void setResponsibleCode(int responsibleCode) {
+        this.responsibleCode = responsibleCode;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -179,5 +211,13 @@ public class Request {
 
     public void setResponsible(String responsible) {
         this.responsible = responsible;
+    }
+
+    public String getVisitNumber() {
+        return visitNumber;
+    }
+
+    public void setVisitNumber(String visitNumber) {
+        this.visitNumber = visitNumber;
     }
 }

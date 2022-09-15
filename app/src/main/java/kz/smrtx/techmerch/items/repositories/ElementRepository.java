@@ -26,7 +26,7 @@ public class ElementRepository {
     public void deleteElements() {
         new deleteElementsAsyncTask(elementDao).execute();
     }
-    public LiveData<List<Element>> getElementList(String elementCode) {
+    public List<Element> getElementList(int elementCode) {
         return elementDao.getElementList(elementCode);
     }
 

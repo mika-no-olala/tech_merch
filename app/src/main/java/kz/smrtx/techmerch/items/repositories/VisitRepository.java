@@ -31,6 +31,7 @@ public class VisitRepository {
     public void deleteAllVisits() {
         new DeleteAllVisitsAsyncTask(visitDao).execute();
     }
+    public LiveData<Visit> getVisitByNumber(String number) { return visitDao.getVisitByNumber(number); }
     public Cursor getSyncData(SimpleSQLiteQuery query){ return visitDao.getSyncCursor(query);}
 
     private static class InsertVisitAsyncTask extends AsyncTask<Visit, Void, Void> {

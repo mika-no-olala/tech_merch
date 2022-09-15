@@ -1,8 +1,11 @@
 package kz.smrtx.techmerch.fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +13,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.w3c.dom.Text;
 
+import java.util.Date;
+
+import kz.smrtx.techmerch.BuildConfig;
+import kz.smrtx.techmerch.GPSTracker;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.SessionActivity;
@@ -73,11 +81,34 @@ public class OperationsOnOutletFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     private void getOutlet(String outletCode) {
         choosePointsViewModel.getSalePointByCode(outletCode).observe(getViewLifecycleOwner(), s -> {
+            Log.i("getOutlet", "by code " + outletCode);
             if (s!=null) {
+                GPSTracker gps = new GPSTracker(this.getContext());
+                String lat = "0";
+                String lon = "0";
+                if (gps.getIsGPSTrackingEnabled()) {
+                    lat = String.valueOf(gps.getLatitude());
+                    lon = String.valueOf(gps.getLongitude());
+                }
+
                 name.setText(s.getName());
                 Visit visit = new Visit();
-                visit.setNumber(Ius.generateUniqueCode(this.getContext(), "v"));
-//                visit.setUserCode(Ius.readSharedPreferences(thi));
+                String started = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
+                String number = Ius.generateUniqueCode(this.getContext(), "v");
+                Ius.writeSharedPreferences(getContext(), Ius.LAST_VISIT_NUMBER, number);
+
+                visit.setNumber(number);
+                visit.setUserCode(Integer.parseInt(Ius.readSharedPreferences(this.getContext(), Ius.USER_CODE)));
+                visit.setSaleCode(Integer.parseInt(outletCode));
+                visit.setSaleId(s.getId());
+                visit.setStart(started);
+                visit.setCreated(started);
+                visit.setDeviceId(Ius.readSharedPreferences(this.getContext(), Ius.DEVICE_ID));
+                visit.setLatitude(lat);
+                visit.setLongitude(lon);
+                visit.setAppVersion(BuildConfig.VERSION_NAME);
+
+                visitViewModel.insert(visit);
             }
         });
     }

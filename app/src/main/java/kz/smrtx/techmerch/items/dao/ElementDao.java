@@ -21,5 +21,5 @@ public interface ElementDao {
     void deleteAllElements();
 
     @Query("select * from ST_LIST_ELEMENTS where categoryCode=:categoryCode")
-    LiveData<List<Element>> getElementList(String categoryCode);
+    List<Element> getElementList(int categoryCode);
 }

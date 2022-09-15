@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
@@ -57,6 +58,7 @@ public class OutletInformationFragment extends Fragment {
 
         listener.getPageName(getResources().getString(R.string.outlet_information));
         initializeTextViews(view);
+        showRoute.setText(Ius.makeTextUnderlined(showRoute.getText().toString()));
         Button startWork = view.findViewById(R.id.start);
         choosePointsViewModel = new ViewModelProvider(this).get(ChoosePointsViewModel.class);
         visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
