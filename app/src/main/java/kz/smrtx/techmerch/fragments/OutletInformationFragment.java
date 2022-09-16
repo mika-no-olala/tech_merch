@@ -3,6 +3,7 @@ package kz.smrtx.techmerch.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import kz.smrtx.techmerch.GPSTracker;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.SessionActivity;
@@ -109,9 +111,32 @@ public class OutletInformationFragment extends Fragment {
                 phone.setText(": " + s.getPhone());
                 comment.setText(getResources().getString(R.string.no_data));
                 address.setText(s.getHouse());
-                distance.setText("0 " + getResources().getString(R.string.km_from_you));
+                Ius.writeSharedPreferences(this.getContext(), Ius.LAST_SALE_POINT_ADDRESS, s.getHouse());
+                if (s.getLongitude()==null || s.getLatitude()==null)
+                    distance.setText("? " + getResources().getString(R.string.km_from_you));
+                else
+                    distance.setText(getDistance(Double.parseDouble(s.getLatitude()),
+                        Double.parseDouble(s.getLongitude())) + " " + getResources().getString(R.string.km_from_you));
             }
         });
+    }
+
+    private double getDistance(double latPoint, double lonPoint) {
+        GPSTracker gps = new GPSTracker(this.getContext());
+        double lat = 0;
+        double lon = 0;
+        double distance = 0;
+        if (gps.getIsGPSTrackingEnabled()) {
+            lat = gps.getLatitude();
+            lon = gps.getLongitude();
+        }
+        if (lat!=0 && lon!=0) {
+            double latKM = Math.abs((latPoint - lat)*111.32);
+            double lonKM = Math.abs(lonPoint - lon) * 40075 * Math.cos(Math.abs(latPoint-lat))/360;
+            distance = Math.pow(Math.pow(latKM, 2) + Math.pow(lonKM, 2), 0.5);
+            distance = Math.floor(distance * 10) / 10;
+        }
+        return distance;
     }
 
     @Override

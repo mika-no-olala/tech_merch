@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -17,10 +18,12 @@ import java.util.Date;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.fragments.OperationsFragment;
 import kz.smrtx.techmerch.fragments.RCAddressFragment;
 import kz.smrtx.techmerch.fragments.RCEndingFragment;
 import kz.smrtx.techmerch.fragments.RCEquipmentFragment;
 import kz.smrtx.techmerch.fragments.RCReplaceFragment;
+import kz.smrtx.techmerch.fragments.RCSummaryFragment;
 import kz.smrtx.techmerch.fragments.RCTypeFragment;
 import kz.smrtx.techmerch.fragments.RCWorkFragment;
 import kz.smrtx.techmerch.fragments.RCWorkSubtypeFragment;
@@ -44,6 +47,10 @@ public class CreateRequestActivity extends AppCompatActivity {
     private boolean repair = false;
     private boolean replace = false;
     private boolean fromOutToOut = false;
+    private boolean responsibleChosen = false;
+    private static final String REPAIR = "Ремонт";
+    private static final String REPLACE = "Перемещение";
+    private ArrayList<String> work = new ArrayList<>();
 
     private TextView percentage;
     private Button next;
@@ -78,7 +85,10 @@ public class CreateRequestActivity extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                route();
+                if (pageIndex==6 && !responsibleChosen)
+                    createToast(getResources().getString(R.string.executor_error), false);
+                else
+                    route();
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +186,9 @@ public class CreateRequestActivity extends AppCompatActivity {
             case 5:
                 openFragment(RCEndingFragment.getInstance(), 6);
                 break;
+            case 6:
+                openFragment(RCSummaryFragment.getInstance(), 7);
+                break;
         }
     }
 
@@ -202,6 +215,17 @@ public class CreateRequestActivity extends AppCompatActivity {
         pages.add(new RequestPages(7, "result", 100, false));
     }
 
+    private String workToString() {
+        String workStr = work.toString().replace("[", "");
+        workStr = workStr.replace("]", "");
+        return workStr;
+    }
+
+    private void createToast(String text, boolean success) {
+        View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) findViewById(R.id.toast));
+        Ius.showToast(layout, this, text, success);
+    }
+
     public void setType(boolean guarantee) {
         this.guarantee = guarantee;
         if (guarantee)
@@ -216,20 +240,75 @@ public class CreateRequestActivity extends AppCompatActivity {
 
     public void setEquipmentSubtype(String equipmentSubtype) {
         request.setEquipmentSubtype(equipmentSubtype);
-        Log.e("sss", equipmentSubtype);
     }
 
     public void setRepair(boolean repair) {
         this.repair = repair;
-        request.setWork("Ремонт");
+        if (repair)
+            work.add(REPAIR);
+        else
+            work.remove(REPAIR);
+
+        request.setWork(workToString());
     }
 
     public void setReplace(boolean replace) {
         this.replace = replace;
-        request.setWork("Перемещение");
+        if (replace)
+            work.add(REPLACE);
+        else
+            work.remove(REPLACE);
+
+        request.setWork(workToString());
+    }
+
+    public void clearAdditional() {
+        request.setAdditional(null);
+    }
+
+    public void setAdditional(String additional) {
+        request.setAdditional(additional);
+        Log.e("sss", additional);
     }
 
     public void setFromOutToOut(boolean fromOutToOut) {
         this.fromOutToOut = fromOutToOut;
+    }
+    
+    public void setReplacePoint(String replaceChoice) {
+        request.setReplace(replaceChoice);
+    }
+
+    public void setAddress(String address) {
+        request.setAddressSalePoint(address);
+    }
+
+    public void setWorkSubtype(String workSubtype) {
+        request.setWorkSubtype(workSubtype);
+    }
+
+    public void setSpecial(String special) {
+        request.setWorkSpecial(special);
+    }
+
+    public void setExecutor(String code, boolean correct) {
+        if(!correct) {
+            responsibleChosen = false;
+            return;
+        }
+        String piece = code.substring(0, code.indexOf("-")-1);
+        Log.e("sss codePiece", piece);
+        try {
+            int codeInt = Integer.parseInt(piece);
+            request.setResponsibleCode(codeInt);
+            responsibleChosen = true;
+        } catch (Exception e) {
+            createToast(getResources().getString(R.string.executor_error), false);
+        }
+    }
+
+
+    public void setComment(String comment) {
+        request.setComment(comment);
     }
 }

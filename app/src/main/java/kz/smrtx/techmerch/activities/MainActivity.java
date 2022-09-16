@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                     Ius.writeSharedPreferences(context, Ius.USER_ID, String.valueOf(user.getId()));
                     Ius.writeSharedPreferences(context, Ius.USER_CODE, String.valueOf(user.getCode()));
                     Ius.writeSharedPreferences(context, Ius.USER_NAME, user.getName());
-                    Ius.writeSharedPreferences(context, Ius.USER_ROLE_CODE, user.getRoleCode());
+                    Ius.writeSharedPreferences(context, Ius.USER_ROLE_CODE, String.valueOf(user.getRoleCode()));
                     Ius.writeSharedPreferences(context, Ius.USER_ROLE_NAME, user.getRoleName());
                     Ius.writeSharedPreferences(context, Ius.DEVICE_ID, Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
                     Ius.writeSharedPreferences(context, Ius.DATE_LOGIN, Ius.getDateByFormat(new Date(), "dd.MM.yyyy"));

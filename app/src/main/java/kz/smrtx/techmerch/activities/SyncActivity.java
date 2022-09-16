@@ -83,13 +83,15 @@ public class SyncActivity extends AppCompatActivity {
         animation = findViewById(R.id.animation);
         View back = findViewById(R.id.back);
         TextView pageName = findViewById(R.id.pageName);
+        TextView bottomBarText = findViewById(R.id.bottomBarText);
         pageName.setText(getResources().getText(R.string.sync));
+        bottomBarText.setText(Ius.readSharedPreferences(this, Ius.BOTTOM_BAR_TEXT));
         
         String lastSyncString = Ius.readSharedPreferences(context, Ius.LAST_SYNC);
         if (lastSyncString==null)
-            lastSync.setText(getResources().getString(R.string.last_sync) + ": " + getResources().getString(R.string.no_data));
+            lastSync.setText(getResources().getString(R.string.last_sync) + ": \n" + getResources().getString(R.string.no_data));
         else
-            lastSync.setText(getResources().getString(R.string.last_sync) + ": " + lastSyncString);
+            lastSync.setText(getResources().getString(R.string.last_sync) + ": \n" + lastSyncString);
 
         visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
         salePointViewModel = new ViewModelProvider(this).get(SalePointViewModel.class);

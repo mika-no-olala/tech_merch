@@ -16,8 +16,7 @@ import kz.smrtx.techmerch.R;
 public class RCReplaceFragment extends Fragment {
 
     public static RCReplaceFragment getInstance() {
-        RCReplaceFragment fragment = new RCReplaceFragment();
-        return fragment;
+        return new RCReplaceFragment();
     }
 
     @SuppressLint("SetTextI18n")
@@ -34,6 +33,8 @@ public class RCReplaceFragment extends Fragment {
                 TextView radioButtonText = view.findViewById(i);
                 ((CreateRequestActivity)requireActivity())
                         .setFromOutToOut(radioButtonText.getText().toString().equals(getResources().getString(R.string.from_out_to_out)));
+                ((CreateRequestActivity)requireActivity())
+                        .setReplacePoint(radioButtonText.getText().toString());
             }
         });
 

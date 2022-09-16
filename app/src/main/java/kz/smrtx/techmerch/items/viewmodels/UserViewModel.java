@@ -24,7 +24,7 @@ public class UserViewModel extends AndroidViewModel {
     public void deleteUsers() {
         userRepository.deleteUsers();
     }
-    public LiveData<List<User>> getUserList(String roleCode) {
+    public LiveData<List<User>> getUserList(int roleCode) {
         return userRepository.getUserList(roleCode);
     }
 }

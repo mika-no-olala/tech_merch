@@ -121,7 +121,7 @@ public class StartActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            check();
+//            check();
             return null;
         }
 

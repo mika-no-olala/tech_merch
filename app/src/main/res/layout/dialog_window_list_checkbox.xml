@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:maxHeight="620sp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:background="@color/old_linen"
+    android:layout_marginVertical="100sp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="@color/lavender"
+        app:cardCornerRadius="3sp"
+        android:paddingBottom="10sp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/listChoice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:fontFamily="@font/bandera_pro_medium"
+                android:paddingHorizontal="21sp"
+                android:paddingVertical="18sp"
+                android:inputType="textMultiLine"
+                />
+            
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:background="@color/white"
+                android:paddingHorizontal="21sp"
+                android:paddingBottom="18sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="21sp"
+                android:paddingVertical="18sp">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/negative"
+                    style="@style/button"
+                    android:layout_weight="1"
+                    android:text="@string/reset"
+                    android:background="@drawable/button_neutral"
+                    android:layout_marginEnd="12sp"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/positive"
+                    style="@style/button"
+                    android:layout_weight="1"
+                    android:text="@string/apply"
+                    android:background="@drawable/button_dark"
+                    android:textColor="@color/white"
+                    android:layout_marginStart="12sp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

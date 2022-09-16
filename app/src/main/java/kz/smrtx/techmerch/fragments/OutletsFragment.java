@@ -160,6 +160,7 @@ public class OutletsFragment extends Fragment {
 
         choosePointsViewModel.getSalePointsByFilter(likeStatement.toString()).observe(this, salePointItems -> {
             cardAdapter.setOutletList(salePointItems);
+            cardAdapter.notifyDataSetChanged();
         });
     }
 }

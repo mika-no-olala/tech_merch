@@ -27,21 +27,25 @@
         android:fontFamily="@font/bandera_pro_medium"
         android:layout_marginBottom="9sp"/>
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/executor"
         android:layout_width="match_parent"
-        android:layout_height="40sp"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
         android:fontFamily="@font/bandera_pro"
         android:textSize="16sp"
-        android:hint="@string/choose_from"
+        android:hint="@string/input_executor_name"
         android:textColorHint="@color/light_purple"
         android:background="@drawable/background_edit_text"
-        android:inputType="text"
+        android:inputType="textMultiLine"
+        android:completionThreshold="1"
         android:elevation="3sp"
         android:layout_marginBottom="18sp"
         android:padding="10sp"
-        android:importantForAutofill="no"
         tools:targetApi="lollipop" />
+
+<!--    android:focusable="false"-->
+<!--    android:cursorVisible="false"-->
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,17 +59,17 @@
         android:id="@+id/comment"
         android:layout_width="match_parent"
         android:layout_height="85sp"
+        android:maxHeight="200sp"
         android:fontFamily="@font/bandera_pro"
         android:textSize="16sp"
-        android:hint="@string/choose_from"
+        android:hint="@string/request_comment"
         android:textColorHint="@color/light_purple"
         android:background="@drawable/background_edit_text"
         android:inputType="textMultiLine"
+        android:gravity="top"
         android:elevation="3sp"
         android:layout_marginBottom="18sp"
         android:padding="10sp"
-        android:gravity="top"
-        android:importantForAutofill="no"
         tools:targetApi="lollipop" />
 
 </LinearLayout>

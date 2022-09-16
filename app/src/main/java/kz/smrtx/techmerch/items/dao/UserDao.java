@@ -21,5 +21,5 @@ public interface UserDao {
     void deleteAllUsers();
 
     @Query("select * from ST_USER where roleCode=:roleCode")
-    LiveData<List<User>> getUserList(String roleCode);
+    LiveData<List<User>> getUserList(int roleCode);
 }

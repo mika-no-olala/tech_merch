@@ -79,7 +79,7 @@ public class RCEquipmentFragment extends Fragment {
 
     private void openDialog(EditText editText, List<Element> array, boolean equipmentType) {
         CardAdapterString adapter = new CardAdapterString(array);
-        Dialog dialog = Ius.createDialogList(this.getContext(), adapter);
+        Dialog dialog = Ius.createDialogList(this.getContext(), adapter, false);
         dialog.show();
 
         adapter.setOnItemClickListener(new CardAdapterString.onItemClickListener() {

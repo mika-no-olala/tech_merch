@@ -73,6 +73,7 @@ public class Ius extends Application {
     public static final String TOKEN = "TOKEN";
     public static final String LAST_SYNC = "LAST_SYNC";
     public static final String LAST_VISIT_NUMBER = "LAST_VISIT_NUMBER";
+    public static final String LAST_SALE_POINT_ADDRESS = "LAST_SALE_POINT_ADDRESS";
 
     public static Ius getSingleton() {
         return singleton;
@@ -190,11 +191,14 @@ public class Ius extends Application {
         return dialog;
     }
 
-    public static Dialog createDialogList(Context context, CardAdapterString adapter) {
+    public static Dialog createDialogList(Context context, CardAdapterString adapter, boolean multipleChoice) {
         Dialog dialog = new Dialog(context, android.R.style.Theme_Light);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawableResource(R.color.black_transparent);
-        dialog.setContentView(R.layout.dialog_window_list);
+        if (multipleChoice)
+            dialog.setContentView(R.layout.dialog_window_list_checkbox);
+        else
+            dialog.setContentView(R.layout.dialog_window_list);
         dialog.setCanceledOnTouchOutside(true);
 
         RecyclerView.LayoutManager layoutManager;

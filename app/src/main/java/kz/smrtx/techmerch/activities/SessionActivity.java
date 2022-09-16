@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener {
 
     private TextView pageName;
+    private ScrollView scrollView;
     private ArrayList<String> pageNames = new ArrayList<>();
     private String dateStarted;
     private SessionViewModel sessionViewModel;
@@ -42,6 +44,7 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         openOperations();
 
         TextView bottomBarText = findViewById(R.id.bottomBarText);
+        scrollView = findViewById(R.id.scrollView);
         pageName = findViewById(R.id.pageName);
         View back = findViewById(R.id.back);
         sessionViewModel = new ViewModelProvider(this).get(SessionViewModel.class);
@@ -96,6 +99,7 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         OperationsOnOutletFragment operationsOnOutletFragment = OperationsOnOutletFragment.getInstance("tmr", outletCode);
         getSupportFragmentManager().beginTransaction().add(R.id.containerSession, operationsOnOutletFragment)
                 .addToBackStack(null).commit();
+        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_UP));
     }
 
     public void openActivityCreateRequest() {
@@ -143,6 +147,4 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
             }
         });
     }
-
-
 }

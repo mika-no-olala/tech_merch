@@ -24,7 +24,7 @@ public class UserRepository {
     public void deleteUsers() {
         new deleteUsersAsyncTask(userDao).execute();
     }
-    public LiveData<List<User>> getUserList(String roleCode) {
+    public LiveData<List<User>> getUserList(int roleCode) {
         return userDao.getUserList(roleCode);
     }
 

@@ -22,7 +22,7 @@ public class User {
 
     @SerializedName("USE_USR_CODE")
     @Expose
-    private String roleCode;
+    private int roleCode;
 
     @SerializedName("USR_NAME")
     private String roleName;
@@ -33,7 +33,8 @@ public class User {
     @SerializedName("USE_VERSION_CODE")
     private int versionCode;
 
-    public User(String name, String roleCode, String roleName, int locationCode, int versionCode) {
+    public User(int code, String name, int roleCode, String roleName, int locationCode, int versionCode) {
+        this.code = code;
         this.name = name;
         this.roleCode = roleCode;
         this.roleName = roleName;
@@ -65,11 +66,11 @@ public class User {
         this.name = name;
     }
 
-    public String getRoleCode() {
+    public int getRoleCode() {
         return roleCode;
     }
 
-    public void setRoleCode(String roleCode) {
+    public void setRoleCode(int roleCode) {
         this.roleCode = roleCode;
     }
 
