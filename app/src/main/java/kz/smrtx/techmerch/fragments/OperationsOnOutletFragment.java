@@ -1,9 +1,7 @@
 package kz.smrtx.techmerch.fragments;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,16 +11,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
-import org.w3c.dom.Text;
 
 import java.util.Date;
 
 import kz.smrtx.techmerch.BuildConfig;
-import kz.smrtx.techmerch.GPSTracker;
+import kz.smrtx.techmerch.utils.GPSTracker;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.SessionActivity;
@@ -34,6 +29,7 @@ public class OperationsOnOutletFragment extends Fragment {
 
     private ChoosePointsViewModel choosePointsViewModel;
     private VisitViewModel visitViewModel;
+    private Visit visit;
     private TextView name;
 
     private FragmentListener listener;
@@ -92,7 +88,7 @@ public class OperationsOnOutletFragment extends Fragment {
                 }
 
                 name.setText(s.getName());
-                Visit visit = new Visit();
+                visit = new Visit();
                 String started = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
                 String number = Ius.generateUniqueCode(this.getContext(), "v");
                 Ius.writeSharedPreferences(getContext(), Ius.LAST_VISIT_NUMBER, number);
@@ -123,5 +119,12 @@ public class OperationsOnOutletFragment extends Fragment {
             throw new ClassCastException(context.toString()
                     + " must implement onFragmentListener");
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        visit.setFinish(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
+        visitViewModel.update(visit);
     }
 }

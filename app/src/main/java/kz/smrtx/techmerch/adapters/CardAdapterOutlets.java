@@ -2,7 +2,6 @@ package kz.smrtx.techmerch.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import kz.smrtx.techmerch.GPSTracker;
 import kz.smrtx.techmerch.R;
-import kz.smrtx.techmerch.items.entities.Outlet;
 import kz.smrtx.techmerch.items.entities.SalePointItem;
-import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 
 public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.CardViewHolder> {
 

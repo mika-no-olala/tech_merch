@@ -25,7 +25,7 @@
                 android:id="@+id/logo"
                 android:layout_width="92sp"
                 android:layout_height="92sp"
-                android:background="@color/main_deep_purple"/>
+                android:src="@drawable/logo"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"

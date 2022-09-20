@@ -1,4 +1,4 @@
-package kz.smrtx.techmerch;
+package kz.smrtx.techmerch.utils;
 import android.annotation.SuppressLint;
 import android.graphics.Paint;
 import android.graphics.Typeface;

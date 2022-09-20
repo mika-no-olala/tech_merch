@@ -2,35 +2,23 @@ package kz.smrtx.techmerch.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.CreateRequestActivity;
-import kz.smrtx.techmerch.activities.SessionActivity;
-import kz.smrtx.techmerch.adapters.CardAdapterOutlets;
 import kz.smrtx.techmerch.adapters.CardAdapterString;
-import kz.smrtx.techmerch.items.GetDataAsync;
 import kz.smrtx.techmerch.items.entities.Element;
 import kz.smrtx.techmerch.items.viewmodels.ElementViewModel;
 

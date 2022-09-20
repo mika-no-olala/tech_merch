@@ -5,11 +5,15 @@ import kz.smrtx.techmerch.items.reqres.JsonResponse;
 import kz.smrtx.techmerch.items.reqres.LoginResponse;
 import kz.smrtx.techmerch.items.reqres.StringResponse;
 import kz.smrtx.techmerch.items.reqres.synctables.SyncTables;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface ApiService {
@@ -32,4 +36,7 @@ public interface ApiService {
     @POST("services-sync-manager/getsyncdata")
     Observable<ResponseBody> getSyncData(@Field("MVL_VIEW_NAME") String viewName, @Field("USE_CODE") String useCode, @Field("MVL_REFERENCE") String reference);
 
+    @Multipart
+    @POST("services-sync-manager/uploadSyncFile")
+    Call<ResponseBody> uploadSyncFile(@Part("USE_CODE") RequestBody use_code, @Part MultipartBody.Part file);
 }

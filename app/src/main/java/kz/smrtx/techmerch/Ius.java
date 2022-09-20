@@ -11,11 +11,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,15 +33,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
+
+import kz.smrtx.techmerch.utils.CustomTypefaceSpan;
+import kz.smrtx.techmerch.utils.ZipManager;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.net.ssl.SSLContext;
@@ -82,6 +86,8 @@ public class Ius extends Application {
     public static final String LAST_VISIT_NUMBER = "LAST_VISIT_NUMBER";
     public static final String LAST_SESSION_CODE = "LAST_SESSION_CODE";
     public static final String LAST_SALE_POINT_ADDRESS = "LAST_SALE_POINT_ADDRESS";
+    public static final String DIRECTORY_FROM_SERVER = "prod";
+    public static final String KEY_SYN_ID = "KEY_SYN_ID";
 
     public static Ius getSingleton() {
         return singleton;
@@ -329,6 +335,31 @@ public class Ius extends Application {
                         context.getResources().getString(R.string.no_server_connection_description), false);
             }
         });
+    }
+
+    public static void createAndWriteToFile(List<String> data, String path, String zipName){
+        try {
+            File root = new File(path);
+            root.mkdirs();
+            if (root.listFiles() != null){
+                for(File f: Objects.requireNonNull(root.listFiles())){
+                    if (f.exists()) f.delete();
+                }
+            }
+            File file = new File(root, "sync.txt");
+            if (file.exists()){ file.delete();}
+
+            FileWriter writer = new FileWriter(file);
+            for (String line: data){
+                writer.append(line).append(";").append("\r\n");
+            }
+            writer.flush();
+            writer.close();
+            String[] files = {file.getAbsolutePath()};
+            ZipManager.zip(files, path+File.separator+(zipName));
+        }catch (Exception e){
+            Log.e("WriteToFile", e.toString());
+        }
     }
 
 }

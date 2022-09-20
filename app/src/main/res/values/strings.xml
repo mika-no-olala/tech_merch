@@ -12,6 +12,7 @@
     <string name="wrong_data_log_in">Неправильный логин или пароль</string>
     <string name="error">Ошибка</string>
     <string name="server_error">Ошибка подключения к серверу</string>
+    <string name="uploading_data_error">Ошибка при отправке данных</string>
     <string name="executor_error">Введите исполнителя правильно, выберете из списка</string>
     <string name="success">Успех</string>
     <string name="request_success">Заявка создана</string>
@@ -33,6 +34,7 @@
     <string name="last_sync">Последняя синхронизация</string>
     <string name="sync_success">Синхронизация прошла успешно</string>
     <string name="sync_server_connection">Ошибка: не удалось связаться с сервером</string>
+    <string name="sync_server_error">Ошибка при синхронизации. Повторите попытку</string>
     <string name="server_timeout">Ошибка: запрос на сервер занял слишком много времени</string>
     <string name="no_data">Нет данных</string>
     <string name="no_data_do_sync">Нет данных. Рекомендуется пройти синхронизацию</string>

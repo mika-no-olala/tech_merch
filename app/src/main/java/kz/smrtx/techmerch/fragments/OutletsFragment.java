@@ -20,7 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import kz.smrtx.techmerch.GPSTracker;
+import kz.smrtx.techmerch.utils.GPSTracker;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.adapters.CardAdapterOutlets;
@@ -137,6 +137,7 @@ public class OutletsFragment extends Fragment {
                 Log.w("createList", "list == null");
                 recyclerView.setVisibility(View.GONE);
                 doSync.setVisibility(View.VISIBLE);
+
                 return;
             }
             if (salePointItems.size() <= 0) {
