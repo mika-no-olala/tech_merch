@@ -24,6 +24,7 @@ import kz.smrtx.techmerch.BuildConfig;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
+import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -47,8 +48,11 @@ public class StartActivity extends AppCompatActivity {
         Button signOut = findViewById(R.id.signOut);
 
         setUser();
+
         sessionViewModel = new ViewModelProvider(this).get(SessionViewModel.class);
-        sessionViewModel.deleteAllSessions();
+//        sessionViewModel.deleteAllSessions();
+        VisitViewModel visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
+        visitViewModel.deleteAllVisits();
 
         check();
 
@@ -144,17 +148,17 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void check() {
-        double lat = 50;
-        double lon = 50;
-        double latPoint = 100;
-        double lonPoint = 100;
-        int distance = 0;
-
-        double latKM = Math.abs((latPoint - lat)*111.32);
-        double lonKM = Math.abs(lonPoint - lon) * 40075 * Math.cos(Math.abs(latPoint-lat))/360;
-        distance = (int) Math.pow(Math.pow(latKM, 2) + Math.pow(lonKM, 2), 0.5);
-
-        Log.e("sss", String.valueOf(distance));
+//        double lat = 50;
+//        double lon = 50;
+//        double latPoint = 100;
+//        double lonPoint = 100;
+//        int distance = 0;
+//
+//        double latKM = Math.abs((latPoint - lat)*111.32);
+//        double lonKM = Math.abs(lonPoint - lon) * 40075 * Math.cos(Math.abs(latPoint-lat))/360;
+//        distance = (int) Math.pow(Math.pow(latKM, 2) + Math.pow(lonKM, 2), 0.5);
+//
+//        Log.e("sss", String.valueOf(distance));
     }
 
     private void openActivitySession() {

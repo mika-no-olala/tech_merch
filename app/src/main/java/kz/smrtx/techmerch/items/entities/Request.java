@@ -43,6 +43,8 @@ public class Request {
     private String comment;
     @SerializedName("REQ_STATUS_ID")
     private int statusId;
+    @SerializedName("REQ_HISTORY_CODE")
+    private String historyCode;
     @SerializedName("REQ_USE_RESPONSIBLE_CODE")
     private int responsibleCode;
     @SerializedName("REQ_STATUS")
@@ -155,6 +157,14 @@ public class Request {
 
     public void setAddressSalePoint(String addressSalePoint) {
         this.addressSalePoint = addressSalePoint;
+    }
+
+    public String getHistoryCode() {
+        return historyCode;
+    }
+
+    public void setHistoryCode(String historyCode) {
+        this.historyCode = historyCode;
     }
 
     public String getWorkSubtype() {

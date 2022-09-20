@@ -11,7 +11,93 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingHorizontal="22sp" />
+        android:paddingHorizontal="22sp"/>
+
+    <LinearLayout
+        android:id="@+id/summary"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginTop="95sp"
+        android:layout_marginBottom="50sp"
+        android:paddingHorizontal="22sp"
+        android:animateLayoutChanges="true">
+        <androidx.cardview.widget.CardView
+            style="@style/card"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:targetApi="lollipop">
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="20sp"
+                android:paddingBottom="25sp"
+                android:paddingHorizontal="22sp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        style="@style/listText"
+                        android:id="@+id/created" />
+                    <TextView
+                        android:id="@+id/deadline"
+                        style="@style/listText"
+                        android:text="@string/text_example"/>
+                    <TextView
+                        android:id="@+id/type"
+                        style="@style/listText"/>
+                    <TextView
+                        android:id="@+id/equipmentType"
+                        style="@style/listText"/>
+                    <TextView
+                        android:id="@+id/equipmentSubtype"
+                        style="@style/listText"/>
+                    <TextView
+                        android:id="@+id/work"
+                        style="@style/listText"/>
+                    <TextView
+                        android:id="@+id/replace"
+                        style="@style/listText"/>
+                    <TextView
+                        android:id="@+id/additional"
+                        style="@style/listText"/>
+                    <TextView
+                        android:id="@+id/address"
+                        style="@style/listText"/>
+                    <TextView
+                        android:id="@+id/workSubtype"
+                        style="@style/listText"/>
+                    <TextView
+                        android:id="@+id/special"
+                        style="@style/listText"/>
+
+                    <View
+                        style="@style/line"
+                        android:layout_marginBottom="18sp"
+                        android:layout_marginTop="13sp"/>
+
+                    <TextView
+                        android:id="@+id/executor"
+                        style="@style/listText"/>
+                    <TextView
+                        android:id="@+id/comment"
+                        style="@style/listText"
+                        android:text="@string/long_text_example"/>
+                </LinearLayout>
+            </ScrollView>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/send"
+            style="@style/button"
+            android:text="@string/send"
+            android:layout_marginTop="15sp"
+
+            android:layout_marginHorizontal="4sp"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/back"
@@ -42,15 +128,16 @@
         android:paddingHorizontal="30sp"
         android:layout_marginBottom="172sp"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true" />
 
     <RelativeLayout
         android:id="@+id/cloud"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_request_process_perc"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true">
+        android:background="@drawable/background_request_process_perc"
+        android:animateLayoutChanges="true">
 
         <TextView
             android:id="@+id/percentage"

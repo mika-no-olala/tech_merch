@@ -77,9 +77,10 @@ public class RCWorkSubtypeFragment extends Fragment {
                 editText.setText(itemName);
                 if (!special) {
                     specVariant.setText("");
-                    ((CreateRequestActivity) requireActivity()).setWorkSubtype(itemName);
+                    boolean glo = itemName.contains("GLO");
+                    ((CreateRequestActivity) requireActivity()).setWorkSubtype(itemName, glo);
 
-                    if (itemName.contains("GLO")) {
+                    if (glo) {
                         specVariant.setEnabled(true);
                         specVariantText.setTextColor(getResources().getColor(R.color.main_deep_purple));
                     }

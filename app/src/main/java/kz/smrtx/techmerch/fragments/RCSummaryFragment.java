@@ -21,7 +21,7 @@ public class RCSummaryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_rc_ending, container, false);
+        View view = inflater.inflate(R.layout.fragment_rc_empty, container, false);
 
 
         return view;

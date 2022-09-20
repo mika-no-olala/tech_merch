@@ -79,4 +79,14 @@
         <item name="fontFamily">@font/bandera_pro</item>
         <item name="android:textSize">14sp</item>
     </style>
+
+<!--    request creation    -->
+    <style name="listText">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="fontFamily">@font/bandera_pro_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginBottom">5sp</item>
+        <item name="android:text">@string/text_example</item>
+    </style>
 </resources>

@@ -8,9 +8,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,6 +40,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -73,6 +80,7 @@ public class Ius extends Application {
     public static final String TOKEN = "TOKEN";
     public static final String LAST_SYNC = "LAST_SYNC";
     public static final String LAST_VISIT_NUMBER = "LAST_VISIT_NUMBER";
+    public static final String LAST_SESSION_CODE = "LAST_SESSION_CODE";
     public static final String LAST_SALE_POINT_ADDRESS = "LAST_SALE_POINT_ADDRESS";
 
     public static Ius getSingleton() {
@@ -237,14 +245,43 @@ public class Ius extends Application {
         return content;
     }
 
+    public static SpannableString makeTextBold(Context context, String text) {
+        SpannableString content = new SpannableString(text);
+        Typeface font = ResourcesCompat.getFont(context, R.font.bandera_pro_bold);
+
+        content.setSpan (new CustomTypefaceSpan("", font), 0, text.indexOf(":")+1, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        return content;
+    }
+
     public static String getDateByFormat(Date date, String pattern) {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(pattern, new Locale("ru"));
         return sdf.format(date);
     }
 
+    public static Date getDateFromString(String text, String pattern) {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+        try {
+            return formatter.parse(text);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static Date plusDaysToDate(Date date, int days) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        switch (dayOfWeek) {
+            case Calendar.WEDNESDAY:
+            case Calendar.FRIDAY:
+            case Calendar.THURSDAY:
+                days = days + 2;
+                break;
+            case Calendar.SUNDAY:
+                days = days + 1;
+        }
+
         cal.add(Calendar.DATE, days);
         return cal.getTime();
     }

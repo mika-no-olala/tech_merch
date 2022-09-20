@@ -72,6 +72,17 @@ public class Visit implements Serializable {
     @Expose
     @SerializedName("VIS_LEA_CODE")
     private int leaCode;
+    @Expose
+    @SerializedName("VIS_SES_CODE")
+    private String sessionCode;
+
+    public String getSessionCode() {
+        return sessionCode;
+    }
+
+    public void setSessionCode(String sessionCode) {
+        this.sessionCode = sessionCode;
+    }
 
     public int getCode() {
         return code;

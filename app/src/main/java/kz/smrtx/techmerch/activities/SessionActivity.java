@@ -1,11 +1,13 @@
 package kz.smrtx.techmerch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
@@ -55,9 +57,6 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (fragmentIndex<1)
-                    openDialog();
-                else
                     onBackPressed();
             }
         });
@@ -71,7 +70,9 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
 
     public void generateSession() {
         session = new Session();
-        session.setCode(Ius.generateUniqueCode(this, "s"));
+        String code = Ius.generateUniqueCode(this, "s");
+        Ius.writeSharedPreferences(this, Ius.LAST_SESSION_CODE, code);
+        session.setCode(code);
         session.setStarted(dateStarted);
         session.setUserId(Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_ID)));
         sessionViewModel.insert(session);
@@ -84,20 +85,23 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
     }
 
     public void openOutlets() {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.containerSession);
         OutletsFragment outletsFragment = OutletsFragment.getInstance("tmr");
-        getSupportFragmentManager().beginTransaction().add(R.id.containerSession, outletsFragment)
+        getSupportFragmentManager().beginTransaction().hide(f).add(R.id.containerSession, outletsFragment)
                 .addToBackStack(null).commit();
     }
 
     public void openOutletInformation(String outletName) {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.containerSession);
         OutletInformationFragment outletInformationFragment = OutletInformationFragment.getInstance("tmr", outletName);
-        getSupportFragmentManager().beginTransaction().add(R.id.containerSession, outletInformationFragment)
+        getSupportFragmentManager().beginTransaction().hide(f).add(R.id.containerSession, outletInformationFragment)
                 .addToBackStack(null).commit();
     }
 
     public void openOperationsOnOutlet(String outletCode) {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.containerSession);
         OperationsOnOutletFragment operationsOnOutletFragment = OperationsOnOutletFragment.getInstance("tmr", outletCode);
-        getSupportFragmentManager().beginTransaction().add(R.id.containerSession, operationsOnOutletFragment)
+        getSupportFragmentManager().beginTransaction().hide(f).add(R.id.containerSession, operationsOnOutletFragment)
                 .addToBackStack(null).commit();
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_UP));
     }
@@ -116,10 +120,18 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
 //        FragmentManager.BackStackEntry lastEntry = (FragmentManager.BackStackEntry) getFragmentManager().getBackStackEntryAt(index);
 //        FragmentManager.BackStackEntry secondLastEntry = (FragmentManager.BackStackEntry) getFragmentManager().getBackStackEntryAt(index - 1);
 //        Log.e(String.valueOf(getSupportFragmentManager().getBackStackEntryCount()), pageNames.get(getSupportFragmentManager().getBackStackEntryCount() - 1));
-            fragmentIndex = getSupportFragmentManager().getBackStackEntryCount();
-            getSupportFragmentManager().popBackStack(fragmentIndex - 1, 0);
-            pageName.setText(pageNames.get(fragmentIndex-1));
+        fragmentIndex = getSupportFragmentManager().getBackStackEntryCount();
+        if (fragmentIndex<1) {
+            openDialog();
+            openOperations();
+        }
+        else {
+//            Log.e("ssssize", pageNames.toString());
+//            Log.e("sssse", String.valueOf(fragmentIndex));
             pageNames.remove(fragmentIndex);
+            getSupportFragmentManager().popBackStack(fragmentIndex - 1, 0);
+            pageName.setText(pageNames.get(fragmentIndex - 1));
+        }
     }
 
     public void openDialog() {

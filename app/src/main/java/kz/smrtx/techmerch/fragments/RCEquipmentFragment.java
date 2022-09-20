@@ -91,8 +91,18 @@ public class RCEquipmentFragment extends Fragment {
                     ((CreateRequestActivity) requireActivity()).setEquipment(type.getText().toString());
                     filterSubtypeList(array.get(position).getId());
                 }
-                else
+                else {
                     ((CreateRequestActivity) requireActivity()).setEquipmentSubtype(subtype.getText().toString());
+                    if (Ius.isEmpty(type)) {
+                        for (Element e : types) {
+                            if (e.getId() == array.get(position).getSubtypeFrom()) {
+                                type.setText(e.getName());
+                                ((CreateRequestActivity) requireActivity()).setEquipment(e.getName());
+                                break;
+                            }
+                        }
+                    }
+                }
 
                 dialog.cancel();
             }

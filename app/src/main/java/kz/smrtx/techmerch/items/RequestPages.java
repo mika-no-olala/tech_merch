@@ -1,18 +1,18 @@
 package kz.smrtx.techmerch.items;
 
-import androidx.fragment.app.Fragment;
-
 public class RequestPages {
     private int id;
     private String name;
     private int percentage;
     private boolean active;
+    private boolean youCanGoNext;
 
-    public RequestPages(int id, String name, int percentage, boolean active) {
+    public RequestPages(int id, String name, int percentage, boolean active, boolean youCanGoNext) {
         this.id = id;
         this.name = name;
         this.percentage = percentage;
         this.active = active;
+        this.youCanGoNext  = youCanGoNext;
     }
 
     public int getId() {
@@ -45,5 +45,13 @@ public class RequestPages {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isYouCanGoNext() {
+        return youCanGoNext;
+    }
+
+    public void setYouCanGoNext(boolean youCanGoNext) {
+        this.youCanGoNext = youCanGoNext;
     }
 }

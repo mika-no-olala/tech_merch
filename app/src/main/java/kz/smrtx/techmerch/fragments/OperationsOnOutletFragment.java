@@ -107,6 +107,7 @@ public class OperationsOnOutletFragment extends Fragment {
                 visit.setLatitude(lat);
                 visit.setLongitude(lon);
                 visit.setAppVersion(BuildConfig.VERSION_NAME);
+                visit.setSessionCode(Ius.readSharedPreferences(this.getContext(), Ius.LAST_SESSION_CODE));
 
                 visitViewModel.insert(visit);
             }

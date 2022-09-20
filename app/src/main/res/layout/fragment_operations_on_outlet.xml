@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.OperationsFragment"
+    tools:context=".fragments.OperationsOnOutletFragment"
     android:background="@color/lavender_background"
     android:orientation="vertical">
 

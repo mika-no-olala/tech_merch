@@ -54,6 +54,24 @@ public class CreateRequestActivity extends AppCompatActivity {
 
     private TextView percentage;
     private Button next;
+    private View cloud;
+    private View containerForFragment;
+
+    private TextView createdSummary;
+    private TextView deadlineSummary;
+    private TextView typeSummary;
+    private TextView equipmentTypeSummary;
+    private TextView equipmentSubtypeSummary;
+    private TextView workSummary;
+    private TextView replaceSummary;
+    private TextView additionalSummary;
+    private TextView addressSummary;
+    private TextView workSubtypeSummary;
+    private TextView specialSummary;
+    private TextView executorSummary;
+    private TextView commentSummary;
+    private Button sendSummary;
+    private View summaryView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,25 +95,49 @@ public class CreateRequestActivity extends AppCompatActivity {
         View back = findViewById(R.id.back);
         next = findViewById(R.id.next);
         percentage = findViewById(R.id.percentage);
+        cloud = findViewById(R.id.cloud);
+        containerForFragment = findViewById(R.id.container);
+
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.container);
+        Log.e("sss", String.valueOf(f));
 
         setPercentage(pageIndex);
 
         initializeVisit();
+        initializeSummaryStuff();
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (pageIndex==6 && !responsibleChosen)
+                if (!pages.get(pageIndex).isYouCanGoNext()) {
+                    createToast(getResources().getString(R.string.fill_field), false);
+                    return;
+                }
+
+                if (pageIndex==6 && !responsibleChosen) {
                     createToast(getResources().getString(R.string.executor_error), false);
-                else
-                    route();
+                    return;
+                }
+
+                if(pageIndex==6) {
+                    makeSummaryFragment();
+                }
+
+                route();
+                Log.i("NextClicked", "now it is page #" + pageIndex);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.i("BackClicked", "it was page #" + pageIndex);
                 if (pageIndex==0)
                     finish();
+                if (containerForFragment.getVisibility() == View.GONE)
+                    hideSummary();
+
+                pages.get(pageIndex).setYouCanGoNext(false);
+                deleteDataAfterGettingBack();
 
                 // removing previous page from active pages
                 pages.get(pageIndex).setActive(false);
@@ -113,12 +155,13 @@ public class CreateRequestActivity extends AppCompatActivity {
         String deadline = Ius.getDateByFormat(Ius.plusDaysToDate(new Date(), 3), "dd.MM.yyyy HH:mm:ss");
         String code = Ius.generateUniqueCode(this, "r");
 
-        Log.e("sss initVisitReq", String.valueOf(visit.getSaleCode()));
         request.setCode(code);
         request.setSalePointCode(visit.getSaleCode());
         request.setCreated(created);
         request.setDeadline(deadline);
         request.setStatusId(1);
+        request.setHistoryCode(Ius.generateUniqueCode(this, "h"));
+        request.setType("Гарантированная");
         request.setVisitNumber(visit.getNumber());
     }
 
@@ -129,7 +172,7 @@ public class CreateRequestActivity extends AppCompatActivity {
                 next.setEnabled(false);
                 return;
             }
-            Log.e("sss initVisit", String.valueOf(v.getSaleCode()));
+            Log.i("InitVisit", "salePointCode - " + v.getSaleCode());
             createRequest(v);
         });
     }
@@ -151,6 +194,133 @@ public class CreateRequestActivity extends AppCompatActivity {
                 pages.get(page).getPercentage() + "%");
 
         pages.get(page).setActive(true);
+    }
+
+    private void initializeSummaryStuff() {
+        createdSummary = findViewById(R.id.created);
+        deadlineSummary = findViewById(R.id.deadline);
+        typeSummary = findViewById(R.id.type);
+        equipmentTypeSummary = findViewById(R.id.equipmentType);
+        equipmentSubtypeSummary = findViewById(R.id.equipmentSubtype);
+        workSummary = findViewById(R.id.work);
+        replaceSummary = findViewById(R.id.replace);
+        additionalSummary = findViewById(R.id.additional);
+        addressSummary = findViewById(R.id.address);
+        workSubtypeSummary = findViewById(R.id.workSubtype);
+        specialSummary = findViewById(R.id.special);
+        executorSummary = findViewById(R.id.executor);
+        commentSummary = findViewById(R.id.comment);
+        sendSummary = findViewById(R.id.send);
+        summaryView = findViewById(R.id.summary);
+
+        sendSummary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestViewModel.insert(request);
+                createToast(getResources().getString(R.string.request_success), true);
+                finish();
+            }
+        });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void makeSummaryFragment() {
+        cloud.animate().translationY(cloud.getHeight()).setDuration(300);
+        cloud.setVisibility(View.GONE);
+
+        next.animate().translationY(next.getHeight()).setDuration(300);
+        next.setVisibility(View.GONE);
+
+        containerForFragment.setVisibility(View.GONE);
+
+        summaryView.animate().translationY(0).setDuration(300);
+        summaryView.setVisibility(View.VISIBLE);
+
+        // make formatted
+        Date createdDate = Ius.getDateFromString(request.getCreated(), "dd.MM.yyyy");
+        Date deadlineDate = Ius.getDateFromString(request.getDeadline(), "dd.MM.yyyy");
+        createdSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.date_of_creation) + ": " +
+                Ius.getDateByFormat(createdDate, "dd.MM.yyyy, EEEE")));
+        deadlineSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.deadline) + ": " +
+                Ius.getDateByFormat(deadlineDate, "dd.MM.yyyy, EEEE")));
+        typeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.request_type) + ": " + request.getType()));
+
+        if (isNull(request.getEquipment())) {
+            equipmentTypeSummary.setVisibility(View.GONE);
+            equipmentSubtypeSummary.setVisibility(View.GONE);
+        }
+        else {
+            equipmentTypeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.equipment_type) + ": " + request.getEquipment()));
+            equipmentSubtypeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.equipment_subtype) + ": " + request.getEquipmentSubtype()));
+            equipmentTypeSummary.setVisibility(View.VISIBLE);
+            equipmentSubtypeSummary.setVisibility(View.VISIBLE);
+        }
+
+        workSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.work_type) + ": " + request.getWork()));
+
+        if (isNull(request.getAdditional()))
+            additionalSummary.setVisibility(View.GONE);
+        else {
+            Log.e("sss", request.getAdditional());
+            additionalSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.additional) + ": " + request.getAdditional()));
+            additionalSummary.setVisibility(View.VISIBLE);
+        }
+
+        if (isNull(request.getReplace()))
+            replaceSummary.setVisibility(View.GONE);
+        else {
+            replaceSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.replace) + ": " + request.getReplace()));
+            replaceSummary.setVisibility(View.VISIBLE);
+        }
+
+        if (isNull(request.getAddressSalePoint()))
+            addressSummary.setVisibility(View.GONE);
+        else {
+            addressSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.address) + ": " + request.getAddressSalePoint()));
+            addressSummary.setVisibility(View.VISIBLE);
+        }
+
+        if (isNull(request.getWorkSubtype()))
+            workSubtypeSummary.setVisibility(View.GONE);
+        else {
+            workSubtypeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.work_subtype) + ": " + request.getWorkSubtype()));
+            workSubtypeSummary.setVisibility(View.VISIBLE);
+        }
+
+        if (isNull(request.getWorkSpecial()))
+            specialSummary.setVisibility(View.GONE);
+        else {
+            specialSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.glo_equipment) + ": " + request.getWorkSpecial()));
+            specialSummary.setVisibility(View.VISIBLE);
+        }
+
+        executorSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.executor) + ": " + request.getResponsible()));
+
+        if (isNull(request.getComment()))
+            commentSummary.setVisibility(View.GONE);
+        else {
+            commentSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.comment) + ": " + request.getComment()));
+            commentSummary.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideSummary() {
+        summaryView.animate().translationY(summaryView.getHeight()).setDuration(300);
+        summaryView.setVisibility(View.GONE);
+
+        cloud.animate().translationY(0).setDuration(300);
+        cloud.setVisibility(View.VISIBLE);
+
+        containerForFragment.setVisibility(View.VISIBLE);
+
+        next.animate().translationY(0).setDuration(300);
+        next.setVisibility(View.VISIBLE);
+    }
+
+    private boolean isNull(String text) {
+        if (text==null)
+            return true;
+        return text.length() == 0;
     }
 
     private void route() {
@@ -192,6 +362,40 @@ public class CreateRequestActivity extends AppCompatActivity {
         }
     }
 
+    private void deleteDataAfterGettingBack() {
+        switch (pageIndex) {
+            case 0:
+                break;
+
+            case 1:
+                request.setEquipment(null);
+                request.setEquipmentSubtype(null);
+                break;
+
+            case 2:
+                request.setWork(null);
+                request.setAdditional(null);
+                break;
+
+            case 3:
+                request.setReplace(null);
+                break;
+
+            case 4:
+                request.setAddressSalePoint(null);
+                break;
+
+            case 5:
+                request.setWorkSubtype(null);
+                request.setWorkSpecial(null);
+                break;
+            case 6:
+                request.setResponsible(null);
+                request.setResponsibleCode(0);
+                break;
+        }
+    }
+
     private int routeBack() {
         int indexBackTo = 0;
         for (int i = pageIndex - 1; i > 0; i--) {
@@ -205,14 +409,14 @@ public class CreateRequestActivity extends AppCompatActivity {
     }
 
     private void createPagesRoute() {
-        pages.add(new RequestPages(0, "type", 0, true));
-        pages.add(new RequestPages(1, "equipment", 14, false));
-        pages.add(new RequestPages(2, "work", 29, false));
-        pages.add(new RequestPages(3, "replace", 43, false));
-        pages.add(new RequestPages(4, "address", 57, false));
-        pages.add(new RequestPages(5, "workSubtype", 72, false));
-        pages.add(new RequestPages(6, "photoComment", 86, false));
-        pages.add(new RequestPages(7, "result", 100, false));
+        pages.add(new RequestPages(0, "type", 0, true, true));
+        pages.add(new RequestPages(1, "equipment", 14, false, false));
+        pages.add(new RequestPages(2, "work", 29, false, false));
+        pages.add(new RequestPages(3, "replace", 43, false, false));
+        pages.add(new RequestPages(4, "address", 57, false, false));
+        pages.add(new RequestPages(5, "workSubtype", 72, false, false));
+        pages.add(new RequestPages(6, "photoComment", 86, false, false));
+        pages.add(new RequestPages(7, "result", 100, false, false));
     }
 
     private String workToString() {
@@ -239,6 +443,7 @@ public class CreateRequestActivity extends AppCompatActivity {
     }
 
     public void setEquipmentSubtype(String equipmentSubtype) {
+        pages.get(1).setYouCanGoNext(equipmentSubtype.length() > 0);
         request.setEquipmentSubtype(equipmentSubtype);
     }
 
@@ -249,6 +454,7 @@ public class CreateRequestActivity extends AppCompatActivity {
         else
             work.remove(REPAIR);
 
+        pages.get(2).setYouCanGoNext(work.size()>0); // let it be 2, not 0, don't want to test anything
         request.setWork(workToString());
     }
 
@@ -259,6 +465,7 @@ public class CreateRequestActivity extends AppCompatActivity {
         else
             work.remove(REPLACE);
 
+        pages.get(2).setYouCanGoNext(workToString().length()>2);
         request.setWork(workToString());
     }
 
@@ -268,7 +475,6 @@ public class CreateRequestActivity extends AppCompatActivity {
 
     public void setAdditional(String additional) {
         request.setAdditional(additional);
-        Log.e("sss", additional);
     }
 
     public void setFromOutToOut(boolean fromOutToOut) {
@@ -276,18 +482,23 @@ public class CreateRequestActivity extends AppCompatActivity {
     }
     
     public void setReplacePoint(String replaceChoice) {
+        pages.get(3).setYouCanGoNext(replaceChoice.length()>1);
         request.setReplace(replaceChoice);
     }
 
     public void setAddress(String address) {
+        pages.get(4).setYouCanGoNext(address.length()>1);
         request.setAddressSalePoint(address);
     }
 
-    public void setWorkSubtype(String workSubtype) {
+    public void setWorkSubtype(String workSubtype, boolean gloChosen) {
+        if (!gloChosen)
+            pages.get(5).setYouCanGoNext(workSubtype.length()>1);
         request.setWorkSubtype(workSubtype);
     }
 
     public void setSpecial(String special) {
+        pages.get(5).setYouCanGoNext(special.length()>1);
         request.setWorkSpecial(special);
     }
 
@@ -297,18 +508,20 @@ public class CreateRequestActivity extends AppCompatActivity {
             return;
         }
         String piece = code.substring(0, code.indexOf("-")-1);
-        Log.e("sss codePiece", piece);
+        String pieceName = code.substring(code.indexOf("-")+2);
+        Log.e("sss name", pieceName);
         try {
             int codeInt = Integer.parseInt(piece);
             request.setResponsibleCode(codeInt);
+            request.setResponsible(pieceName);
             responsibleChosen = true;
         } catch (Exception e) {
             createToast(getResources().getString(R.string.executor_error), false);
         }
     }
 
-
     public void setComment(String comment) {
+        pages.get(6).setYouCanGoNext(comment.length()>1);
         request.setComment(comment);
     }
 }

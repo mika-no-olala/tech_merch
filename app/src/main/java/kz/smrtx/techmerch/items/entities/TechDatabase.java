@@ -20,7 +20,7 @@ import kz.smrtx.techmerch.items.dao.VisitDao;
         User.class,
         Element.class,
         Request.class,
-        Session.class}, version = 9)
+        Session.class}, version = 11)
 public abstract class TechDatabase extends RoomDatabase {
 
     private static TechDatabase instance;
