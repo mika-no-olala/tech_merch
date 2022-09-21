@@ -121,7 +121,7 @@ public class OutletsFragment extends Fragment {
         cardAdapter.setOnItemClickListener(new CardAdapterOutlets.onItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                ((SessionActivity)requireActivity()).openOutletInformation(outlets.get(position).getCode());
+                ((SessionActivity)requireActivity()).openFragment(OutletInformationFragment.getInstance("tmr", outlets.get(position).getCode()));
             }
         });
     }

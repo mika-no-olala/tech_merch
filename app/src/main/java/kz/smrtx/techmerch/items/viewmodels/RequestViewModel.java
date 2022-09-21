@@ -5,8 +5,10 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import kz.smrtx.techmerch.items.entities.Request;
@@ -37,5 +39,8 @@ public class RequestViewModel extends AndroidViewModel {
     }
     public int selectNumberFromOutlets(String code) {
         return requestRepository.selectNumberFromOutlets(code);
+    }
+    public LiveData<List<Request>> getRequestsByAppointed(int userCode) {
+        return requestRepository.getRequestsByAppointed(userCode);
     }
 }

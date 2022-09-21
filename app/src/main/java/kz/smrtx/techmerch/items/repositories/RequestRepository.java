@@ -4,8 +4,10 @@ import android.app.Application;
 import android.database.Cursor;
 import android.os.AsyncTask;
 
+import androidx.lifecycle.LiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import kz.smrtx.techmerch.items.dao.RequestDao;
@@ -36,6 +38,7 @@ public class RequestRepository {
         new DeleteAllRequestsAsyncTask(requestDao).execute();
     }
     public int selectNumberFromOutlets(String code) { return requestDao.selectNumberFromOutlet(code); }
+    public LiveData<List<Request>> getRequestsByAppointed(int userCode) { return requestDao.getRequestsByAppointed(userCode); }
 
     private static class InsertRequestAsyncTask extends AsyncTask<Request, Void, Void> {
         private final RequestDao requestDao;

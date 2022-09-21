@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.RSStatusesFragment"
     android:orientation="vertical"
@@ -24,6 +24,7 @@
                 android:fontFamily="@font/bandera_pro"
                 android:text="@string/request_waiting_status"/>
             <ImageView
+                android:id="@+id/waitingArrowIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_arrow"
@@ -34,30 +35,77 @@
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/noRequests"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/no_requests"
-        android:textColor="@color/light_purple"
-        android:textAlignment="center"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:padding="50sp"/>
-
     <androidx.cardview.widget.CardView
+        android:id="@+id/waitingView"
         style="@style/card"
-        android:layout_height="wrap_content">
-
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/noRequestsW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_requests"
+            android:textColor="@color/light_purple"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:padding="50sp"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/waitingRequestsRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="16sp"
-            android:paddingHorizontal="13sp"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/card_outlet"/>
+            android:paddingHorizontal="13sp"/>
+    </androidx.cardview.widget.CardView>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/advancingRequests"
+        style="@style/card"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="10sp"
+            android:paddingHorizontal="12sp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bandera_pro"
+                android:text="@string/request_advancing_status"/>
+            <ImageView
+                android:id="@+id/advancingArrowIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow"
+                android:rotation="180"
+                android:layout_marginEnd="10sp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/advancingView"
+        style="@style/card"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/noRequestsA"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_requests"
+            android:textColor="@color/light_purple"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:padding="50sp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/advancingRequestsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16sp"
+            android:paddingHorizontal="13sp"/>
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>

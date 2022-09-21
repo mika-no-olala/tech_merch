@@ -1,6 +1,7 @@
 package kz.smrtx.techmerch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -22,14 +23,15 @@ import kz.smrtx.techmerch.fragments.OperationsFragment;
 import kz.smrtx.techmerch.fragments.OperationsOnOutletFragment;
 import kz.smrtx.techmerch.fragments.OutletInformationFragment;
 import kz.smrtx.techmerch.fragments.OutletsFragment;
+import kz.smrtx.techmerch.fragments.RSStatusesFragment;
 import kz.smrtx.techmerch.items.entities.Session;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 
 public class SessionActivity extends AppCompatActivity implements OperationsFragment.FragmentListener, OutletsFragment.FragmentListener,
-        OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener {
+        OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener, RSStatusesFragment.FragmentListener {
 
     private TextView pageName;
-    private ScrollView scrollView;
+    private NestedScrollView scrollView;
     private ArrayList<String> pageNames = new ArrayList<>();
     private String dateStarted;
     private SessionViewModel sessionViewModel;
@@ -84,24 +86,10 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
                 .addToBackStack(null).commit();
     }
 
-    public void openOutlets() {
-        Fragment f = getSupportFragmentManager().findFragmentById(R.id.containerSession);
-        OutletsFragment outletsFragment = OutletsFragment.getInstance("tmr");
-        getSupportFragmentManager().beginTransaction().hide(f).add(R.id.containerSession, outletsFragment)
-                .addToBackStack(null).commit();
-    }
+    public void openFragment(Fragment fragment) {
+        Fragment previous = getSupportFragmentManager().findFragmentById(R.id.containerSession);
 
-    public void openOutletInformation(String outletName) {
-        Fragment f = getSupportFragmentManager().findFragmentById(R.id.containerSession);
-        OutletInformationFragment outletInformationFragment = OutletInformationFragment.getInstance("tmr", outletName);
-        getSupportFragmentManager().beginTransaction().hide(f).add(R.id.containerSession, outletInformationFragment)
-                .addToBackStack(null).commit();
-    }
-
-    public void openOperationsOnOutlet(String outletCode) {
-        Fragment f = getSupportFragmentManager().findFragmentById(R.id.containerSession);
-        OperationsOnOutletFragment operationsOnOutletFragment = OperationsOnOutletFragment.getInstance("tmr", outletCode);
-        getSupportFragmentManager().beginTransaction().hide(f).add(R.id.containerSession, operationsOnOutletFragment)
+        getSupportFragmentManager().beginTransaction().hide(previous).add(R.id.containerSession, fragment)
                 .addToBackStack(null).commit();
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_UP));
     }
@@ -114,12 +102,6 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        getSupportFragmentManager().popBackStackImmediate("operations", 0);
-//        int index = getFragmentManager().getBackStackEntryCount();
-//        Log.e("backStackAmount", String.valueOf(getFragmentManager()));
-//        FragmentManager.BackStackEntry lastEntry = (FragmentManager.BackStackEntry) getFragmentManager().getBackStackEntryAt(index);
-//        FragmentManager.BackStackEntry secondLastEntry = (FragmentManager.BackStackEntry) getFragmentManager().getBackStackEntryAt(index - 1);
-//        Log.e(String.valueOf(getSupportFragmentManager().getBackStackEntryCount()), pageNames.get(getSupportFragmentManager().getBackStackEntryCount() - 1));
         fragmentIndex = getSupportFragmentManager().getBackStackEntryCount();
         if (fragmentIndex<1) {
             openDialog();

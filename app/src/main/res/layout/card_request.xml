@@ -15,7 +15,7 @@
             android:id="@+id/dateUpdated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ALA00015528"
+            android:text="@string/short_example"
             android:fontFamily="@font/bandera_pro_medium"
             android:textSize="12sp"
             android:layout_marginBottom="14sp"/>
@@ -26,57 +26,37 @@
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:text="@string/request_status"
+            android:textColor="@color/dark_gold"
             android:fontFamily="@font/bandera_pro"
             android:textSize="12sp"
             android:layout_marginBottom="4sp"/>
 
         <TextView
-            android:id="@+id/fromUesr"
+            android:id="@+id/fromUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            android:text="@string/address"
+            android:text="@string/from"
             android:fontFamily="@font/bandera_pro"
             android:textSize="12sp"
             android:layout_marginBottom="4sp"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/comment"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15sp">
-
-            <TextView
-                android:id="@+id/requests"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/request"
-                android:fontFamily="@font/bandera_pro"
-                android:textSize="12sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <ImageView
-                android:layout_width="10sp"
-                android:layout_height="11sp"
-                android:src="@drawable/ic_pin"
-                android:layout_marginRight="4sp"
-                app:layout_constraintRight_toLeftOf="@+id/distance"
-                app:layout_constraintTop_toTopOf="@id/distance"
-                app:layout_constraintBottom_toBottomOf="@+id/distance"/>
-
-            <TextView
-                android:id="@+id/distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:fontFamily="@font/bandera_pro"
-                android:textSize="12sp"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:maxLines="3"
+            android:text="@string/text_example"
+            android:fontFamily="@font/bandera_pro"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="14sp"/>
     </LinearLayout>
 
     <View
-        style="@style/line"/>
+        android:id="@+id/line"
+        style="@style/line"
+        android:layout_marginHorizontal="2sp"/>
 
 </LinearLayout>

@@ -54,6 +54,7 @@ public class OperationsFragment extends Fragment {
         TextView startWork = view.findViewById(R.id.startWorkCheckPoint);
         Button workIsOver = view.findViewById(R.id.workIsOver);
         CardView outlet = view.findViewById(R.id.outlet);
+        CardView statuses = view.findViewById(R.id.statuses);
         CardView tmrsRequests = view.findViewById(R.id.tmrsRequests);
         listener.getPageName(getResources().getString(R.string.operations));
         startWork.setText(getResources().getString(R.string.start_work_check_point) + ": " + dateStarted);
@@ -64,8 +65,13 @@ public class OperationsFragment extends Fragment {
         outlet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((SessionActivity)requireActivity()).openOutlets();
-//                Navigation.findNavController(view).navigate(R.id.action_operationsFragment_to_outletsFragment);
+                ((SessionActivity)requireActivity()).openFragment(OutletsFragment.getInstance("tmr"));
+            }
+        });
+        statuses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((SessionActivity)requireActivity()).openFragment(RSStatusesFragment.getInstance());
             }
         });
         workIsOver.setOnClickListener(new View.OnClickListener() {

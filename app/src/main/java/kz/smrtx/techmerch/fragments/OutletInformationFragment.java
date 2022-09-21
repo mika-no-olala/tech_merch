@@ -72,7 +72,7 @@ public class OutletInformationFragment extends Fragment {
         startWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((SessionActivity)requireActivity()).openOperationsOnOutlet(outletCode);
+                ((SessionActivity)requireActivity()).openFragment(OperationsOnOutletFragment.getInstance("tmr", outletCode));
             }
         });
 
