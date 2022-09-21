@@ -93,17 +93,16 @@ public class OperationsOnOutletFragment extends Fragment {
                 String number = Ius.generateUniqueCode(this.getContext(), "v");
                 Ius.writeSharedPreferences(getContext(), Ius.LAST_VISIT_NUMBER, number);
 
-                visit.setNumber(number);
-                visit.setUserCode(Integer.parseInt(Ius.readSharedPreferences(this.getContext(), Ius.USER_CODE)));
-                visit.setSaleCode(Integer.parseInt(outletCode));
-                visit.setSaleId(s.getId());
-                visit.setStart(started);
-                visit.setCreated(started);
-                visit.setDeviceId(Ius.readSharedPreferences(this.getContext(), Ius.DEVICE_ID));
-                visit.setLatitude(lat);
-                visit.setLongitude(lon);
-                visit.setAppVersion(BuildConfig.VERSION_NAME);
-                visit.setSessionCode(Ius.readSharedPreferences(this.getContext(), Ius.LAST_SESSION_CODE));
+                visit.setVIS_NUMBER(number);
+                visit.setVIS_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(this.getContext(), Ius.USER_CODE)));
+                visit.setVIS_SAL_CODE(Integer.parseInt(outletCode));
+                visit.setVIS_SAL_ID(s.getId());
+                visit.setVIS_START_DATE(started);
+                visit.setVIS_CREATED(started);
+                visit.setVIS_DEVICE_ID(Ius.readSharedPreferences(this.getContext(), Ius.DEVICE_ID));
+                visit.setVIS_LATITUDE(lat);
+                visit.setVIS_LONGITUDE(lon);
+                visit.setVIS_SES_CODE(Ius.readSharedPreferences(this.getContext(), Ius.LAST_SESSION_CODE));
 
                 visitViewModel.insert(visit);
             }
@@ -124,7 +123,7 @@ public class OperationsOnOutletFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        visit.setFinish(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
+        visit.setVIS_FINISH_DATE(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
         visitViewModel.update(visit);
     }
 }

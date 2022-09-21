@@ -3,231 +3,287 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "ST_REQUEST")
 public class Request {
-    @SerializedName("REQ_ID")
-    private String id;
     @PrimaryKey
     @NonNull
+    @Expose
     @SerializedName("REQ_CODE")
-    private String code;
+    private String REQ_CODE;
+    @Expose
     @SerializedName("REQ_SAL_CODE")
-    private int salePointCode;
+    private int REQ_SAL_CODE;
+    @Expose
     @SerializedName("REQ_SAL_NAME")
-    private String salePointName;
+    private String REQ_SAL_NAME;
+    @Expose
     @SerializedName("REQ_CREATED")
-    private String created;
+    private String REQ_CREATED;
+    @Expose
     @SerializedName("REQ_DEADLINE")
-    private String deadline;
+    private String REQ_DEADLINE;
+    @Expose
     @SerializedName("REQ_TYPE")
-    private String type;
+    private String REQ_TYPE;
+    @Expose
     @SerializedName("REQ_EQUIPMENT")
-    private String equipment;
+    private String REQ_EQUIPMENT;
+    @Expose
     @SerializedName("REQ_EQU_SUBTYPE")
-    private String equipmentSubtype;
+    private String REQ_EQU_SUBTYPE;
+    @Expose
     @SerializedName("REQ_WORK")
-    private String work;
+    private String REQ_WORK;
+    @Expose
     @SerializedName("REQ_REPLACE")
-    private String replace;
+    private String REQ_REPLACE;
+    @Expose
     @SerializedName("REQ_ADDITIONAL")
-    private String additional;
+    private String REQ_ADDITIONAL;
+    @Expose
     @SerializedName("REQ_ADDRESS_SALEPOINT")
-    private String addressSalePoint;
+    private String REQ_ADDRESS_SALEPOINT;
+    @Expose
     @SerializedName("REQ_WORK_SUBTYPE")
-    private String workSubtype;
+    private String REQ_WORK_SUBTYPE;
+    @Expose
     @SerializedName("REQ_WORK_SPECIAL")
-    private String workSpecial;
+    private String REQ_WORK_SPECIAL;
+    @Expose
     @SerializedName("REQ_COMMENT")
-    private String comment;
-    @SerializedName("REQ_STATUS_ID")
-    private int statusId;
+    private String REQ_COMMENT;
+    @Expose
+    @SerializedName("REQ_STA_ID")
+    private int REQ_STA_ID;
+    @Expose
     @SerializedName("REQ_HISTORY_CODE")
-    private String historyCode;
-    @SerializedName("REQ_USE_RESPONSIBLE_CODE")
-    private int responsibleCode;
+    private String REQ_HISTORY_CODE;
+    @Expose
+    @SerializedName("REQ_USE_CODE")
+    private int REQ_USE_CODE;
+    @Expose
+    @SerializedName("REQ_USE_CODE_APPOINTED")
+    private int REQ_USE_CODE_APPOINTED;
+    @Expose
     @SerializedName("REQ_STATUS")
-    private String status;
-    @SerializedName("REQ_USE_RESPONSIBLE")
-    private String responsible;
+    private String REQ_STATUS;
+    @Expose
+    @SerializedName("REQ_USE_NAME")
+    private String REQ_USE_NAME;
+    @Expose
+    @SerializedName("REQ_USE_NAME_APPOINTED")
+    private String REQ_USE_NAME_APPOINTED;
+    @Expose
+    @SerializedName("REQ_UPDATED")
+    private String REQ_UPDATED;
+    @Expose
     @SerializedName("REQ_VIS_NUMBER")
-    private String visitNumber;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    private String REQ_VIS_NUMBER;
+    @Expose
+    @SerializedName("NES_TO_UPDATE")
+    private String NES_TO_UPDATE;
 
     @NonNull
-    public String getCode() {
-        return code;
+    public String getREQ_CODE() {
+        return REQ_CODE;
     }
 
-    public void setCode(@NonNull String code) {
-        this.code = code;
+    public void setREQ_CODE(@NonNull String REQ_CODE) {
+        this.REQ_CODE = REQ_CODE;
     }
 
-    public int getSalePointCode() {
-        return salePointCode;
+    public int getREQ_SAL_CODE() {
+        return REQ_SAL_CODE;
     }
 
-    public void setSalePointCode(int salePointCode) {
-        this.salePointCode = salePointCode;
+    public void setREQ_SAL_CODE(int REQ_SAL_CODE) {
+        this.REQ_SAL_CODE = REQ_SAL_CODE;
     }
 
-    public String getSalePointName() {
-        return salePointName;
+    public String getREQ_SAL_NAME() {
+        return REQ_SAL_NAME;
     }
 
-    public void setSalePointName(String salePointName) {
-        this.salePointName = salePointName;
+    public void setREQ_SAL_NAME(String REQ_SAL_NAME) {
+        this.REQ_SAL_NAME = REQ_SAL_NAME;
     }
 
-    public String getCreated() {
-        return created;
+    public String getREQ_CREATED() {
+        return REQ_CREATED;
     }
 
-    public void setCreated(String created) {
-        this.created = created;
+    public void setREQ_CREATED(String REQ_CREATED) {
+        this.REQ_CREATED = REQ_CREATED;
     }
 
-    public String getDeadline() {
-        return deadline;
+    public String getREQ_DEADLINE() {
+        return REQ_DEADLINE;
     }
 
-    public void setDeadline(String deadline) {
-        this.deadline = deadline;
+    public void setREQ_DEADLINE(String REQ_DEADLINE) {
+        this.REQ_DEADLINE = REQ_DEADLINE;
     }
 
-    public String getType() {
-        return type;
+    public String getREQ_TYPE() {
+        return REQ_TYPE;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setREQ_TYPE(String REQ_TYPE) {
+        this.REQ_TYPE = REQ_TYPE;
     }
 
-    public String getEquipment() {
-        return equipment;
+    public String getREQ_EQUIPMENT() {
+        return REQ_EQUIPMENT;
     }
 
-    public void setEquipment(String equipment) {
-        this.equipment = equipment;
+    public void setREQ_EQUIPMENT(String REQ_EQUIPMENT) {
+        this.REQ_EQUIPMENT = REQ_EQUIPMENT;
     }
 
-    public String getEquipmentSubtype() {
-        return equipmentSubtype;
+    public String getREQ_EQU_SUBTYPE() {
+        return REQ_EQU_SUBTYPE;
     }
 
-    public void setEquipmentSubtype(String equipmentSubtype) {
-        this.equipmentSubtype = equipmentSubtype;
+    public void setREQ_EQU_SUBTYPE(String REQ_EQU_SUBTYPE) {
+        this.REQ_EQU_SUBTYPE = REQ_EQU_SUBTYPE;
     }
 
-    public String getWork() {
-        return work;
+    public String getREQ_WORK() {
+        return REQ_WORK;
     }
 
-    public void setWork(String work) {
-        this.work = work;
+    public void setREQ_WORK(String REQ_WORK) {
+        this.REQ_WORK = REQ_WORK;
     }
 
-    public String getReplace() {
-        return replace;
+    public String getREQ_REPLACE() {
+        return REQ_REPLACE;
     }
 
-    public void setReplace(String replace) {
-        this.replace = replace;
+    public void setREQ_REPLACE(String REQ_REPLACE) {
+        this.REQ_REPLACE = REQ_REPLACE;
     }
 
-    public String getAdditional() {
-        return additional;
+    public String getREQ_ADDITIONAL() {
+        return REQ_ADDITIONAL;
     }
 
-    public void setAdditional(String additional) {
-        this.additional = additional;
+    public void setREQ_ADDITIONAL(String REQ_ADDITIONAL) {
+        this.REQ_ADDITIONAL = REQ_ADDITIONAL;
     }
 
-    public String getAddressSalePoint() {
-        return addressSalePoint;
+    public String getREQ_ADDRESS_SALEPOINT() {
+        return REQ_ADDRESS_SALEPOINT;
     }
 
-    public void setAddressSalePoint(String addressSalePoint) {
-        this.addressSalePoint = addressSalePoint;
+    public void setREQ_ADDRESS_SALEPOINT(String REQ_ADDRESS_SALEPOINT) {
+        this.REQ_ADDRESS_SALEPOINT = REQ_ADDRESS_SALEPOINT;
     }
 
-    public String getHistoryCode() {
-        return historyCode;
+    public String getREQ_WORK_SUBTYPE() {
+        return REQ_WORK_SUBTYPE;
     }
 
-    public void setHistoryCode(String historyCode) {
-        this.historyCode = historyCode;
+    public void setREQ_WORK_SUBTYPE(String REQ_WORK_SUBTYPE) {
+        this.REQ_WORK_SUBTYPE = REQ_WORK_SUBTYPE;
     }
 
-    public String getWorkSubtype() {
-        return workSubtype;
+    public String getREQ_WORK_SPECIAL() {
+        return REQ_WORK_SPECIAL;
     }
 
-    public void setWorkSubtype(String workSubtype) {
-        this.workSubtype = workSubtype;
+    public void setREQ_WORK_SPECIAL(String REQ_WORK_SPECIAL) {
+        this.REQ_WORK_SPECIAL = REQ_WORK_SPECIAL;
     }
 
-    public String getWorkSpecial() {
-        return workSpecial;
+    public String getREQ_COMMENT() {
+        return REQ_COMMENT;
     }
 
-    public void setWorkSpecial(String workSpecial) {
-        this.workSpecial = workSpecial;
+    public void setREQ_COMMENT(String REQ_COMMENT) {
+        this.REQ_COMMENT = REQ_COMMENT;
     }
 
-    public String getComment() {
-        return comment;
+    public int getREQ_STA_ID() {
+        return REQ_STA_ID;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setREQ_STA_ID(int REQ_STA_ID) {
+        this.REQ_STA_ID = REQ_STA_ID;
     }
 
-    public int getStatusId() {
-        return statusId;
+    public String getREQ_HISTORY_CODE() {
+        return REQ_HISTORY_CODE;
     }
 
-    public void setStatusId(int statusId) {
-        this.statusId = statusId;
+    public void setREQ_HISTORY_CODE(String REQ_HISTORY_CODE) {
+        this.REQ_HISTORY_CODE = REQ_HISTORY_CODE;
     }
 
-    public int getResponsibleCode() {
-        return responsibleCode;
+    public int getREQ_USE_CODE() {
+        return REQ_USE_CODE;
     }
 
-    public void setResponsibleCode(int responsibleCode) {
-        this.responsibleCode = responsibleCode;
+    public void setREQ_USE_CODE(int REQ_USE_CODE) {
+        this.REQ_USE_CODE = REQ_USE_CODE;
     }
 
-    public String getStatus() {
-        return status;
+    public int getREQ_USE_CODE_APPOINTED() {
+        return REQ_USE_CODE_APPOINTED;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setREQ_USE_CODE_APPOINTED(int REQ_USE_CODE_APPOINTED) {
+        this.REQ_USE_CODE_APPOINTED = REQ_USE_CODE_APPOINTED;
     }
 
-    public String getResponsible() {
-        return responsible;
+    public String getREQ_STATUS() {
+        return REQ_STATUS;
     }
 
-    public void setResponsible(String responsible) {
-        this.responsible = responsible;
+    public void setREQ_STATUS(String REQ_STATUS) {
+        this.REQ_STATUS = REQ_STATUS;
     }
 
-    public String getVisitNumber() {
-        return visitNumber;
+    public String getREQ_USE_NAME() {
+        return REQ_USE_NAME;
     }
 
-    public void setVisitNumber(String visitNumber) {
-        this.visitNumber = visitNumber;
+    public void setREQ_USE_NAME(String REQ_USE_NAME) {
+        this.REQ_USE_NAME = REQ_USE_NAME;
+    }
+
+    public String getREQ_USE_NAME_APPOINTED() {
+        return REQ_USE_NAME_APPOINTED;
+    }
+
+    public void setREQ_USE_NAME_APPOINTED(String REQ_USE_NAME_APPOINTED) {
+        this.REQ_USE_NAME_APPOINTED = REQ_USE_NAME_APPOINTED;
+    }
+
+    public String getREQ_UPDATED() {
+        return REQ_UPDATED;
+    }
+
+    public void setREQ_UPDATED(String REQ_UPDATED) {
+        this.REQ_UPDATED = REQ_UPDATED;
+    }
+
+    public String getREQ_VIS_NUMBER() {
+        return REQ_VIS_NUMBER;
+    }
+
+    public void setREQ_VIS_NUMBER(String REQ_VIS_NUMBER) {
+        this.REQ_VIS_NUMBER = REQ_VIS_NUMBER;
+    }
+
+    public String getNES_TO_UPDATE() {
+        return NES_TO_UPDATE;
+    }
+
+    public void setNES_TO_UPDATE(String NES_TO_UPDATE) {
+        this.NES_TO_UPDATE = NES_TO_UPDATE;
     }
 }

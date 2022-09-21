@@ -23,6 +23,7 @@ import android.widget.TextView;
 import kz.smrtx.techmerch.BuildConfig;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
 
@@ -53,6 +54,8 @@ public class StartActivity extends AppCompatActivity {
 //        sessionViewModel.deleteAllSessions();
 //        VisitViewModel visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
 //        visitViewModel.deleteAllVisits();
+//        RequestViewModel requestViewModel = new ViewModelProvider(this).get(RequestViewModel.class);
+//        requestViewModel.deleteAllRequests();
 
         check();
 

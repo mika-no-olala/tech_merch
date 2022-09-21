@@ -14,13 +14,14 @@ import kz.smrtx.techmerch.items.dao.SessionDao;
 import kz.smrtx.techmerch.items.dao.UserDao;
 import kz.smrtx.techmerch.items.dao.VisitDao;
 
-@Database(entities = {Visit.class,
+@Database(entities = {
+        Visit.class,
         SalePoint.class,
         SalePointFts.class,
         User.class,
         Element.class,
         Request.class,
-        Session.class}, version = 11)
+        Session.class}, version = 15)
 public abstract class TechDatabase extends RoomDatabase {
 
     private static TechDatabase instance;

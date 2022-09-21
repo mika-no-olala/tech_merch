@@ -11,53 +11,54 @@ public class Session {
     @PrimaryKey
     @NonNull
     @SerializedName("SES_CODE")
-    private String code;
+    private String SES_CODE;
     @SerializedName("SES_STARTED")
-    private String started;
+    private String SES_STARTED;
     @SerializedName("SES_FINISHED")
-    private String finished;
+    private String SES_FINISHED;
     @SerializedName("SES_USE_ID")
-    private int userId;
+    private int SES_USE_ID;
     @SerializedName("SES_SYNC_ID")
-    private String syncId;
+    private String SES_SYNC_ID;
 
-    public String getCode() {
-        return code;
+    @NonNull
+    public String getSES_CODE() {
+        return SES_CODE;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setSES_CODE(@NonNull String SES_CODE) {
+        this.SES_CODE = SES_CODE;
     }
 
-    public String getStarted() {
-        return started;
+    public String getSES_STARTED() {
+        return SES_STARTED;
     }
 
-    public void setStarted(String started) {
-        this.started = started;
+    public void setSES_STARTED(String SES_STARTED) {
+        this.SES_STARTED = SES_STARTED;
     }
 
-    public String getFinished() {
-        return finished;
+    public String getSES_FINISHED() {
+        return SES_FINISHED;
     }
 
-    public void setFinished(String finished) {
-        this.finished = finished;
+    public void setSES_FINISHED(String SES_FINISHED) {
+        this.SES_FINISHED = SES_FINISHED;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getSES_USE_ID() {
+        return SES_USE_ID;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setSES_USE_ID(int SES_USE_ID) {
+        this.SES_USE_ID = SES_USE_ID;
     }
 
-    public String getSyncId() {
-        return syncId;
+    public String getSES_SYNC_ID() {
+        return SES_SYNC_ID;
     }
 
-    public void setSyncId(String syncId) {
-        this.syncId = syncId;
+    public void setSES_SYNC_ID(String SES_SYNC_ID) {
+        this.SES_SYNC_ID = SES_SYNC_ID;
     }
 }

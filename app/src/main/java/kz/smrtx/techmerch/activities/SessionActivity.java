@@ -72,9 +72,9 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         session = new Session();
         String code = Ius.generateUniqueCode(this, "s");
         Ius.writeSharedPreferences(this, Ius.LAST_SESSION_CODE, code);
-        session.setCode(code);
-        session.setStarted(dateStarted);
-        session.setUserId(Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_ID)));
+        session.setSES_CODE(code);
+        session.setSES_STARTED(dateStarted);
+        session.setSES_USE_ID(Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_ID)));
         sessionViewModel.insert(session);
     }
 
@@ -152,7 +152,7 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                session.setFinished(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
+                session.setSES_FINISHED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
                 sessionViewModel.update(session);
                 dialog.cancel();
                 finish();

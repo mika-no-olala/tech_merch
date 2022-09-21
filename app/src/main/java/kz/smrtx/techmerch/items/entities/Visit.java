@@ -15,224 +15,192 @@ import java.util.Date;
 public class Visit implements Serializable {
     @Expose
     @SerializedName("VIS_CODE")
-    private int code;
+    private int VIS_CODE;
     @Expose
     @SerializedName("VIS_PARENT_CODE")
-    private int parentCode;
+    private int VIS_PARENT_CODE;
     @PrimaryKey
     @NonNull
     @Expose
     @SerializedName("VIS_NUMBER")
-    private String number;
+    private String VIS_NUMBER;
     @Expose
     @SerializedName("VIS_PARENT_NUMBER")
-    private String parentNumber;
+    private String VIS_PARENT_NUMBER;
     @Expose
     @SerializedName("VIS_USE_CODE")
-    private int userCode;
+    private int VIS_USE_CODE;
     @Expose
     @SerializedName("VIS_VIT_CODE")
-    private int vitCode;
+    private int VIS_VIT_CODE;
     @Expose
     @SerializedName("VIS_VIT_ID")
-    private int vitId;
+    private int VIS_VIT_ID;
     @Expose
     @SerializedName("VIS_SAL_CODE")
-    private int saleCode;
+    private int VIS_SAL_CODE;
     @Expose
     @SerializedName("VIS_SAL_ID")
-    private String saleId;
+    private String VIS_SAL_ID;
     @Expose
     @SerializedName("VIS_CREATED")
-    private String created;
+    private String VIS_CREATED;
     @Expose
     @SerializedName("VIS_START_DATE")
-    private String start;
+    private String VIS_START_DATE;
     @Expose
     @SerializedName("VIS_FINISH_DATE")
-    private String finish;
+    private String VIS_FINISH_DATE;
     @Expose
     @SerializedName("VIS_LONGITUDE")
-    private String longitude;
+    private String VIS_LONGITUDE;
     @Expose
     @SerializedName("VIS_LATITUDE")
-    private String latitude;
+    private String VIS_LATITUDE;
     @Expose
     @SerializedName("VIS_SYN_ID")
-    private String syncId;
+    private String VIS_SYN_ID;
     @Expose
     @SerializedName("VIS_DEVICE_ID")
-    private String deviceId;
-    @Expose
-    @SerializedName("VIS_APP_VERSION")
-    private String appVersion;
-    @Expose
-    @SerializedName("VIS_FUS_CODE")
-    private int fusCode;
-    @Expose
-    @SerializedName("VIS_LEA_CODE")
-    private int leaCode;
+    private String VIS_DEVICE_ID;
     @Expose
     @SerializedName("VIS_SES_CODE")
-    private String sessionCode;
+    private String VIS_SES_CODE;
 
-    public String getSessionCode() {
-        return sessionCode;
+    public int getVIS_CODE() {
+        return VIS_CODE;
     }
 
-    public void setSessionCode(String sessionCode) {
-        this.sessionCode = sessionCode;
+    public void setVIS_CODE(int VIS_CODE) {
+        this.VIS_CODE = VIS_CODE;
     }
 
-    public int getCode() {
-        return code;
+    public int getVIS_PARENT_CODE() {
+        return VIS_PARENT_CODE;
     }
 
-    public int getParentCode() {
-        return parentCode;
+    public void setVIS_PARENT_CODE(int VIS_PARENT_CODE) {
+        this.VIS_PARENT_CODE = VIS_PARENT_CODE;
     }
 
-    public String getNumber() {
-        return number;
+    @NonNull
+    public String getVIS_NUMBER() {
+        return VIS_NUMBER;
     }
 
-    public String getParentNumber() {
-        return parentNumber;
+    public void setVIS_NUMBER(@NonNull String VIS_NUMBER) {
+        this.VIS_NUMBER = VIS_NUMBER;
     }
 
-    public int getUserCode() {
-        return userCode;
+    public String getVIS_PARENT_NUMBER() {
+        return VIS_PARENT_NUMBER;
     }
 
-    public int getVitCode() {
-        return vitCode;
+    public void setVIS_PARENT_NUMBER(String VIS_PARENT_NUMBER) {
+        this.VIS_PARENT_NUMBER = VIS_PARENT_NUMBER;
     }
 
-    public int getVitId() {
-        return vitId;
+    public int getVIS_USE_CODE() {
+        return VIS_USE_CODE;
     }
 
-    public int getSaleCode() {
-        return saleCode;
+    public void setVIS_USE_CODE(int VIS_USE_CODE) {
+        this.VIS_USE_CODE = VIS_USE_CODE;
     }
 
-    public String getSaleId() {
-        return saleId;
+    public int getVIS_VIT_CODE() {
+        return VIS_VIT_CODE;
     }
 
-    public String getCreated() {
-        return created;
+    public void setVIS_VIT_CODE(int VIS_VIT_CODE) {
+        this.VIS_VIT_CODE = VIS_VIT_CODE;
     }
 
-    public String getStart() {
-        return start;
+    public int getVIS_VIT_ID() {
+        return VIS_VIT_ID;
     }
 
-    public String getFinish() {
-        return finish;
+    public void setVIS_VIT_ID(int VIS_VIT_ID) {
+        this.VIS_VIT_ID = VIS_VIT_ID;
     }
 
-    public String getLongitude() {
-        return longitude;
+    public int getVIS_SAL_CODE() {
+        return VIS_SAL_CODE;
     }
 
-    public String getLatitude() {
-        return latitude;
+    public void setVIS_SAL_CODE(int VIS_SAL_CODE) {
+        this.VIS_SAL_CODE = VIS_SAL_CODE;
     }
 
-    public String getSyncId() {
-        return syncId;
+    public String getVIS_SAL_ID() {
+        return VIS_SAL_ID;
     }
 
-    public String getDeviceId() {
-        return deviceId;
+    public void setVIS_SAL_ID(String VIS_SAL_ID) {
+        this.VIS_SAL_ID = VIS_SAL_ID;
     }
 
-    public int getFusCode() {
-        return fusCode;
+    public String getVIS_CREATED() {
+        return VIS_CREATED;
     }
 
-    public int getLeaCode() {
-        return leaCode;
+    public void setVIS_CREATED(String VIS_CREATED) {
+        this.VIS_CREATED = VIS_CREATED;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public String getVIS_START_DATE() {
+        return VIS_START_DATE;
     }
 
-    public void setParentCode(int parentCode) {
-        this.parentCode = parentCode;
+    public void setVIS_START_DATE(String VIS_START_DATE) {
+        this.VIS_START_DATE = VIS_START_DATE;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public String getVIS_FINISH_DATE() {
+        return VIS_FINISH_DATE;
     }
 
-    public void setParentNumber(String parentNumber) {
-        this.parentNumber = parentNumber;
+    public void setVIS_FINISH_DATE(String VIS_FINISH_DATE) {
+        this.VIS_FINISH_DATE = VIS_FINISH_DATE;
     }
 
-    public void setUserCode(int userCode) {
-        this.userCode = userCode;
+    public String getVIS_LONGITUDE() {
+        return VIS_LONGITUDE;
     }
 
-    public void setVitCode(int vitCode) {
-        this.vitCode = vitCode;
+    public void setVIS_LONGITUDE(String VIS_LONGITUDE) {
+        this.VIS_LONGITUDE = VIS_LONGITUDE;
     }
 
-    public void setVitId(int vitId) {
-        this.vitId = vitId;
+    public String getVIS_LATITUDE() {
+        return VIS_LATITUDE;
     }
 
-    public void setSaleCode(int saleCode) {
-        this.saleCode = saleCode;
+    public void setVIS_LATITUDE(String VIS_LATITUDE) {
+        this.VIS_LATITUDE = VIS_LATITUDE;
     }
 
-    public void setSaleId(String saleId) {
-        this.saleId = saleId;
+    public String getVIS_SYN_ID() {
+        return VIS_SYN_ID;
     }
 
-    public void setCreated(String created) {
-        this.created = created;
+    public void setVIS_SYN_ID(String VIS_SYN_ID) {
+        this.VIS_SYN_ID = VIS_SYN_ID;
     }
 
-    public void setStart(String start) {
-        this.start = start;
+    public String getVIS_DEVICE_ID() {
+        return VIS_DEVICE_ID;
     }
 
-    public void setFinish(String finish) {
-        this.finish = finish;
+    public void setVIS_DEVICE_ID(String VIS_DEVICE_ID) {
+        this.VIS_DEVICE_ID = VIS_DEVICE_ID;
     }
 
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
+    public String getVIS_SES_CODE() {
+        return VIS_SES_CODE;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setSyncId(String syncId) {
-        this.syncId = syncId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public void setFusCode(int fusCode) {
-        this.fusCode = fusCode;
-    }
-
-    public void setLeaCode(int leaCode) {
-        this.leaCode = leaCode;
-    }
-
-    public String getAppVersion() {
-        return appVersion;
-    }
-
-    public void setAppVersion(String appVersion) {
-        this.appVersion = appVersion;
+    public void setVIS_SES_CODE(String VIS_SES_CODE) {
+        this.VIS_SES_CODE = VIS_SES_CODE;
     }
 }

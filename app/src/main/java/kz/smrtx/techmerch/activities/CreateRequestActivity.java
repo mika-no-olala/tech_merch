@@ -155,14 +155,18 @@ public class CreateRequestActivity extends AppCompatActivity {
         String deadline = Ius.getDateByFormat(Ius.plusDaysToDate(new Date(), 3), "dd.MM.yyyy HH:mm:ss");
         String code = Ius.generateUniqueCode(this, "r");
 
-        request.setCode(code);
-        request.setSalePointCode(visit.getSaleCode());
-        request.setCreated(created);
-        request.setDeadline(deadline);
-        request.setStatusId(1);
-        request.setHistoryCode(Ius.generateUniqueCode(this, "h"));
-        request.setType("Гарантированная");
-        request.setVisitNumber(visit.getNumber());
+        request.setREQ_CODE(code);
+        request.setREQ_SAL_CODE(visit.getVIS_SAL_CODE());
+        request.setREQ_CREATED(created);
+        request.setREQ_DEADLINE(deadline);
+        request.setREQ_UPDATED(created);
+        request.setREQ_STA_ID(1);
+        request.setREQ_HISTORY_CODE(Ius.generateUniqueCode(this, "h"));
+        request.setREQ_TYPE("Гарантированная");
+        request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE)));
+        request.setREQ_USE_NAME(Ius.readSharedPreferences(this, Ius.USER_NAME));
+        request.setREQ_VIS_NUMBER(visit.getVIS_NUMBER());
+        request.setNES_TO_UPDATE("yes");
     }
 
     private void initializeVisit() {
@@ -172,7 +176,7 @@ public class CreateRequestActivity extends AppCompatActivity {
                 next.setEnabled(false);
                 return;
             }
-            Log.i("InitVisit", "salePointCode - " + v.getSaleCode());
+            Log.i("InitVisit", "salePointCode - " + v.getVIS_SAL_CODE());
             createRequest(v);
         });
     }
@@ -237,69 +241,69 @@ public class CreateRequestActivity extends AppCompatActivity {
         summaryView.setVisibility(View.VISIBLE);
 
         // make formatted
-        Date createdDate = Ius.getDateFromString(request.getCreated(), "dd.MM.yyyy");
-        Date deadlineDate = Ius.getDateFromString(request.getDeadline(), "dd.MM.yyyy");
+        Date createdDate = Ius.getDateFromString(request.getREQ_CREATED(), "dd.MM.yyyy");
+        Date deadlineDate = Ius.getDateFromString(request.getREQ_DEADLINE(), "dd.MM.yyyy");
         createdSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.date_of_creation) + ": " +
                 Ius.getDateByFormat(createdDate, "dd.MM.yyyy, EEEE")));
         deadlineSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.deadline) + ": " +
                 Ius.getDateByFormat(deadlineDate, "dd.MM.yyyy, EEEE")));
-        typeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.request_type) + ": " + request.getType()));
+        typeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.request_type) + ": " + request.getREQ_TYPE()));
 
-        if (isNull(request.getEquipment())) {
+        if (isNull(request.getREQ_EQUIPMENT())) {
             equipmentTypeSummary.setVisibility(View.GONE);
             equipmentSubtypeSummary.setVisibility(View.GONE);
         }
         else {
-            equipmentTypeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.equipment_type) + ": " + request.getEquipment()));
-            equipmentSubtypeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.equipment_subtype) + ": " + request.getEquipmentSubtype()));
+            equipmentTypeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.equipment_type) + ": " + request.getREQ_EQUIPMENT()));
+            equipmentSubtypeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.equipment_subtype) + ": " + request.getREQ_EQU_SUBTYPE()));
             equipmentTypeSummary.setVisibility(View.VISIBLE);
             equipmentSubtypeSummary.setVisibility(View.VISIBLE);
         }
 
-        workSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.work_type) + ": " + request.getWork()));
+        workSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.work_type) + ": " + request.getREQ_WORK()));
 
-        if (isNull(request.getAdditional()))
+        if (isNull(request.getREQ_ADDITIONAL()))
             additionalSummary.setVisibility(View.GONE);
         else {
-            Log.e("sss", request.getAdditional());
-            additionalSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.additional) + ": " + request.getAdditional()));
+            Log.e("sss", request.getREQ_ADDITIONAL());
+            additionalSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.additional) + ": " + request.getREQ_ADDITIONAL()));
             additionalSummary.setVisibility(View.VISIBLE);
         }
 
-        if (isNull(request.getReplace()))
+        if (isNull(request.getREQ_REPLACE()))
             replaceSummary.setVisibility(View.GONE);
         else {
-            replaceSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.replace) + ": " + request.getReplace()));
+            replaceSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.replace) + ": " + request.getREQ_REPLACE()));
             replaceSummary.setVisibility(View.VISIBLE);
         }
 
-        if (isNull(request.getAddressSalePoint()))
+        if (isNull(request.getREQ_ADDRESS_SALEPOINT()))
             addressSummary.setVisibility(View.GONE);
         else {
-            addressSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.address) + ": " + request.getAddressSalePoint()));
+            addressSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.address) + ": " + request.getREQ_ADDRESS_SALEPOINT()));
             addressSummary.setVisibility(View.VISIBLE);
         }
 
-        if (isNull(request.getWorkSubtype()))
+        if (isNull(request.getREQ_WORK_SUBTYPE()))
             workSubtypeSummary.setVisibility(View.GONE);
         else {
-            workSubtypeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.work_subtype) + ": " + request.getWorkSubtype()));
+            workSubtypeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.work_subtype) + ": " + request.getREQ_WORK_SUBTYPE()));
             workSubtypeSummary.setVisibility(View.VISIBLE);
         }
 
-        if (isNull(request.getWorkSpecial()))
+        if (isNull(request.getREQ_WORK_SPECIAL()))
             specialSummary.setVisibility(View.GONE);
         else {
-            specialSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.glo_equipment) + ": " + request.getWorkSpecial()));
+            specialSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.glo_equipment) + ": " + request.getREQ_WORK_SPECIAL()));
             specialSummary.setVisibility(View.VISIBLE);
         }
 
-        executorSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.executor) + ": " + request.getResponsible()));
+        executorSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.executor) + ": " + request.getREQ_USE_NAME_APPOINTED()));
 
-        if (isNull(request.getComment()))
+        if (isNull(request.getREQ_COMMENT()))
             commentSummary.setVisibility(View.GONE);
         else {
-            commentSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.comment) + ": " + request.getComment()));
+            commentSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.comment) + ": " + request.getREQ_COMMENT()));
             commentSummary.setVisibility(View.VISIBLE);
         }
     }
@@ -368,30 +372,30 @@ public class CreateRequestActivity extends AppCompatActivity {
                 break;
 
             case 1:
-                request.setEquipment(null);
-                request.setEquipmentSubtype(null);
+                request.setREQ_EQUIPMENT(null);
+                request.setREQ_EQU_SUBTYPE(null);
                 break;
 
             case 2:
-                request.setWork(null);
-                request.setAdditional(null);
+                request.setREQ_WORK(null);
+                request.setREQ_ADDITIONAL(null);
                 break;
 
             case 3:
-                request.setReplace(null);
+                request.setREQ_REPLACE(null);
                 break;
 
             case 4:
-                request.setAddressSalePoint(null);
+                request.setREQ_ADDRESS_SALEPOINT(null);
                 break;
 
             case 5:
-                request.setWorkSubtype(null);
-                request.setWorkSpecial(null);
+                request.setREQ_WORK_SUBTYPE(null);
+                request.setREQ_WORK_SPECIAL(null);
                 break;
             case 6:
-                request.setResponsible(null);
-                request.setResponsibleCode(0);
+                request.setREQ_USE_NAME_APPOINTED(null);
+                request.setREQ_USE_CODE_APPOINTED(0);
                 break;
         }
     }
@@ -433,18 +437,18 @@ public class CreateRequestActivity extends AppCompatActivity {
     public void setType(boolean guarantee) {
         this.guarantee = guarantee;
         if (guarantee)
-            request.setType("Гарантийная");
+            request.setREQ_TYPE("Гарантийная");
         else
-            request.setType("Негарантийная");
+            request.setREQ_TYPE("Негарантийная");
     }
 
     public void setEquipment(String equipment) {
-        request.setEquipment(equipment);
+        request.setREQ_EQUIPMENT(equipment);
     }
 
     public void setEquipmentSubtype(String equipmentSubtype) {
         pages.get(1).setYouCanGoNext(equipmentSubtype.length() > 0);
-        request.setEquipmentSubtype(equipmentSubtype);
+        request.setREQ_EQU_SUBTYPE(equipmentSubtype);
     }
 
     public void setRepair(boolean repair) {
@@ -455,7 +459,7 @@ public class CreateRequestActivity extends AppCompatActivity {
             work.remove(REPAIR);
 
         pages.get(2).setYouCanGoNext(work.size()>0); // let it be 2, not 0, don't want to test anything
-        request.setWork(workToString());
+        request.setREQ_WORK(workToString());
     }
 
     public void setReplace(boolean replace) {
@@ -466,15 +470,15 @@ public class CreateRequestActivity extends AppCompatActivity {
             work.remove(REPLACE);
 
         pages.get(2).setYouCanGoNext(workToString().length()>2);
-        request.setWork(workToString());
+        request.setREQ_WORK(workToString());
     }
 
     public void clearAdditional() {
-        request.setAdditional(null);
+        request.setREQ_ADDITIONAL(null);
     }
 
     public void setAdditional(String additional) {
-        request.setAdditional(additional);
+        request.setREQ_ADDITIONAL(additional);
     }
 
     public void setFromOutToOut(boolean fromOutToOut) {
@@ -483,23 +487,23 @@ public class CreateRequestActivity extends AppCompatActivity {
     
     public void setReplacePoint(String replaceChoice) {
         pages.get(3).setYouCanGoNext(replaceChoice.length()>1);
-        request.setReplace(replaceChoice);
+        request.setREQ_REPLACE(replaceChoice);
     }
 
     public void setAddress(String address) {
         pages.get(4).setYouCanGoNext(address.length()>1);
-        request.setAddressSalePoint(address);
+        request.setREQ_ADDRESS_SALEPOINT(address);
     }
 
     public void setWorkSubtype(String workSubtype, boolean gloChosen) {
         if (!gloChosen)
             pages.get(5).setYouCanGoNext(workSubtype.length()>1);
-        request.setWorkSubtype(workSubtype);
+        request.setREQ_WORK_SUBTYPE(workSubtype);
     }
 
     public void setSpecial(String special) {
         pages.get(5).setYouCanGoNext(special.length()>1);
-        request.setWorkSpecial(special);
+        request.setREQ_WORK_SPECIAL(special);
     }
 
     public void setExecutor(String code, boolean correct) {
@@ -512,8 +516,8 @@ public class CreateRequestActivity extends AppCompatActivity {
         Log.e("sss name", pieceName);
         try {
             int codeInt = Integer.parseInt(piece);
-            request.setResponsibleCode(codeInt);
-            request.setResponsible(pieceName);
+            request.setREQ_USE_CODE_APPOINTED(codeInt);
+            request.setREQ_USE_NAME_APPOINTED(pieceName);
             responsibleChosen = true;
         } catch (Exception e) {
             createToast(getResources().getString(R.string.executor_error), false);
@@ -522,6 +526,6 @@ public class CreateRequestActivity extends AppCompatActivity {
 
     public void setComment(String comment) {
         pages.get(6).setYouCanGoNext(comment.length()>1);
-        request.setComment(comment);
+        request.setREQ_COMMENT(comment);
     }
 }

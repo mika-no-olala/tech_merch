@@ -29,7 +29,7 @@ public interface VisitDao {
     void deleteAllVisits();
 
     @Query("select * from ST_VISIT sp " +
-            "where sp.number like :number ")
+            "where sp.VIS_NUMBER like :number ")
     LiveData<Visit> getVisitByNumber(String number);
 
     @RawQuery

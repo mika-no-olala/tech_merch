@@ -192,6 +192,7 @@ public class SyncActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            updateSessionWithSyncCode();
             getAll();
             return null;
         }
@@ -225,7 +226,11 @@ public class SyncActivity extends AppCompatActivity {
                                     "VALUES(" +
                                     values.substring(0, values.length()-1)+
                                     ")";
-                            result.add(statement1);
+
+                            if (!statement1.contains(",N'no'")) {
+                                statement1 = statement1.replace("N'null'", "null");
+                                result.add(statement1);
+                            }
                         }
                     }
                     cursor.close();
@@ -351,10 +356,13 @@ public class SyncActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     try {
                         JSONObject jsonObj = new JSONObject(response.body().string());
+                        Log.e("sss", response.body().string());
+                        Log.e("sssJ", jsonObj.getString("data"));
                         MessageDigest md5Digest = MessageDigest.getInstance("MD5");
                         //Get the checksum
                         String checksum = getFileChecksum(md5Digest, file);
                         if (jsonObj.getString("data").equals(checksum)){
+                            Log.e("sss", checksum);
                             clearTablesAndVariables();
                         }
                     }catch (Exception e){
@@ -406,6 +414,19 @@ public class SyncActivity extends AppCompatActivity {
 
         //return complete hash
         return sb.toString().toUpperCase();
+    }
+
+    public void updateSessionWithSyncCode() {
+        SimpleSQLiteQuery query = new SimpleSQLiteQuery("UPDATE ST_SESSION SET SES_SYNC_ID='" + syncCode + "'", null);
+        Cursor cursor = sessionViewModel.getCursor(query);
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    Log.i("SessionUpdating", String.valueOf(cursor.getCount()));
+                }
+            }
+            cursor.close();
+        }
     }
 
     private void clearTablesAndVariables(){
