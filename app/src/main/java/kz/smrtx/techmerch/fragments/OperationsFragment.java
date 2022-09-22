@@ -1,14 +1,13 @@
 package kz.smrtx.techmerch.fragments;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +15,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.Date;
-
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.activities.StatusesActivity;
 import kz.smrtx.techmerch.activities.SessionActivity;
-import kz.smrtx.techmerch.items.entities.Session;
-import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 
 public class OperationsFragment extends Fragment {
 
@@ -71,7 +67,7 @@ public class OperationsFragment extends Fragment {
         statuses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((SessionActivity)requireActivity()).openFragment(RSStatusesFragment.getInstance());
+                ((SessionActivity)requireActivity()).openActivityStatuses();
             }
         });
         workIsOver.setOnClickListener(new View.OnClickListener() {

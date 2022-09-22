@@ -9,13 +9,12 @@ import androidx.room.Query;
 import java.util.List;
 
 import kz.smrtx.techmerch.items.entities.Element;
-import kz.smrtx.techmerch.items.entities.User;
 
 @Dao
 public interface ElementDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertElements(List<Element> user);
+    void insertElements(List<Element> elements);
 
     @Query("delete from ST_LIST_ELEMENTS")
     void deleteAllElements();

@@ -8,10 +8,8 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 import kz.smrtx.techmerch.items.dao.ElementDao;
-import kz.smrtx.techmerch.items.dao.UserDao;
 import kz.smrtx.techmerch.items.entities.Element;
 import kz.smrtx.techmerch.items.entities.TechDatabase;
-import kz.smrtx.techmerch.items.entities.User;
 
 public class ElementRepository {
     private ElementDao elementDao;

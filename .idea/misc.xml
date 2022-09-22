@@ -3,9 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Images/projects/tech_merch/app/src/main/res/layout/activity_session.xml" value="0.4041666666666667" />
+        <entry key="..\:/Images/projects/tech_merch/app/src/main/res/layout/activity_create_request.xml" value="0.391304347826087" />
+        <entry key="..\:/Images/projects/tech_merch/app/src/main/res/layout/activity_session.xml" value="0.2" />
+        <entry key="..\:/Images/projects/tech_merch/app/src/main/res/layout/activity_statuses.xml" value="0.19655521783181357" />
         <entry key="..\:/Images/projects/tech_merch/app/src/main/res/layout/card_request.xml" value="0.4" />
         <entry key="..\:/Images/projects/tech_merch/app/src/main/res/layout/fragment_operations.xml" value="0.37681159420289856" />
+        <entry key="..\:/Images/projects/tech_merch/app/src/main/res/layout/fragment_rc_empty.xml" value="0.391304347826087" />
         <entry key="..\:/Images/projects/tech_merch/app/src/main/res/layout/fragment_rs_statuses.xml" value="0.4041666666666667" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/drawable-v24/button_danger.xml" value="0.167" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/drawable-v24/button_dark.xml" value="0.179" />

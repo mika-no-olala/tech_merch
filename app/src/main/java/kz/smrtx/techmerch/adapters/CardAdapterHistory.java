@@ -10,20 +10,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.items.entities.History;
 import kz.smrtx.techmerch.items.entities.Request;
-import kz.smrtx.techmerch.items.entities.SalePointItem;
 
-public class CardAdapterRequests extends RecyclerView.Adapter<CardAdapterRequests.CardViewHolder> {
+public class CardAdapterHistory extends RecyclerView.Adapter<CardAdapterHistory.CardViewHolder> {
 
     private final Context context;
-    private List<Request> requests;
+    private List<History> histories;
     private onItemClickListener listener;
 
     public interface onItemClickListener {
@@ -40,6 +37,7 @@ public class CardAdapterRequests extends RecyclerView.Adapter<CardAdapterRequest
         public TextView fromUser;
         public TextView comment;
         public View line;
+        public View card;
 
         public CardViewHolder(@NonNull View itemView, onItemClickListener listener) {
             super(itemView);
@@ -48,6 +46,7 @@ public class CardAdapterRequests extends RecyclerView.Adapter<CardAdapterRequest
             fromUser = itemView.findViewById(R.id.fromUser);
             comment = itemView.findViewById(R.id.comment);
             line = itemView.findViewById(R.id.line);
+            card = itemView.findViewById(R.id.card);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -63,14 +62,14 @@ public class CardAdapterRequests extends RecyclerView.Adapter<CardAdapterRequest
         }
     }
 
-    public CardAdapterRequests(List<Request> requests, Context context) {
-        this.requests = requests;
+    public CardAdapterHistory(List<History> histories, Context context) {
+        this.histories = histories;
         this.context = context;
     }
 
-    public void setOutletList(List<Request> requests) {
-        if (requests!=null) {
-            this.requests = requests;
+    public void setHistoryList(List<History> histories) {
+        if (histories!=null) {
+            this.histories = histories;
             notifyDataSetChanged();
         }
     }
@@ -85,32 +84,33 @@ public class CardAdapterRequests extends RecyclerView.Adapter<CardAdapterRequest
     @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        Request request = requests.get(position);
+        History history = histories.get(position);
 
         String date = Ius.getDateByFormat(
                 Ius.getDateFromString(
-                        request.getREQ_UPDATED(), "yyyy-MM-dd'T'HH:mm:ss.sss"
+                        history.getCreated(), "yyyy-MM-dd'T'HH:mm:ss.sss"
                 ), "dd.MM.yyyy HH:mm");
 
         holder.dateUpdated.setText(date);
-        holder.status.setText(context.getResources().getString(R.string.request_status) + ": " + request.getREQ_STATUS());
-        holder.fromUser.setText(context.getResources().getString(R.string.from) + ": " + request.getREQ_USE_NAME());
+        holder.status.setText(context.getResources().getString(R.string.request_status) + ": " + history.getStatus());
+        holder.fromUser.setText(context.getResources().getString(R.string.completing) + ": " + history.getUserNameAppointed());
 
-        if (request.getREQ_COMMENT().length()==0)
+//        if (history.getComment().length()==0)
             holder.comment.setVisibility(View.GONE);
-        else
-            holder.comment.setText(request.getREQ_COMMENT());
+//        else
+//            holder.comment.setText("");
 
-        if (request.getREQ_STATUS().contains(context.getResources().getString(R.string.rejected)))
+        if (history.getStatus().contains(context.getResources().getString(R.string.rejected)))
             holder.status.setTextColor(context.getResources().getColor(R.color.pink_antique));
 
-        if (requests.size()-1 == position)
+        if (histories.size()-1 == position) {
             holder.line.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return requests.size();
+        return histories.size();
     }
 
 }

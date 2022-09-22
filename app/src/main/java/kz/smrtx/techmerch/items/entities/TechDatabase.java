@@ -8,6 +8,7 @@ import androidx.room.RoomDatabase;
 
 import kz.smrtx.techmerch.items.dao.ChoosePointsDao;
 import kz.smrtx.techmerch.items.dao.ElementDao;
+import kz.smrtx.techmerch.items.dao.HistoryDao;
 import kz.smrtx.techmerch.items.dao.RequestDao;
 import kz.smrtx.techmerch.items.dao.SalePointDao;
 import kz.smrtx.techmerch.items.dao.SessionDao;
@@ -21,7 +22,8 @@ import kz.smrtx.techmerch.items.dao.VisitDao;
         User.class,
         Element.class,
         Request.class,
-        Session.class}, version = 16)
+        Session.class,
+        History.class}, version = 20)
 public abstract class TechDatabase extends RoomDatabase {
 
     private static TechDatabase instance;
@@ -33,6 +35,7 @@ public abstract class TechDatabase extends RoomDatabase {
     public abstract ElementDao elementDao();
     public abstract RequestDao requestDao();
     public abstract SessionDao sessionDao();
+    public abstract HistoryDao historyDao();
 
     public static synchronized TechDatabase getInstance(Context context) {
         if (instance == null) {

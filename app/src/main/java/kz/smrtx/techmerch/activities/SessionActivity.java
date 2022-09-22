@@ -8,10 +8,8 @@ import androidx.lifecycle.ViewModelProvider;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,12 +21,11 @@ import kz.smrtx.techmerch.fragments.OperationsFragment;
 import kz.smrtx.techmerch.fragments.OperationsOnOutletFragment;
 import kz.smrtx.techmerch.fragments.OutletInformationFragment;
 import kz.smrtx.techmerch.fragments.OutletsFragment;
-import kz.smrtx.techmerch.fragments.RSStatusesFragment;
 import kz.smrtx.techmerch.items.entities.Session;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 
 public class SessionActivity extends AppCompatActivity implements OperationsFragment.FragmentListener, OutletsFragment.FragmentListener,
-        OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener, RSStatusesFragment.FragmentListener {
+        OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener{
 
     private TextView pageName;
     private NestedScrollView scrollView;
@@ -96,6 +93,11 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
 
     public void openActivityCreateRequest() {
         Intent intent = new Intent(this, CreateRequestActivity.class);
+        startActivity(intent);
+    }
+
+    public void openActivityStatuses() {
+        Intent intent = new Intent(this, StatusesActivity.class);
         startActivity(intent);
     }
 

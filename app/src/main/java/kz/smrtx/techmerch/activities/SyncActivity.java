@@ -41,6 +41,7 @@ import io.reactivex.schedulers.Schedulers;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.items.entities.Element;
+import kz.smrtx.techmerch.items.entities.History;
 import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.entities.SalePoint;
 import kz.smrtx.techmerch.items.entities.SalePointItem;
@@ -49,6 +50,7 @@ import kz.smrtx.techmerch.items.reqres.synctables.SyncTables;
 import kz.smrtx.techmerch.items.reqres.synctables.Table;
 import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 import kz.smrtx.techmerch.items.viewmodels.ElementViewModel;
+import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SalePointViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
@@ -83,6 +85,7 @@ public class SyncActivity extends AppCompatActivity {
     private SalePointViewModel salePointViewModel;
     private UserViewModel userViewModel;
     private ElementViewModel elementViewModel;
+    private HistoryViewModel historyViewModel;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -115,6 +118,7 @@ public class SyncActivity extends AppCompatActivity {
         salePointViewModel = new ViewModelProvider(this).get(SalePointViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         elementViewModel = new ViewModelProvider(this).get(ElementViewModel.class);
+        historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
 
         startSync();
 
@@ -329,6 +333,14 @@ public class SyncActivity extends AppCompatActivity {
                             salePointViewModel.insertSalePoints(salePoints);
                         }
                         break;
+                    case "ST_REQUEST_HISTORY":
+                        Type historyType = new TypeToken<List<History>>() {
+                        }.getType();
+                        List<History> histories = new Gson().fromJson(obj.getJSONArray("data").toString(), historyType);
+                        if (histories.size() > 0) {
+                            historyViewModel.insertHistory(histories);
+                        }
+                        break;
                 }
             }catch (Exception e){
                 Log.e("getSyncData", e.toString());
@@ -442,6 +454,7 @@ public class SyncActivity extends AppCompatActivity {
         userViewModel.deleteUsers();
         salePointViewModel.deleteSalePoints();
         elementViewModel.deleteElements();
+        historyViewModel.deleteHistory();
     }
 
     private void unlockButtons() {
