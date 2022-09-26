@@ -89,7 +89,7 @@ public class CardAdapterRequests extends RecyclerView.Adapter<CardAdapterRequest
 
         String date = Ius.getDateByFormat(
                 Ius.getDateFromString(
-                        request.getREQ_UPDATED(), "yyyy-MM-dd'T'HH:mm:ss.sss"
+                        request.getREQ_UPDATED(), "yyyy-MM-dd'T'HH:mm:ss"
                 ), "dd.MM.yyyy HH:mm");
 
         holder.dateUpdated.setText(date);

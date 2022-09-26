@@ -34,6 +34,9 @@ public class HistoryRepository {
         return historyDao.getRequestsNumberOnSalePointByUser(userCode, salePointCode);
     }
 
+    public int getTMRCodeByRequest(String requestCode) {
+        return historyDao.getTMRCodeByRequest(requestCode);
+    }
 
     private static class insertHistoryAsyncTask extends AsyncTask<List<History>, Void, Void>{
         private HistoryDao historyDao;

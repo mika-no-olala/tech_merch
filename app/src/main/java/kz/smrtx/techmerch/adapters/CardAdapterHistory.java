@@ -88,7 +88,7 @@ public class CardAdapterHistory extends RecyclerView.Adapter<CardAdapterHistory.
 
         String date = Ius.getDateByFormat(
                 Ius.getDateFromString(
-                        history.getCreated(), "yyyy-MM-dd'T'HH:mm:ss.sss"
+                        history.getCreated(), "yyyy-MM-dd'T'HH:mm:ss"
                 ), "dd.MM.yyyy HH:mm");
 
         holder.dateUpdated.setText(date);

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/lavender_background">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10sp"
+        android:elevation="3sp"
+        tools:targetApi="lollipop">
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="319sp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/image_example"/>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Лимон"
+        android:textSize="20sp"
+        android:fontFamily="@font/bandera_pro_bold"
+        android:paddingHorizontal="17sp"
+        android:paddingTop="21sp"
+        android:paddingBottom="16sp" />
+
+    <View
+        style="@style/line"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="17sp"
+        android:layout_marginVertical="18sp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/bold_text_info"
+                android:text="@string/code" />
+            <TextView
+                android:id="@+id/code"
+                style="@style/regular_text_info"
+                android:text=": ALA00015528" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/bold_text_info"
+                android:text="@string/requests_on_outlet"
+                android:layout_marginBottom="3sp"/>
+            <TextView
+                android:id="@+id/requests"
+                style="@style/regular_text_info"
+                android:text=": 0" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/bold_text_info"
+                android:text="@string/tasks_on_outlet" />
+            <TextView
+                android:id="@+id/tasks"
+                style="@style/regular_text_info"
+                android:text=": 2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/bold_text_info"
+                android:text="@string/entity" />
+            <TextView
+                android:id="@+id/entity"
+                style="@style/regular_text_info"
+                android:text=": Пример" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/bold_text_info"
+                android:text="@string/category" />
+            <TextView
+                android:id="@+id/category"
+                style="@style/regular_text_info"
+                android:text=": Пример" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/bold_text_info"
+                android:text="@string/sales_channel" />
+            <TextView
+                android:id="@+id/salesChannel"
+                style="@style/regular_text_info"
+                android:text=": Пример" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/bold_text_info"
+                android:text="@string/outlet_type" />
+            <TextView
+                android:id="@+id/type"
+                style="@style/regular_text_info"
+                android:text=": Пример" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/bold_text_info"
+                android:text="@string/phone" />
+            <TextView
+                android:id="@+id/phone"
+                style="@style/regular_text_info" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/bold_text_info"
+            android:text="@string/comment_to_outlet"
+            android:layout_marginBottom="3sp"/>
+        <TextView
+            android:id="@+id/comment"
+            style="@style/regular_text_info"
+            android:text="@string/text_example" />
+    </LinearLayout>
+
+    <View
+        style="@style/line"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18sp"
+        android:layout_marginBottom="39sp"
+        android:paddingHorizontal="17sp">
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_example"
+            android:textSize="16sp"
+            android:fontFamily="@font/bandera_pro_medium" />
+
+        <TextView
+            android:id="@+id/showRoute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/show_route"
+            android:textSize="16sp"
+            android:textColor="@color/dark_gold"
+            android:fontFamily="@font/bandera_pro"
+            android:layout_marginTop="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/address"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/showRoute"
+            app:layout_constraintBottom_toBottomOf="@+id/showRoute">
+
+            <ImageView
+                android:layout_width="14sp"
+                android:layout_height="15sp"
+                android:src="@drawable/ic_pin"/>
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/km_from_you"
+                android:textSize="14sp"
+                android:fontFamily="@font/bandera_pro"
+                android:layout_marginLeft="3sp"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/start"
+        style="@style/button"
+        android:text="@string/start_work_outlet"
+        android:layout_marginHorizontal="2sp"
+        android:layout_marginBottom="40sp"/>
+</LinearLayout>

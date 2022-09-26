@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.OITechnicFragment"
+    android:orientation="vertical"
+    android:background="@color/lavender_background">
+
+    <LinearLayout
+        android:id="@+id/summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_marginBottom="50sp">
+        <androidx.cardview.widget.CardView
+            style="@style/card"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:targetApi="lollipop"
+            android:layout_marginBottom="20sp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="20sp"
+                android:paddingBottom="25sp"
+                android:paddingHorizontal="22sp">
+
+                <TextView
+                    android:id="@+id/code"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/bandera_pro_bold"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="5sp"/>
+
+                <TextView
+                    style="@style/listText"
+                    android:id="@+id/created" />
+                <TextView
+                    android:id="@+id/deadline"
+                    style="@style/listText"/>
+                <TextView
+                    android:id="@+id/type"
+                    style="@style/listText"/>
+                <TextView
+                    android:id="@+id/equipmentType"
+                    style="@style/listText"/>
+                <TextView
+                    android:id="@+id/equipmentSubtype"
+                    style="@style/listText"/>
+                <TextView
+                    android:id="@+id/work"
+                    style="@style/listText"/>
+                <TextView
+                    android:id="@+id/replace"
+                    style="@style/listText"/>
+                <TextView
+                    android:id="@+id/additional"
+                    style="@style/listText"/>
+                <TextView
+                    android:id="@+id/address"
+                    style="@style/listText"/>
+                <TextView
+                    android:id="@+id/workSubtype"
+                    style="@style/listText"/>
+                <TextView
+                    android:id="@+id/special"
+                    style="@style/listText"/>
+
+                <View
+                    style="@style/line"
+                    android:layout_marginBottom="18sp"
+                    android:layout_marginTop="13sp"/>
+
+                <TextView
+                    android:id="@+id/comment"
+                    style="@style/listText"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <EditText
+            android:id="@+id/technicComment"
+            android:layout_width="match_parent"
+            android:layout_height="85sp"
+            android:maxHeight="200sp"
+            android:fontFamily="@font/bandera_pro"
+            android:textSize="16sp"
+            android:imeOptions="actionDone"
+            android:hint="@string/request_comment_technic"
+            android:textColorHint="@color/light_purple"
+            android:background="@drawable/background_edit_text"
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:elevation="3sp"
+            android:layout_marginBottom="18sp"
+            android:padding="10sp"
+            android:layout_marginHorizontal="4sp"
+            tools:targetApi="lollipop" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/negative"
+                style="@style/button"
+                android:layout_weight="1"
+                android:text="@string/reject"
+                android:background="@drawable/button_danger"
+                android:textColor="@color/white"
+                android:layout_marginHorizontal="4sp"
+                android:layout_marginEnd="10sp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/send"
+                style="@style/button"
+                android:layout_weight="1"
+                android:text="@string/accept_send"
+                android:layout_marginHorizontal="4sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

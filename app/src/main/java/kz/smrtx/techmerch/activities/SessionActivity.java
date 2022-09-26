@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener{
 
     private TextView pageName;
-    private NestedScrollView scrollView;
+    private ScrollView scrollView;
     private ArrayList<String> pageNames = new ArrayList<>();
     private String dateStarted;
     private SessionViewModel sessionViewModel;
@@ -83,12 +84,13 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
                 .addToBackStack(null).commit();
     }
 
-    public void openFragment(Fragment fragment) {
+    public void openFragment(Fragment fragment, boolean scrollUp) {
         Fragment previous = getSupportFragmentManager().findFragmentById(R.id.containerSession);
 
         getSupportFragmentManager().beginTransaction().hide(previous).add(R.id.containerSession, fragment)
                 .addToBackStack(null).commit();
-        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_UP));
+        if (scrollUp)
+            scrollView.post(() -> scrollView.fullScroll(View.FOCUS_UP));
     }
 
     public void openActivityCreateRequest() {
@@ -98,6 +100,11 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
 
     public void openActivityStatuses() {
         Intent intent = new Intent(this, StatusesActivity.class);
+        startActivity(intent);
+    }
+
+    public void openActivitySync() {
+        Intent intent = new Intent(this, SyncActivity.class);
         startActivity(intent);
     }
 
@@ -140,6 +147,7 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
                 sessionViewModel.update(session);
                 dialog.cancel();
                 finish();
+                openActivitySync();
             }
         });
     }

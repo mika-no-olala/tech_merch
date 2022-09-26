@@ -40,4 +40,8 @@ public class HistoryViewModel extends AndroidViewModel {
     public int getHistoryListWhichAreRelatedTo(int userCode, int salePointCode) {
         return historyRepository.getRequestsNumberOnSalePointByUser(userCode, salePointCode);
     }
+
+    public int getTMRCodeByRequest(String requestCode) {
+        return historyRepository.getTMRCodeByRequest(requestCode);
+    }
 }

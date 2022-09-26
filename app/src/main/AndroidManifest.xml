@@ -15,14 +15,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TechMerch">
         <activity
+            android:name=".activities.OutletInformationActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.StatusesActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".activities.CreateRequestActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".activities.SessionActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".activities.SettingsActivity"
             android:exported="false" />

@@ -46,4 +46,7 @@ public interface HistoryDao {
             "      GROUP BY srhd.requestCode " +
             "    )")
     int getRequestsNumberOnSalePointByUser(int userCode, int salePointCode);
+
+    @Query("SELECT userCode FROM ST_REQUEST_HISTORY WHERE requestCode=:requestCode AND userRole=5")
+    int getTMRCodeByRequest(String requestCode);
 }

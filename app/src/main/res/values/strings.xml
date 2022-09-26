@@ -20,6 +20,10 @@
     <string name="request_success">Заявка создана</string>
     <string name="request_waiting_status">Ожидающие моего ответа</string>
     <string name="request_advancing_status">Продвигающиеся заявки</string>
+    <string name="request_acception">Подтверждение заявки</string>
+    <string name="request_completion">Выполнение заявки</string>
+    <string name="request_hand_over">Передать заявку</string>
+    <string name="request_saved">Заявка сохранена</string>
     <string name="request_status">Статус заявки</string>
     <string name="requests_statuses">Статусы заявок</string>
     <string name="no_requests">Нет заявок</string>
@@ -40,6 +44,7 @@
     <string name="reject">Отклонить</string>
     <string name="approve">Одобрить</string>
     <string name="perform">Выполнить</string>
+    <string name="get_started">Приступить к выполнению</string>
     <string name="short_example">Короткий текст</string>
     <string name="start_work">Начать работу</string>
     <string name="start_work_description">Выполнение ежедневных операций с торговыми точками</string>
@@ -91,7 +96,8 @@
     <string name="search_outlet_hint">Код, название, адрес, владелец</string>
     <string name="search">Поиск</string>
     <string name="address">Адрес</string>
-    <string name="request">Заявок</string>
+    <string name="request_quantity">Заявок</string>
+    <string name="request">Заявка</string>
     <string name="code">Код</string>
     <string name="requests_on_outlet">Заявок на точке</string>
     <string name="tasks_on_outlet">Задач на точке</string>
@@ -130,6 +136,7 @@
     <string name="choose_from">Выбрать из перечисленных</string>
     <string name="input_executor_name">Впишите имя исполнителя</string>
     <string name="request_comment">Комментарий заявки</string>
+    <string name="request_comment_technic">Комментарий к проделанной работе</string>
     <string name="choose_work_types">Выберите типы работ</string>
     <string name="work_type">Тип работы</string>
     <string name="repair">Ремонт</string>
@@ -153,4 +160,5 @@
     <string name="comment">Комментарий</string>
     <string name="add_photos">Добавить фотографии</string>
     <string name="send">Отправить</string>
+    <string name="accept_send">Принять и отправить</string>
 </resources>

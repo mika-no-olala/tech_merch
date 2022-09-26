@@ -27,4 +27,7 @@ public class UserViewModel extends AndroidViewModel {
     public LiveData<List<User>> getUserList(int roleCode) {
         return userRepository.getUserList(roleCode);
     }
+    public int getUserRole(int userCode) {
+        return userRepository.getUserRole(userCode);
+    }
 }

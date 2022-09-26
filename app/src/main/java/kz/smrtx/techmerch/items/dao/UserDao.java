@@ -22,4 +22,7 @@ public interface UserDao {
 
     @Query("select * from ST_USER where roleCode=:roleCode")
     LiveData<List<User>> getUserList(int roleCode);
+
+    @Query("select roleCode from ST_USER where code=:userCode")
+    int getUserRole(int userCode);
 }

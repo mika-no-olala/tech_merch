@@ -15,7 +15,7 @@
             android:id="@+id/code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ALA00015528"
+            android:text="@string/short_example"
             android:fontFamily="@font/bandera_pro_medium"
             android:textSize="12sp"
             android:layout_marginBottom="4sp"/>
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            android:text="Евразиан Фудс Корпорэйшн"
+            android:text="@string/text_example"
             android:fontFamily="@font/bandera_pro_medium"
             android:textSize="12sp"
             android:layout_marginBottom="4sp"/>

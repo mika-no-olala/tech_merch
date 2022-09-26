@@ -27,6 +27,7 @@ public class UserRepository {
     public LiveData<List<User>> getUserList(int roleCode) {
         return userDao.getUserList(roleCode);
     }
+    public int getUserRole(int userCode) { return userDao.getUserRole(userCode); }
 
     private static class insertUserAsyncTask extends AsyncTask<List<User>, Void, Void>{
         private UserDao userDao;

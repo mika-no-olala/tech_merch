@@ -3,6 +3,7 @@ package kz.smrtx.techmerch.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +14,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import kz.smrtx.techmerch.utils.GPSTracker;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.activities.OutletInformationActivity;
 import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
+import kz.smrtx.techmerch.utils.GPSTracker;
 
-public class OutletInformationFragment extends Fragment {
+public class OISalePointFragment extends Fragment {
 
     private String outletCode = "";
     private TextView name;
@@ -37,17 +39,18 @@ public class OutletInformationFragment extends Fragment {
     private TextView distance;
     private TextView showRoute;
     private ChoosePointsViewModel choosePointsViewModel;
-    private VisitViewModel visitViewModel;
+
     private FragmentListener listener;
     public interface FragmentListener {
         void getPageName(String name);
     }
 
-    public static OutletInformationFragment getInstance(String role, String outletCode) {
-        OutletInformationFragment fragment = new OutletInformationFragment();
+    public static OISalePointFragment getInstance(String outletCode, String scenario, String requestCode) {
+        OISalePointFragment fragment = new OISalePointFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("USER_ROLE", role);
         bundle.putString("OUT_CODE", outletCode);
+        bundle.putString("REQ_CODE", requestCode);
+        bundle.putString("SCENARIO", scenario);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -55,24 +58,27 @@ public class OutletInformationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_outlet_information, container, false);
+        View view = inflater.inflate(R.layout.fragment_oi_salepoint, container, false);
 
         listener.getPageName(getResources().getString(R.string.outlet_information));
         initializeTextViews(view);
         showRoute.setText(Ius.makeTextUnderlined(showRoute.getText().toString()));
         Button startWork = view.findViewById(R.id.start);
         choosePointsViewModel = new ViewModelProvider(this).get(ChoosePointsViewModel.class);
-        visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
 
         if (getArguments()!=null) {
+            Log.i("OpenedScenario", getArguments().getString("SCENARIO"));
             outletCode = getArguments().getString("OUT_CODE");
             getOutlet(outletCode);
+            if (!getArguments().getString("SCENARIO").equals("technic"))
+                startWork.setVisibility(View.GONE);
         }
 
         startWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((SessionActivity)requireActivity()).openFragment(OperationsOnOutletFragment.getInstance("tmr", outletCode), true);
+                ((OutletInformationActivity)requireActivity()).createVisit();
+                ((OutletInformationActivity)requireActivity()).openFragment(OITechnicFragment.getInstance(getArguments().getString("REQ_CODE")), true);
             }
         });
 
@@ -142,7 +148,7 @@ public class OutletInformationFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            listener = (OutletInformationFragment.FragmentListener) context;
+            listener = (OISalePointFragment.FragmentListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement onFragmentListener");

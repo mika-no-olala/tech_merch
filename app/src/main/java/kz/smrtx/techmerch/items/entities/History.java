@@ -25,10 +25,16 @@ public class History {
     private int userCode;
     @SerializedName("HIS_USE_NAME")
     private String userName;
+    @SerializedName("HIS_USR_CODE")
+    private int userRole;
     @SerializedName("HIS_USE_CODE_APPOINTED")
     private int userCodeAppointed;
     @SerializedName("HIS_USE_NAME_APPOINTED")
     private String userNameAppointed;
+    @SerializedName("HIS_USR_CODE_APPOINTED")
+    private int userRoleAppointed;
+    @SerializedName("HIS_REQ_COMMENT")
+    private String comment;
     @SerializedName("HIS_REQ_CREATED")
     private String created;
 
@@ -110,6 +116,30 @@ public class History {
 
     public void setUserNameAppointed(String userNameAppointed) {
         this.userNameAppointed = userNameAppointed;
+    }
+
+    public int getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(int userRole) {
+        this.userRole = userRole;
+    }
+
+    public int getUserRoleAppointed() {
+        return userRoleAppointed;
+    }
+
+    public void setUserRoleAppointed(int userRoleAppointed) {
+        this.userRoleAppointed = userRoleAppointed;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getCreated() {

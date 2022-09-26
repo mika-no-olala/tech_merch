@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                     Ius.writeSharedPreferences(context, Ius.DEVICE_ID, Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
                     Ius.writeSharedPreferences(context, Ius.DATE_LOGIN, Ius.getDateByFormat(new Date(), "dd.MM.yyyy"));
 
-                    openActivityStart();
+                    openActivityStart(true);
                 }
 
                 @Override
@@ -111,8 +111,9 @@ public class MainActivity extends AppCompatActivity {
                 getResources().getString(R.string.forgot_password_description), false).show();
     }
 
-    private void openActivityStart() {
+    private void openActivityStart(boolean needSync) {
         Intent intent = new Intent(context, StartActivity.class);
+        intent.putExtra("SYNC", needSync);
         startActivity(intent);
     }
 
@@ -128,6 +129,6 @@ public class MainActivity extends AppCompatActivity {
 
         String currentDate = Ius.getDateByFormat(new Date(), "dd.MM.yyyy");
         if (currentDate.equals(Ius.readSharedPreferences(context, Ius.DATE_LOGIN)))
-            openActivityStart();
+            openActivityStart(false);
     }
 }

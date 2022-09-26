@@ -160,7 +160,7 @@ public class CreateRequestActivity extends AppCompatActivity {
         request.setREQ_CREATED(created);
         request.setREQ_DEADLINE(deadline);
         request.setREQ_UPDATED(created);
-        request.setREQ_STA_ID(1);
+        request.setREQ_STA_ID(2);
         request.setREQ_HISTORY_CODE(Ius.generateUniqueCode(this, "h"));
         request.setREQ_TYPE("Гарантированная");
         request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE)));

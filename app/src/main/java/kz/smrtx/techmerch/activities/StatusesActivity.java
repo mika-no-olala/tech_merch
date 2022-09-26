@@ -1,11 +1,18 @@
 package kz.smrtx.techmerch.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,8 +21,10 @@ import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import kz.smrtx.techmerch.Ius;
@@ -27,12 +36,15 @@ import kz.smrtx.techmerch.items.entities.Request;
 
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
+import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 
 public class StatusesActivity extends AppCompatActivity {
 
     private boolean listIsOpen = true;
     private boolean myRequestOpened = false;
     private TextView pageName;
+    private final Context context = this;
+    private final Activity activity = this;
 
     // <----  list ---->
 
@@ -43,8 +55,8 @@ public class StatusesActivity extends AppCompatActivity {
     private TextView noRequestsA;
     private CardView waitingView;
     private CardView advancingView;
-    private final List<Request> waitingList = new ArrayList<>();
-    private final List<History> advancingList = new ArrayList<>();
+    private List<Request> waitingList;
+    private List<History> advancingList;
     private boolean waitingListIsOpen = false;
     private boolean advancingListIsOpen = false;
     private TextView waitingTextView;
@@ -75,6 +87,8 @@ public class StatusesActivity extends AppCompatActivity {
     private Request request;
     private Button negative;
     private Button positive;
+    private View twoButtons;
+    private boolean positiveButtonPressed = false;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -110,6 +124,7 @@ public class StatusesActivity extends AppCompatActivity {
         bottomBarText.setText(Ius.readSharedPreferences(this, Ius.BOTTOM_BAR_TEXT));
 
         initializeSummaryStuff();
+        technicStuff();
 
         waitingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,14 +161,16 @@ public class StatusesActivity extends AppCompatActivity {
         negative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // openDialog r u sure?
+                positiveButtonPressed = false;
+                openDialogCommentAcception();
             }
         });
 
         positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                positiveButtonPressed = true;
+                openDialogCommentAcception();
             }
         });
 
@@ -187,16 +204,37 @@ public class StatusesActivity extends AppCompatActivity {
         positive = findViewById(R.id.positive);
     }
 
+    private void technicStuff() {
+        if (!Ius.readSharedPreferences(context, Ius.USER_ROLE_CODE).equals("4"))
+            return;
+
+        twoButtons = findViewById(R.id.twoButtons);
+        Button technicButton = findViewById(R.id.technicButton);
+        twoButtons.setVisibility(View.GONE);
+        technicButton.setVisibility(View.VISIBLE);
+
+        technicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, OutletInformationActivity.class);
+                intent.putExtra("salePointCode", request.getREQ_SAL_CODE());
+                intent.putExtra("scenario", "technic");
+                intent.putExtra("requestCode", request.getREQ_CODE());
+                startActivity(intent);
+            }
+        });
+    }
+
     @SuppressLint("SetTextI18n")
     private void getWaitingRequests() {
         int userCode = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE));
         Log.i("gettingRequests from", String.valueOf(userCode));
         requestViewModel.getRequestsByAppointed(userCode)
-                .observe(this, w -> {
-                    waitingList.addAll(w);
-                    setAdapter(waitingRecycler, noRequestsW, true);
-                    waitingTextView.setText(getResources().getString(R.string.request_waiting_status) + " (" + waitingList.size() + ")");
-                });
+            .observe(this, w -> {
+                waitingList = w;
+                setAdapter(waitingRecycler, noRequestsW, true);
+                waitingTextView.setText(getResources().getString(R.string.request_waiting_status) + " (" + waitingList.size() + ")");
+            });
     }
 
     @SuppressLint("SetTextI18n")
@@ -204,7 +242,7 @@ public class StatusesActivity extends AppCompatActivity {
         int userCode = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE));
         historyViewModel.getHistoryListWhichAreRelatedTo(userCode)
             .observe(this, a -> {
-                advancingList.addAll(a);
+                advancingList = a;
                 setAdapter(advancingRecycler, noRequestsA, false);
                 advancingTextView.setText(getResources().getString(R.string.request_advancing_status) + " (" + advancingList.size() + ")");
             });
@@ -361,6 +399,91 @@ public class StatusesActivity extends AppCompatActivity {
         }
     }
 
+    private void openDialogCommentAcception() {
+        Dialog dialog = Ius.createDialog(this, R.layout.dialog_window_request_acception);
+
+        int userRole = Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_ROLE_CODE));
+        boolean needComment = isCommentNeeded(userRole);
+
+        EditText comment = dialog.findViewById(R.id.comment);
+        Button positive = dialog.findViewById(R.id.positive);
+
+        if (!needComment) {
+            comment.setVisibility(View.GONE);
+        }
+
+        dialog.show();
+
+        positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String commentStr = "";
+
+                if (needComment) {
+                    commentStr = comment.getText().toString().trim();
+                    if (commentStr.length()==0) {
+                        createToast(getResources().getString(R.string.fill_field), false);
+                        return;
+                    }
+                }
+
+                if (userRole==6 && !positiveButtonPressed) { // sss SET POSITIVE BUTTON FOR MANAGER
+                    request.setREQ_STA_ID(6);
+                    request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
+                }
+
+                if (userRole==5 && !positiveButtonPressed) {
+                    request.setREQ_STA_ID(4);
+                    request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
+                }
+                if (userRole==5 && positiveButtonPressed) {
+                    request.setREQ_STA_ID(5);
+                    request.setREQ_USE_CODE_APPOINTED(0);
+                }
+
+                request.setREQ_COMMENT(commentStr);
+                request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_CODE)));
+                request.setREQ_UPDATED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
+                request.setNES_TO_UPDATE("yes");
+
+                requestViewModel.update(request);
+
+                createToast(getResources().getString(R.string.request_saved), true);
+                dialog.cancel();
+                closeSummary();
+            }
+        });
+    }
+
+    private boolean isCommentNeeded(int userRole) {
+        return (userRole == 6 && !positiveButtonPressed)
+        || userRole == 4
+        || (userRole == 5 && !positiveButtonPressed);
+    }
+
+//    @SuppressLint("StaticFieldLeak")
+//    private class GetData extends AsyncTask<Void, Void, Void> {
+//        HistoryViewModel historyViewModel;
+//        Activity context;
+//
+//        public GetData(Activity context, HistoryViewModel historyViewModel) {
+//            this.context = context;
+//            this.historyViewModel = historyViewModel;
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            check();
+//            return null;
+//        }
+//
+//        @SuppressLint("Range")
+//        public void check() {
+//            int tmrCode = historyViewModel.getTMRCodeByRequest(request.getREQ_CODE());
+//            request.setREQ_USE_CODE_APPOINTED(tmrCode);
+//        }
+//    }
+
     private void closeList() {
         listIsOpen = false;
         summary.setVisibility(View.VISIBLE);
@@ -391,6 +514,14 @@ public class StatusesActivity extends AppCompatActivity {
             finish();
         else
             closeSummary();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getWaitingRequests();
+        getAdvancingRequests();
+        closeSummary();
     }
 
     private boolean isNull(String text) {

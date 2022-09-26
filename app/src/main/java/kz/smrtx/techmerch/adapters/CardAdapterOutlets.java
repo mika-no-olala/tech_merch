@@ -2,6 +2,7 @@ package kz.smrtx.techmerch.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,9 +61,11 @@ public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.
         }
     }
 
-    public CardAdapterOutlets(List<SalePointItem> outlets, Context context) {
+    public CardAdapterOutlets(List<SalePointItem> outlets, Context context, double lat, double lon) {
         this.outlets = outlets;
         this.context = context;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     public void setOutletList(List<SalePointItem> outlets) {
@@ -106,7 +109,6 @@ public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.
         holder.address.setText(context.getResources().getString(R.string.address) + ": " + salePointItem.getHouse());
         holder.requests.setText(context.getResources().getString(R.string.requests) + ": " + 0);
         holder.distance.setText(distance + " км");
-        
     }
 
     @Override

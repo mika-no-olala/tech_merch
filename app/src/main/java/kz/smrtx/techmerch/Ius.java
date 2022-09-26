@@ -269,9 +269,21 @@ public class Ius extends Application {
         try {
             return formatter.parse(text);
         } catch (ParseException e) {
-            e.printStackTrace();
+            // try NEW
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatterMillis = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
+            try {
+                return formatterMillis.parse(text);
+            } catch (ParseException parseException) {
+                // try ONE MORE
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat formatterOrdinary = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                try {
+                    return formatterOrdinary.parse(text);
+                } catch (ParseException exception) {
+                    exception.printStackTrace();
+                }
+            }
         }
-        return null;
+        return new Date();
     }
 
     public static Date plusDaysToDate(Date date, int days) {

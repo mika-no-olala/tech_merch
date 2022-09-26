@@ -103,17 +103,18 @@ public class OutletsFragment extends Fragment {
     private void setAdapter() {
         RecyclerView.LayoutManager layoutManager;
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this.getContext());
-        cardAdapter = new CardAdapterOutlets(outlets, this.getContext());
+        layoutManager = new LinearLayoutManager(this.getActivity());
 
-        GPSTracker gps = new GPSTracker(this.getContext());
+
+        GPSTracker gps = new GPSTracker(this.getActivity());
         double lat = 0;
         double lon = 0;
         if (gps.getIsGPSTrackingEnabled()) {
             lat = gps.getLatitude();
             lon = gps.getLongitude();
         }
-        cardAdapter.setCoordinates(lat, lon);
+
+        cardAdapter = new CardAdapterOutlets(outlets, this.getActivity(), lat, lon);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(cardAdapter);
@@ -121,33 +122,27 @@ public class OutletsFragment extends Fragment {
         cardAdapter.setOnItemClickListener(new CardAdapterOutlets.onItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                ((SessionActivity)requireActivity()).openFragment(OutletInformationFragment.getInstance("tmr", outlets.get(position).getCode()));
+                ((SessionActivity)requireActivity()).openFragment(OutletInformationFragment.getInstance("tmr", outlets.get(position).getCode()), false);
             }
         });
     }
 
     private void createList() {
-//        outlets.add(new Outlet("ALA00015528", "Лимон", "ул. Басенова, 10 к3", 2, 2.8f));
-//        outlets.add(new Outlet("ALA00015528", "Лимон", "ул. Басенова, 10 к3", 2, 2.8f));
-//        outlets.add(new Outlet("ALA00015528", "Евразиан Фудс Корпорэйшн", "ул. Фурманова 117", 0, 4.8f));
-//        outlets.add(new Outlet("ALA00015528", "Евразиан Фудс Корпорэйшн", "ул. Фурманова 117", 0, 4.8f));
-//        outlets.add(new Outlet("ALA00015528", "Евразиан Фудс Корпорэйшн", "ул. Фурманова 117", 0, 4.8f));
         choosePointsViewModel.getSalePoints().observe(getViewLifecycleOwner(), salePointItems -> {
+            Log.e("sss", String.valueOf(salePointItems.size()));
             if (salePointItems==null) {
                 Log.w("createList", "list == null");
                 recyclerView.setVisibility(View.GONE);
                 doSync.setVisibility(View.VISIBLE);
-
-                return;
             }
             if (salePointItems.size() <= 0) {
                 Log.w("createList", "list size == 0");
                 recyclerView.setVisibility(View.GONE);
                 doSync.setVisibility(View.VISIBLE);
-                return;
+            } else {
+                outlets = salePointItems;
+                setAdapter();
             }
-            outlets = salePointItems;
-            setAdapter();
         });
     }
 

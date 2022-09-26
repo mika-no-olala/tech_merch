@@ -61,6 +61,10 @@ public class StartActivity extends AppCompatActivity {
 
         Ius.checkPermissions(this);
 
+        Bundle arguments = getIntent().getExtras();
+        if (arguments.getBoolean("SYNC"))
+            openActivitySync();
+
         startWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,7 +122,6 @@ public class StartActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-
 
         }
         public GetSyncData(Activity context, SessionViewModel sessionViewModel) {
