@@ -39,6 +39,7 @@ public class RequestRepository {
     }
     public int selectNumberFromOutlets(String code) { return requestDao.selectNumberFromOutlet(code); }
     public LiveData<List<Request>> getRequestsByAppointed(int userCode) { return requestDao.getRequestsByAppointed(userCode); }
+    public LiveData<List<Request>> getRequestsByAppointed(int userCode, int salePointCode) { return requestDao.getRequestsByAppointed(userCode, salePointCode); }
     public LiveData<Request> getRequestByCode(String code) { return requestDao.getRequestByCode(code); }
 
     private static class InsertRequestAsyncTask extends AsyncTask<Request, Void, Void> {

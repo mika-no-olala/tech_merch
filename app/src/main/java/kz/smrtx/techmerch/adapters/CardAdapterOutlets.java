@@ -68,6 +68,7 @@ public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.
         this.lon = lon;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setOutletList(List<SalePointItem> outlets) {
         if (outlets!=null) {
             this.outlets = outlets;

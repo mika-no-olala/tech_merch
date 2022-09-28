@@ -37,7 +37,11 @@ public class HistoryViewModel extends AndroidViewModel {
         return historyRepository.getHistoryListWhichAreRelatedTo(userCode);
     }
 
-    public int getHistoryListWhichAreRelatedTo(int userCode, int salePointCode) {
+    public LiveData<List<History>> getHistoryListWhichAreRelatedTo(int userCode, int salePoint) {
+        return historyRepository.getHistoryListWhichAreRelatedTo(userCode, salePoint);
+    }
+
+    public int getRequestsNumberOnSalePointByUser(int userCode, int salePointCode) {
         return historyRepository.getRequestsNumberOnSalePointByUser(userCode, salePointCode);
     }
 

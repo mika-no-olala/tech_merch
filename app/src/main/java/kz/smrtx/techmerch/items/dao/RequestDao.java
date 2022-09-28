@@ -36,6 +36,9 @@ public interface RequestDao {
     @Query("select * from ST_REQUEST where REQ_USE_CODE_APPOINTED=:userCode")
     LiveData<List<Request>> getRequestsByAppointed(int userCode);
 
+    @Query("select * from ST_REQUEST where REQ_USE_CODE_APPOINTED=:userCode and REQ_SAL_CODE=:salePointCode")
+    LiveData<List<Request>> getRequestsByAppointed(int userCode, int salePointCode);
+
     @Query("select * from ST_REQUEST where REQ_CODE=:code")
     LiveData<Request> getRequestByCode(String code);
 

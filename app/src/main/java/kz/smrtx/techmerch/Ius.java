@@ -34,6 +34,8 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 
+import org.w3c.dom.Text;
+
 import kz.smrtx.techmerch.utils.CustomTypefaceSpan;
 import kz.smrtx.techmerch.utils.ZipManager;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -226,7 +228,7 @@ public class Ius extends Application {
         return dialog;
     }
 
-    public static Dialog createDialog(Context context, int layoutId) {
+    public static Dialog createDialog(Context context, int layoutId, String title) {
         Dialog dialog = new Dialog(context, android.R.style.Theme_Light);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawableResource(R.color.black_transparent);
@@ -234,6 +236,10 @@ public class Ius extends Application {
         dialog.setCanceledOnTouchOutside(true);
 
         Button cancel = dialog.findViewById(R.id.cancel);
+        TextView titleView = dialog.findViewById(R.id.title);
+
+        if (title.length()>0)
+            titleView.setText(title);
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -302,6 +308,19 @@ public class Ius extends Application {
 
         cal.add(Calendar.DATE, days);
         return cal.getTime();
+    }
+
+    public static long getDifferenceBetweenDates(Date dateFirst, Date dateSecond, String timeValue) {
+        long difference = dateSecond.getTime() - dateFirst.getTime();
+        switch (timeValue) {
+            case "s":
+            default:
+                return difference / 1000 % 60;
+            case "m":
+                return difference / (60 * 1000) % 60;
+            case "h":
+                return difference / (60 * 60 * 1000);
+        }
     }
 
     public static String generateUniqueCode(Context context, String type) {

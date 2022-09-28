@@ -54,7 +54,6 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
         setContentView(R.layout.activity_outlet_information);
 
         Bundle arguments = getIntent().getExtras();
-
         salePointCode = arguments.get("salePointCode").toString();
 
         scenario = arguments.get("scenario").toString();
@@ -65,6 +64,9 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
             choosePointsViewModel = new ViewModelProvider(this).get(ChoosePointsViewModel.class);
             userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
             getRequest(arguments.get("requestCode").toString());
+        }
+        else if(scenario.equals("detail")) {
+            openSalePoint("");
         }
         pageName = findViewById(R.id.pageName);
         scrollView = findViewById(R.id.scrollView);
@@ -84,8 +86,8 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
         pageNames.add(name);
     }
 
-    public void openSalePoint() {
-        OISalePointFragment oiSalePointFragment = OISalePointFragment.getInstance(salePointCode, scenario, request.getREQ_CODE());
+    public void openSalePoint(String requestCode) {
+        OISalePointFragment oiSalePointFragment = OISalePointFragment.getInstance(salePointCode, scenario, requestCode);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, oiSalePointFragment)
                 .addToBackStack(null).commit();
     }
@@ -131,16 +133,18 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
     }
 
     private void finishVisit() {
-        String finished = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
-        visit.setVIS_FINISH_DATE(finished);
-        visitViewModel.update(visit);
+        if (scenario.equals("technic")) {
+            String finished = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
+            visit.setVIS_FINISH_DATE(finished);
+            visitViewModel.update(visit);
+        }
     }
 
     private void getRequest(String requestCode) {
         requestViewModel.getRequestByCode(requestCode).observe(this, r -> {
             if (r!=null) {
                 request = r;
-                openSalePoint();
+                openSalePoint(request.getREQ_CODE());
             }
         });
     }
@@ -157,7 +161,7 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
     private void setGeneralData() {
         request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE)));
         request.setREQ_UPDATED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
-
+        request.setREQ_VIS_NUMBER(visit.getVIS_NUMBER());
         request.setNES_TO_UPDATE("yes");
 
         requestViewModel.update(request);
@@ -217,7 +221,6 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
 
         public void setStatusByRole() {
             int userRole = userViewModel.getUserRole(request.getREQ_USE_CODE());
-            Log.e("sss role", String.valueOf(userRole));
             if (userRole==5)
                 request.setREQ_STA_ID(8);
             if (userRole==6)

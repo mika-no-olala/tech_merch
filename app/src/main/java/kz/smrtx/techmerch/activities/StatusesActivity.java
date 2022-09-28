@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,9 +19,6 @@ import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.sqlite.db.SimpleSQLiteQuery;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +31,6 @@ import kz.smrtx.techmerch.items.entities.Request;
 
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
-import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 
 public class StatusesActivity extends AppCompatActivity {
 
@@ -45,6 +39,7 @@ public class StatusesActivity extends AppCompatActivity {
     private TextView pageName;
     private final Context context = this;
     private final Activity activity = this;
+    private int salePointCode = -1;
 
     // <----  list ---->
 
@@ -102,13 +97,23 @@ public class StatusesActivity extends AppCompatActivity {
         advancingRecycler = findViewById(R.id.advancingRequestsRecycler);
         waitingTextView = findViewById(R.id.waitingTextView);
         advancingTextView = findViewById(R.id.advancingTextView);
+        pageName = findViewById(R.id.pageName);
 
         requestViewModel = new ViewModelProvider(this).get(RequestViewModel.class);
         historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
-        getWaitingRequests();
-        getAdvancingRequests();
 
-        pageName = findViewById(R.id.pageName);
+        Bundle arguments = getIntent().getExtras();
+        if (arguments!=null) {
+            salePointCode = Integer.parseInt(arguments.getString("salePointCode"));
+            pageName.setText(getResources().getString(R.string.requests_statuses_sale_point));
+        }
+        else {
+            pageName.setText(getResources().getString(R.string.requests_statuses));
+        }
+
+        getWaitingRequests(salePointCode);
+        getAdvancingRequests(salePointCode);
+
         TextView bottomBarText = findViewById(R.id.bottomBarText);
         View back = findViewById(R.id.back);
         CardView waitingButton = findViewById(R.id.waitingRequests);
@@ -120,7 +125,6 @@ public class StatusesActivity extends AppCompatActivity {
         list = findViewById(R.id.list);
         summary = findViewById(R.id.summary);
 
-        pageName.setText(getResources().getString(R.string.requests_statuses));
         bottomBarText.setText(Ius.readSharedPreferences(this, Ius.BOTTOM_BAR_TEXT));
 
         initializeSummaryStuff();
@@ -226,26 +230,48 @@ public class StatusesActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void getWaitingRequests() {
+    private void getWaitingRequests(int salePointCode) {
         int userCode = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE));
         Log.i("gettingRequests from", String.valueOf(userCode));
-        requestViewModel.getRequestsByAppointed(userCode)
-            .observe(this, w -> {
-                waitingList = w;
-                setAdapter(waitingRecycler, noRequestsW, true);
-                waitingTextView.setText(getResources().getString(R.string.request_waiting_status) + " (" + waitingList.size() + ")");
-            });
+
+        if (salePointCode!=-1) {
+            requestViewModel.getRequestsByAppointed(userCode, salePointCode)
+                .observe(this, w -> {
+                    waitingList = w;
+                    setAdapter(waitingRecycler, noRequestsW, true);
+                    waitingTextView.setText(getResources().getString(R.string.request_waiting_status) + " (" + waitingList.size() + ")");
+                });
+        }
+        else {
+            requestViewModel.getRequestsByAppointed(userCode)
+                .observe(this, w -> {
+                    waitingList = w;
+                    setAdapter(waitingRecycler, noRequestsW, true);
+                    waitingTextView.setText(getResources().getString(R.string.request_waiting_status) + " (" + waitingList.size() + ")");
+                });
+        }
     }
 
     @SuppressLint("SetTextI18n")
-    private void getAdvancingRequests() {
+    private void getAdvancingRequests(int salePointCode) {
         int userCode = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE));
-        historyViewModel.getHistoryListWhichAreRelatedTo(userCode)
-            .observe(this, a -> {
-                advancingList = a;
-                setAdapter(advancingRecycler, noRequestsA, false);
-                advancingTextView.setText(getResources().getString(R.string.request_advancing_status) + " (" + advancingList.size() + ")");
-            });
+
+        if (salePointCode!=-1) {
+            historyViewModel.getHistoryListWhichAreRelatedTo(userCode, salePointCode)
+                .observe(this, a -> {
+                    advancingList = a;
+                    setAdapter(advancingRecycler, noRequestsA, false);
+                    advancingTextView.setText(getResources().getString(R.string.request_advancing_status) + " (" + advancingList.size() + ")");
+                });
+        }
+        else {
+            historyViewModel.getHistoryListWhichAreRelatedTo(userCode)
+                .observe(this, a -> {
+                    advancingList = a;
+                    setAdapter(advancingRecycler, noRequestsA, false);
+                    advancingTextView.setText(getResources().getString(R.string.request_advancing_status) + " (" + advancingList.size() + ")");
+                });
+        }
     }
 
     private void setAdapter(RecyclerView recyclerView, TextView noRequests, boolean waiting) {
@@ -301,11 +327,15 @@ public class StatusesActivity extends AppCompatActivity {
     }
 
     private void getRequest(String code) {
+        Log.i("getRequest code", code);
         requestViewModel.getRequestByCode(code).observe(this, r -> {
             if (r!=null) {
                 requestLoading.setVisibility(View.GONE);
                 request = r;
                 setRequest();
+            }
+            else {
+                Log.e("getRequest", "there is no request in db...");
             }
         });
     }
@@ -400,7 +430,7 @@ public class StatusesActivity extends AppCompatActivity {
     }
 
     private void openDialogCommentAcception() {
-        Dialog dialog = Ius.createDialog(this, R.layout.dialog_window_request_acception);
+        Dialog dialog = Ius.createDialog(this, R.layout.dialog_window_request_acception, "");
 
         int userRole = Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_ROLE_CODE));
         boolean needComment = isCommentNeeded(userRole);
@@ -461,29 +491,6 @@ public class StatusesActivity extends AppCompatActivity {
         || (userRole == 5 && !positiveButtonPressed);
     }
 
-//    @SuppressLint("StaticFieldLeak")
-//    private class GetData extends AsyncTask<Void, Void, Void> {
-//        HistoryViewModel historyViewModel;
-//        Activity context;
-//
-//        public GetData(Activity context, HistoryViewModel historyViewModel) {
-//            this.context = context;
-//            this.historyViewModel = historyViewModel;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            check();
-//            return null;
-//        }
-//
-//        @SuppressLint("Range")
-//        public void check() {
-//            int tmrCode = historyViewModel.getTMRCodeByRequest(request.getREQ_CODE());
-//            request.setREQ_USE_CODE_APPOINTED(tmrCode);
-//        }
-//    }
-
     private void closeList() {
         listIsOpen = false;
         summary.setVisibility(View.VISIBLE);
@@ -519,8 +526,8 @@ public class StatusesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getWaitingRequests();
-        getAdvancingRequests();
+        getWaitingRequests(salePointCode);
+        getAdvancingRequests(salePointCode);
         closeSummary();
     }
 

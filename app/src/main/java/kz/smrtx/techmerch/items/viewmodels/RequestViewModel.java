@@ -43,6 +43,9 @@ public class RequestViewModel extends AndroidViewModel {
     public LiveData<List<Request>> getRequestsByAppointed(int userCode) {
         return requestRepository.getRequestsByAppointed(userCode);
     }
+    public LiveData<List<Request>> getRequestsByAppointed(int userCode, int salePointCode) {
+        return requestRepository.getRequestsByAppointed(userCode, salePointCode);
+    }
 
     public LiveData<Request> getRequestByCode(String code) {
         return requestRepository.getRequestByCode(code);

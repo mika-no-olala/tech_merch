@@ -35,6 +35,18 @@ public interface HistoryDao {
             "    )")
     LiveData<List<History>> getHistoryListWhichAreRelatedTo(int userCode);
 
+    @Query("SELECT * FROM ST_REQUEST_HISTORY srh " +
+            "WHERE (srh.userCode = :userCode OR srh.userCodeAppointed = :userCode) " +
+            "  AND srh.salePointCode=:salePointCode AND srh.created = " +
+            "    (" +
+            "      SELECT MAX(created) " +
+            "      FROM ST_REQUEST_HISTORY srhd " +
+            "      WHERE srh.requestCode = srhd.requestCode " +
+            "      AND srhd.userCodeAppointed != :userCode " +
+            "      GROUP BY srhd.requestCode " +
+            "    )")
+    LiveData<List<History>> getHistoryListWhichAreRelatedTo(int userCode, int salePointCode);
+
     @Query("SELECT count(*) FROM ST_REQUEST_HISTORY srh " +
             "WHERE (srh.userCode = :userCode OR srh.userCodeAppointed = :userCode) " +
             "  AND srh.salePointCode = :salePointCode " +

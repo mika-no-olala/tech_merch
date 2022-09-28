@@ -34,6 +34,7 @@ public class OutletsFragment extends Fragment {
     private CardAdapterOutlets cardAdapter;
     private ChoosePointsViewModel choosePointsViewModel;
     private List<SalePointItem> outlets = new ArrayList<>();
+    private List<SalePointItem> outletsFiltered;
 
     private FragmentListener listener;
     public interface FragmentListener {
@@ -75,13 +76,13 @@ public class OutletsFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                if (TextUtils.isEmpty(s))
-                    cardAdapter.setOutletList(outlets);
-                else {
-                    if (s.length() >= 2) {
-                        filter(s.toUpperCase());
-                    }
+                if (s.length() >= 2) {
+                    filter(s.toUpperCase());
+                    return false;
                 }
+                
+                cardAdapter.setOutletList(outlets);
+                outletsFiltered = new ArrayList<>(outlets);
                 return false;
             }
         });
@@ -122,7 +123,7 @@ public class OutletsFragment extends Fragment {
         cardAdapter.setOnItemClickListener(new CardAdapterOutlets.onItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                ((SessionActivity)requireActivity()).openFragment(OutletInformationFragment.getInstance("tmr", outlets.get(position).getCode()), false);
+                ((SessionActivity)requireActivity()).openFragment(OutletInformationFragment.getInstance("tmr", outletsFiltered.get(position).getCode()), false);
             }
         });
     }
@@ -141,6 +142,7 @@ public class OutletsFragment extends Fragment {
                 doSync.setVisibility(View.VISIBLE);
             } else {
                 outlets = salePointItems;
+                outletsFiltered = new ArrayList<>(outlets);
                 setAdapter();
             }
         });
@@ -155,8 +157,8 @@ public class OutletsFragment extends Fragment {
         likeStatement.append("*'");
 
         choosePointsViewModel.getSalePointsByFilter(likeStatement.toString()).observe(this, salePointItems -> {
+            outletsFiltered = new ArrayList<>(salePointItems);
             cardAdapter.setOutletList(salePointItems);
-            cardAdapter.notifyDataSetChanged();
         });
     }
 }

@@ -81,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
 
+                    if (response.body().getDataList()==null) {
+                        Log.e("MainActivity - getUser", "dataList is null");
+                        return;
+                    }
+
                     if (response.body().getDataList().isEmpty()) {
                         createToast(getResources().getString(R.string.wrong_data_log_in));
                         return;
@@ -101,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<JsonResponse> call, Throwable t) {
                     Log.e("MainActivity - auth", t.getMessage());
+                    if(t.getMessage().contains("certification")) {
+                        createToast(getResources().getString(R.string.error_certification));
+                        return;
+                    }
                     createToast(getResources().getString(R.string.error)  + ": " + t.getMessage());
                 }
             });

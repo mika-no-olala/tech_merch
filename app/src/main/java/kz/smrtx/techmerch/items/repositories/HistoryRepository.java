@@ -30,6 +30,9 @@ public class HistoryRepository {
     public LiveData<List<History>> getHistoryListWhichAreRelatedTo(int userCode) {
         return historyDao.getHistoryListWhichAreRelatedTo(userCode);
     }
+    public LiveData<List<History>> getHistoryListWhichAreRelatedTo(int userCode, int salePointCode) {
+        return historyDao.getHistoryListWhichAreRelatedTo(userCode, salePointCode);
+    }
     public int getRequestsNumberOnSalePointByUser(int userCode, int salePointCode) {
         return historyDao.getRequestsNumberOnSalePointByUser(userCode, salePointCode);
     }

@@ -11,6 +11,7 @@
     <string name="fill_field">Заполните поле</string>
     <string name="wrong_data_log_in">Неправильный логин или пароль</string>
     <string name="error">Ошибка</string>
+    <string name="error_certification">Ошибка: проверьте работоспособность Play Market и перезапустите приложение</string>
     <string name="request_is_loading">Загружаем заявку…</string>
     <string name="server_error">Ошибка подключения к серверу</string>
     <string name="uploading_data_error">Ошибка при отправке данных</string>
@@ -18,6 +19,11 @@
     <string name="success">Успех</string>
     <string name="rejected">Отклонено</string>
     <string name="request_success">Заявка создана</string>
+    <string name="note_success">Заметка создана</string>
+    <string name="note">Заметка</string>
+    <string name="note_delete_warning">Удалить заявку может только автор</string>
+    <string name="note_deleting">Удаление заметки</string>
+    <string name="note_deleting_desc">Вы действительно хотите удалить заметку?</string>
     <string name="request_waiting_status">Ожидающие моего ответа</string>
     <string name="request_advancing_status">Продвигающиеся заявки</string>
     <string name="request_acception">Подтверждение заявки</string>
@@ -26,6 +32,7 @@
     <string name="request_saved">Заявка сохранена</string>
     <string name="request_status">Статус заявки</string>
     <string name="requests_statuses">Статусы заявок</string>
+    <string name="requests_statuses_sale_point">Статусы заявок на точке</string>
     <string name="no_requests">Нет заявок</string>
     <string name="title">Заголовок</string>
     <string name="text_example">Пример текста, заполнение блока случайным набором букв</string>
@@ -112,13 +119,15 @@
     <string name="start_work_outlet">Начать работу на точке</string>
     <string name="repeat">Повторить</string>
     <string name="operations_on_outlet">Операции на торговой точке</string>
+    <string name="notes_on_outlet">Заметки на торговой точке</string>
     <string name="your_current_outlet">Ваша текущая точка:</string>
     <string name="detail_information">Детальная информация</string>
     <string name="create_request">Создать заявку</string>
+    <string name="create_note">Создать заметку</string>
     <string name="create_request_description">Начать визит в ТТ для создания заявки на обслуживание оборудования</string>
     <string name="requests">Заявки</string>
     <string name="requests_description">Просмотр заявок на ТТ</string>
-    <string name="tasks">Задачи</string>
+    <string name="notes">Заметки</string>
     <string name="tasks_description">Просмотр / выполнение назначенных задач на ТТ</string>
     <string name="request_creation">Создание заявки</string>
     <string name="next">Далее</string>

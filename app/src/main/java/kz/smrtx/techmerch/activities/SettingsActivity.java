@@ -62,7 +62,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void openDialogPassword() {
-        Dialog dialog = Ius.createDialog(context, R.layout.dialog_window_password);
+        Dialog dialog = Ius.createDialog(context, R.layout.dialog_window_password, "");
 
         EditText old = dialog.findViewById(R.id.passwordOld);
         EditText newP = dialog.findViewById(R.id.passwordNew);
@@ -128,7 +128,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void openDialogLanguage() {
-        Dialog dialog = Ius.createDialog(context, R.layout.dialog_window_language);
+        Dialog dialog = Ius.createDialog(context, R.layout.dialog_window_language, "");
 
         RadioGroup radioGroup = dialog.findViewById(R.id.radioGroup);
         Button apply = dialog.findViewById(R.id.positive);

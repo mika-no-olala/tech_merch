@@ -37,6 +37,8 @@ public class History {
     private String comment;
     @SerializedName("HIS_REQ_CREATED")
     private String created;
+    @SerializedName("HIS_REV_NUMBER")
+    private String visitNumber;
 
     public int getId() {
         return id;
@@ -148,5 +150,13 @@ public class History {
 
     public void setCreated(String created) {
         this.created = created;
+    }
+
+    public String getVisitNumber() {
+        return visitNumber;
+    }
+
+    public void setVisitNumber(String visitNumber) {
+        this.visitNumber = visitNumber;
     }
 }

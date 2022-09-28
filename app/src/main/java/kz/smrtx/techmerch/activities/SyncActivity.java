@@ -42,6 +42,7 @@ import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.items.entities.Element;
 import kz.smrtx.techmerch.items.entities.History;
+import kz.smrtx.techmerch.items.entities.Note;
 import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.entities.SalePoint;
 import kz.smrtx.techmerch.items.entities.SalePointItem;
@@ -51,6 +52,7 @@ import kz.smrtx.techmerch.items.reqres.synctables.Table;
 import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 import kz.smrtx.techmerch.items.viewmodels.ElementViewModel;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
+import kz.smrtx.techmerch.items.viewmodels.NoteViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SalePointViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
@@ -86,6 +88,7 @@ public class SyncActivity extends AppCompatActivity {
     private UserViewModel userViewModel;
     private ElementViewModel elementViewModel;
     private HistoryViewModel historyViewModel;
+    private NoteViewModel noteViewModel;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -119,29 +122,15 @@ public class SyncActivity extends AppCompatActivity {
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         elementViewModel = new ViewModelProvider(this).get(ElementViewModel.class);
         historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+        noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
 
         startSync();
 
-        startWork.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openActivitySession();
-            }
-        });
+        startWork.setOnClickListener(view -> openActivitySession());
 
-        repeat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startSync();
-            }
-        });
+        repeat.setOnClickListener(view -> startSync());
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        back.setOnClickListener(view -> finish());
     }
     
     private void startSync() {
@@ -150,11 +139,14 @@ public class SyncActivity extends AppCompatActivity {
         animationStopped.setVisibility(View.GONE);
         animation.setVisibility(View.VISIBLE);
 
+        Ius.refreshToken(this);
+
         syncCode = Ius.generateUniqueCode(this, "syn");
 
         new GatherDataFromLocal(this, visitViewModel).execute();
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class GatherDataFromLocal extends AsyncTask<Void, Void, Void> {
         VisitViewModel visitViewModel;
         List<String> result = new ArrayList<>();
@@ -203,8 +195,8 @@ public class SyncActivity extends AppCompatActivity {
 
         @SuppressLint("Range")
         public void getAll(){
-            String[] tables = {"ST_SESSION", "ST_VISIT", "ST_REQUEST"};
-            String[] tablesOnServer = {"sync.WT_SYNC_A_ST_SESSION", "sync.WT_SYNC_A_ST_VISIT", "sync.WT_SYNC_ST_REQUEST"};
+            String[] tables = {"ST_SESSION", "ST_VISIT", "ST_REQUEST", "ST_NOTES"};
+            String[] tablesOnServer = {"sync.WT_SYNC_A_ST_SESSION", "sync.WT_SYNC_A_ST_VISIT", "sync.WT_SYNC_ST_REQUEST", "sync.WT_SYNC_ST_NOTES"};
 
             for(int i = 0; i < tables.length; i++){
                 SimpleSQLiteQuery query = new SimpleSQLiteQuery("SELECT * FROM "+tables[i], null);
@@ -284,7 +276,7 @@ public class SyncActivity extends AppCompatActivity {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(o -> {
-                Log.e("sss", "omg");
+                Log.i("getSyncData", "om-nom, get data " + stepCounter);
                 handleResults(new JSONObject(((ResponseBody)o).string()), tableNames.get(stepCounter));
                 stepCounter++;
                 syncInfo.setText("Получение данных " + (stepCounter*100/requests.size()) + "/ 100%");
@@ -341,6 +333,14 @@ public class SyncActivity extends AppCompatActivity {
                             historyViewModel.insertHistory(histories);
                         }
                         break;
+                    case "ST_NOTES":
+                        Type noteType = new TypeToken<List<Note>>() {
+                        }.getType();
+                        List<Note> notes = new Gson().fromJson(obj.getJSONArray("data").toString(), noteType);
+                        if (notes.size() > 0) {
+                            noteViewModel.insertNotes(notes);
+                        }
+                        break;
                 }
             }catch (Exception e){
                 Log.e("getSyncData", e.toString());
@@ -368,13 +368,11 @@ public class SyncActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     try {
                         JSONObject jsonObj = new JSONObject(response.body().string());
-                        Log.e("sss", response.body().string());
-                        Log.e("sssJ", jsonObj.getString("data"));
+                        Log.i("uploadSyncFile", "There is data that needs to be uploaded");
                         MessageDigest md5Digest = MessageDigest.getInstance("MD5");
                         //Get the checksum
                         String checksum = getFileChecksum(md5Digest, file);
                         if (jsonObj.getString("data").equals(checksum)){
-                            Log.e("sss", checksum);
                             clearTablesAndVariables();
                         }
                     }catch (Exception e){
@@ -455,6 +453,7 @@ public class SyncActivity extends AppCompatActivity {
         salePointViewModel.deleteSalePoints();
         elementViewModel.deleteElements();
         historyViewModel.deleteHistory();
+        noteViewModel.deleteAllNotes();
     }
 
     private void unlockButtons() {

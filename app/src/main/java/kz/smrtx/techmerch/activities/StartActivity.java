@@ -51,9 +51,9 @@ public class StartActivity extends AppCompatActivity {
         setUser();
 
         sessionViewModel = new ViewModelProvider(this).get(SessionViewModel.class);
-//        sessionViewModel.deleteAllSessions();
-//        VisitViewModel visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
-//        visitViewModel.deleteAllVisits();
+        sessionViewModel.deleteAllSessions();
+        VisitViewModel visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
+        visitViewModel.deleteAllVisits();
 //        RequestViewModel requestViewModel = new ViewModelProvider(this).get(RequestViewModel.class);
 //        requestViewModel.deleteAllRequests();
 
