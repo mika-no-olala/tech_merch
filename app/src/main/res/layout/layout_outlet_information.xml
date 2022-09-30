@@ -12,13 +12,19 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="10sp"
         android:elevation="3sp"
-        tools:targetApi="lollipop">
-        <ImageView
-            android:id="@+id/image"
+        tools:targetApi="lollipop"
+        android:layout_marginHorizontal="4sp">
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="319sp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/image_example"/>
+            android:gravity="center"
+            android:background="@color/lavender_background">
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="74sp"
+                android:layout_height="74sp"
+                android:src="@drawable/maps"/>
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -75,9 +81,9 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/bold_text_info"
-                android:text="@string/tasks_on_outlet" />
+                android:text="@string/notes_on_outlet_info" />
             <TextView
-                android:id="@+id/tasks"
+                android:id="@+id/notes"
                 style="@style/regular_text_info"
                 android:text=": 2" />
         </LinearLayout>

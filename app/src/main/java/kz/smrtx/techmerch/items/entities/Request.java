@@ -77,6 +77,9 @@ public class Request {
     @SerializedName("REQ_USE_NAME_APPOINTED")
     private String REQ_USE_NAME_APPOINTED;
     @Expose
+    @SerializedName("REQ_USE_PHONE")
+    private String REQ_USE_PHONE;
+    @Expose
     @SerializedName("REQ_UPDATED")
     private String REQ_UPDATED;
     @Expose
@@ -285,5 +288,13 @@ public class Request {
 
     public void setNES_TO_UPDATE(String NES_TO_UPDATE) {
         this.NES_TO_UPDATE = NES_TO_UPDATE;
+    }
+
+    public String getREQ_USE_PHONE() {
+        return REQ_USE_PHONE;
+    }
+
+    public void setREQ_USE_PHONE(String REQ_USE_PHONE) {
+        this.REQ_USE_PHONE = REQ_USE_PHONE;
     }
 }

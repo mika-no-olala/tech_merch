@@ -17,7 +17,7 @@ import kz.smrtx.techmerch.items.entities.Element;
 
 public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.CardViewHolder> {
 
-    private final List<Element> elements;
+    private List<Element> elements;
     private onItemClickListener listener;
 
     public interface onItemClickListener {
@@ -51,6 +51,11 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
 
     public CardAdapterString(List<Element> elements) {
         this.elements = elements;
+    }
+
+    public void setAdapter(List<Element> elements) {
+        this.elements = elements;
+        notifyDataSetChanged();
     }
 
     @NonNull

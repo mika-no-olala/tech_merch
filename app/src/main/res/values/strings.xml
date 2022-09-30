@@ -107,7 +107,7 @@
     <string name="request">Заявка</string>
     <string name="code">Код</string>
     <string name="requests_on_outlet">Заявок на точке</string>
-    <string name="tasks_on_outlet">Задач на точке</string>
+    <string name="notes_on_outlet_info">Заметок на точке</string>
     <string name="entity">Юридическое лицо</string>
     <string name="category">Категория</string>
     <string name="sales_channel">Канал продаж</string>
@@ -115,6 +115,7 @@
     <string name="phone">Телефон</string>
     <string name="comment_to_outlet">Комментарий к ТТ:</string>
     <string name="show_route">Показать маршрут</string>
+    <string name="sale_point_on_map">Местоположение точки</string>
     <string name="km_from_you">км от вас</string>
     <string name="start_work_outlet">Начать работу на точке</string>
     <string name="repeat">Повторить</string>

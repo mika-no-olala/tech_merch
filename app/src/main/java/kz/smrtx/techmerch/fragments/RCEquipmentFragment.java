@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -27,6 +28,7 @@ public class RCEquipmentFragment extends Fragment {
     private List<Element> types = new ArrayList<>();
     private List<Element> subtypes = new ArrayList<>();
     private List<Element> filteredSubtypes;
+    private List<Element> array;
     private EditText type;
     private EditText subtype;
 
@@ -65,9 +67,12 @@ public class RCEquipmentFragment extends Fragment {
         return view;
     }
 
-    private void openDialog(EditText editText, List<Element> array, boolean equipmentType) {
-        CardAdapterString adapter = new CardAdapterString(array);
+    private void openDialog(EditText editText, List<Element> originalArray, boolean equipmentType) {
+        CardAdapterString adapter = new CardAdapterString(originalArray);
+        array = new ArrayList<>(originalArray);
         Dialog dialog = Ius.createDialogList(this.getContext(), adapter, false);
+
+        SearchView search = dialog.findViewById(R.id.search);
         dialog.show();
 
         adapter.setOnItemClickListener(new CardAdapterString.onItemClickListener() {
@@ -82,6 +87,8 @@ public class RCEquipmentFragment extends Fragment {
                 else {
                     ((CreateRequestActivity) requireActivity()).setEquipmentSubtype(subtype.getText().toString());
                     if (Ius.isEmpty(type)) {
+                        filterSubtypeList(array.get(position).getSubtypeFrom());
+
                         for (Element e : types) {
                             if (e.getId() == array.get(position).getSubtypeFrom()) {
                                 type.setText(e.getName());
@@ -93,6 +100,25 @@ public class RCEquipmentFragment extends Fragment {
                 }
 
                 dialog.cancel();
+            }
+        });
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                array = new ArrayList<>();
+                for (Element e : originalArray) {
+                    if (e.getName().toLowerCase().contains(s.toLowerCase()))
+                        array.add(e);
+                }
+                adapter.setAdapter(array);
+
+                return false;
             }
         });
     }

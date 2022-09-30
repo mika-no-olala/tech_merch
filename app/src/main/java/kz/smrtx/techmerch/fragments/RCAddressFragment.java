@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,6 +32,7 @@ import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 public class RCAddressFragment extends Fragment {
 
     private List<SalePointItem> salePoints = new ArrayList<>();
+    private List<SalePointItem> array;
     private EditText toOutlet;
     private ChoosePointsViewModel choosePointsViewModel;
 
@@ -64,16 +66,39 @@ public class RCAddressFragment extends Fragment {
 
     private void openDialog() {
         CardAdapterStringAddress adapter = new CardAdapterStringAddress(salePoints);
+        array = new ArrayList<>(salePoints);
         Dialog dialog = createDialogList(this.getContext(), adapter);
+        SearchView search = dialog.findViewById(R.id.search);
+
         dialog.show();
 
         adapter.setOnItemClickListener(new CardAdapterStringAddress.onItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                String address = salePoints.get(position).getName() + " - " + salePoints.get(position).getHouse();
+                String address = array.get(position).getName() + " - " + array.get(position).getHouse();
                 toOutlet.setText(address);
                 ((CreateRequestActivity) requireActivity()).setAddress(address);
                 dialog.cancel();
+            }
+        });
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                array = new ArrayList<>();
+                for (SalePointItem s : salePoints) {
+                    if (s.getName().toLowerCase().contains(newText.toLowerCase()) ||
+                        s.getCode().toLowerCase().contains(newText.toLowerCase()) ||
+                        s.getHouse().toLowerCase().contains(newText.toLowerCase()))
+                        array.add(s);
+                }
+                adapter.setAdapter(array);
+                return false;
             }
         });
     }

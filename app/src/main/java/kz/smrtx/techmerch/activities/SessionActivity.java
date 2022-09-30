@@ -19,6 +19,7 @@ import java.util.Date;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.fragments.MapsFragment;
 import kz.smrtx.techmerch.fragments.NotesFragment;
 import kz.smrtx.techmerch.fragments.OperationsFragment;
 import kz.smrtx.techmerch.fragments.OperationsOnOutletFragment;
@@ -28,7 +29,8 @@ import kz.smrtx.techmerch.items.entities.Session;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 
 public class SessionActivity extends AppCompatActivity implements OperationsFragment.FragmentListener, OutletsFragment.FragmentListener,
-        OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener, NotesFragment.FragmentListener {
+        OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener, NotesFragment.FragmentListener,
+        MapsFragment.FragmentListener {
 
     private TextView pageName;
     private ScrollView scrollView;

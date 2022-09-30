@@ -211,6 +211,14 @@ public class OperationsOnOutletFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (getArguments()!=null) {
+            new GetDataNotes(this.getActivity(), noteViewModel,historyViewModel).execute();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         //  sss CHECK NOTES, REQUESTS AND HISTORY. IF THERE IS NO, THEN DELETE

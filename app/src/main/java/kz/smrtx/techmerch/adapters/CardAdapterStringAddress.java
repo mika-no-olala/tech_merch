@@ -17,7 +17,7 @@ import kz.smrtx.techmerch.items.entities.SalePointItem;
 
 public class CardAdapterStringAddress extends RecyclerView.Adapter<CardAdapterStringAddress.CardViewHolder> {
 
-    private final List<SalePointItem> salePointItems;
+    private List<SalePointItem> salePointItems;
     private onItemClickListener listener;
 
     public interface onItemClickListener {
@@ -53,6 +53,11 @@ public class CardAdapterStringAddress extends RecyclerView.Adapter<CardAdapterSt
         this.salePointItems = salePointItems;
     }
 
+    public void setAdapter(List<SalePointItem> salePointItems) {
+        this.salePointItems = salePointItems;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -63,7 +68,9 @@ public class CardAdapterStringAddress extends RecyclerView.Adapter<CardAdapterSt
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        holder.text.setText(salePointItems.get(position).getName() + " - " + salePointItems.get(position).getHouse());
+        holder.text.setText(
+                "[" + salePointItems.get(position).getId() + "]" + " \n" +
+                salePointItems.get(position).getName() + " - " + salePointItems.get(position).getHouse());
     }
 
     @Override

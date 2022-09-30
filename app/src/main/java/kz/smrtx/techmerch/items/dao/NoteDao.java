@@ -33,6 +33,7 @@ public interface NoteDao {
     @Query("select count(*) from ST_NOTES where NOT_SAL_CODE=:salePointCode AND NES_TO_UPDATE!='delete'")
     int getNumberFromSalePoint(int salePointCode);
 
-    @Query("select * from ST_NOTES where NOT_SAL_CODE=:salePointCode AND NES_TO_UPDATE!='delete'")
+    @Query("select * from ST_NOTES where NOT_SAL_CODE=:salePointCode AND NES_TO_UPDATE!='delete' " +
+            "order by NOT_CREATED desc")
     LiveData<List<Note>> getNotesFromSalePoint(int salePointCode);
 }

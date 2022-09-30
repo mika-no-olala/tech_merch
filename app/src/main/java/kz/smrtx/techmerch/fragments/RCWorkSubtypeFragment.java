@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -27,6 +28,7 @@ public class RCWorkSubtypeFragment extends Fragment {
 
     private List<Element> workSubtypeList = new ArrayList<>();
     private List<Element> specialList = new ArrayList<>();
+    private List<Element> array;
     private EditText specVariant;
     private TextView specVariantText;
     private ElementViewModel elementViewModel;
@@ -65,9 +67,12 @@ public class RCWorkSubtypeFragment extends Fragment {
         return view;
     }
 
-    private void openDialog(EditText editText, List<Element> array, boolean special) {
-        CardAdapterString adapter = new CardAdapterString(array);
+    private void openDialog(EditText editText, List<Element> arrayOriginal, boolean special) {
+        CardAdapterString adapter = new CardAdapterString(arrayOriginal);
+        array = new ArrayList<>(arrayOriginal);
         Dialog dialog = Ius.createDialogList(this.getContext(), adapter, false);
+        SearchView search = dialog.findViewById(R.id.search);
+
         dialog.show();
 
         adapter.setOnItemClickListener(new CardAdapterString.onItemClickListener() {
@@ -93,6 +98,25 @@ public class RCWorkSubtypeFragment extends Fragment {
                     ((CreateRequestActivity) requireActivity()).setSpecial(itemName);
 
                 dialog.cancel();
+            }
+        });
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                array = new ArrayList<>();
+                for (Element e : arrayOriginal) {
+                    if (e.getName().toLowerCase().contains(newText.toLowerCase()))
+                        array.add(e);
+                }
+                adapter.setAdapter(array);
+
+                return false;
             }
         });
     }

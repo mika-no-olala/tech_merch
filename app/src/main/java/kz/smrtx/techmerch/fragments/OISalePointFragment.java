@@ -1,7 +1,9 @@
 package kz.smrtx.techmerch.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +20,10 @@ import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.OutletInformationActivity;
 import kz.smrtx.techmerch.activities.SessionActivity;
+import kz.smrtx.techmerch.items.entities.SalePointItem;
 import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
+import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
+import kz.smrtx.techmerch.items.viewmodels.NoteViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
 import kz.smrtx.techmerch.utils.GPSTracker;
 
@@ -28,7 +33,7 @@ public class OISalePointFragment extends Fragment {
     private TextView name;
     private TextView code;
     private TextView requests;
-    private TextView tasks;
+    private TextView notes;
     private TextView entity;
     private TextView category;
     private TextView salesChannel;
@@ -39,6 +44,10 @@ public class OISalePointFragment extends Fragment {
     private TextView distance;
     private TextView showRoute;
     private ChoosePointsViewModel choosePointsViewModel;
+    private NoteViewModel noteViewModel;
+    private HistoryViewModel historyViewModel;
+
+    private SalePointItem salePoint;
 
     private FragmentListener listener;
     public interface FragmentListener {
@@ -65,6 +74,8 @@ public class OISalePointFragment extends Fragment {
         showRoute.setText(Ius.makeTextUnderlined(showRoute.getText().toString()));
         Button startWork = view.findViewById(R.id.start);
         choosePointsViewModel = new ViewModelProvider(this).get(ChoosePointsViewModel.class);
+        noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
+        historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
 
         if (getArguments()!=null) {
             Log.i("OpenedScenario", getArguments().getString("SCENARIO"));
@@ -89,7 +100,7 @@ public class OISalePointFragment extends Fragment {
         name = view.findViewById(R.id.name);
         code = view.findViewById(R.id.code);
         requests = view.findViewById(R.id.requests);
-        tasks = view.findViewById(R.id.tasks);
+        notes = view.findViewById(R.id.notes);
         entity = view.findViewById(R.id.entity);
         category = view.findViewById(R.id.category);
         salesChannel = view.findViewById(R.id.salesChannel);
@@ -105,10 +116,11 @@ public class OISalePointFragment extends Fragment {
     private void getOutlet(String outletCode) {
         choosePointsViewModel.getSalePointByCode(outletCode).observe(getViewLifecycleOwner(), s -> {
             if (s!=null) {
+                salePoint = s;
+                new GetDataNotes(this.getActivity(), noteViewModel, historyViewModel).execute();
+
                 name.setText(s.getName());
                 code.setText(": " + s.getId());
-                requests.setText(": " + "0");
-                tasks.setText(": " + "0");
                 entity.setText(": " + s.getOwner());
                 category.setText(": " + getResources().getString(R.string.no_data));
                 salesChannel.setText(": " + getResources().getString(R.string.no_data));
@@ -142,6 +154,36 @@ public class OISalePointFragment extends Fragment {
             distance = Math.floor(distance * 10) / 10;
         }
         return distance;
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class GetDataNotes extends AsyncTask<Void, Void, Void> {
+        NoteViewModel noteViewModel;
+        HistoryViewModel historyViewModel;
+        Activity context;
+        int quantityNotes = 0;
+        int quantityRequests = 0;
+
+        public GetDataNotes(Activity context, NoteViewModel noteViewModel, HistoryViewModel historyViewModel) {
+            this.context = context;
+            this.noteViewModel = noteViewModel;
+            this.historyViewModel = historyViewModel;
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onPostExecute(Void unused) {
+            requests.setText(": " + quantityRequests);
+            notes.setText(": " + quantityNotes);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            quantityNotes = noteViewModel.getNumberFromSalePoint(Integer.parseInt(salePoint.getCode()));
+            quantityRequests = historyViewModel.getRequestsNumberOnSalePointByUser(
+                    Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_CODE)), Integer.parseInt(salePoint.getCode()));
+            return null;
+        }
     }
 
     @Override

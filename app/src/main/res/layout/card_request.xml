@@ -21,6 +21,15 @@
             android:layout_marginBottom="8sp"/>
 
         <TextView
+            android:id="@+id/salePoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/short_example"
+            android:fontFamily="@font/bandera_pro"
+            android:textSize="12sp"
+            android:layout_marginBottom="8sp"/>
+
+        <TextView
             android:id="@+id/status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
