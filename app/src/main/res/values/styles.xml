@@ -52,6 +52,20 @@
         <item name="android:layout_marginBottom">11sp</item>
     </style>
 
+    <style name="square_card">
+        <item name="android:layout_width">0sp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="cardCornerRadius">3sp</item>
+        <item name="cardElevation">3sp</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="android:layout_marginRight">4sp</item>
+        <item name="android:layout_marginLeft">4sp</item>
+        <item name="android:layout_marginTop">4sp</item>
+        <item name="android:layout_marginBottom">4sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <style name="searchViewStyle" parent="Widget.AppCompat.Light.SearchView">
         <item name="android:textSize">12sp</item>
         <item name="android:editTextColor">@color/main_deep_purple</item>

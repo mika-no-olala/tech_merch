@@ -91,6 +91,8 @@ public class Ius extends Application {
     public static final String DIRECTORY_FROM_SERVER = "prod";
     public static final String KEY_SYN_ID = "KEY_SYN_ID";
 
+    public static final String PHOTO_URL = "https://videobank.t2m.kz/services-manager/photo/";
+
     public static Ius getSingleton() {
         return singleton;
     }
@@ -345,6 +347,30 @@ public class Ius extends Application {
 
             requestPermission(activity);
         }
+    }
+
+    public static void requestPermissionCamera(Activity activity) {
+        Log.i("requestPermissionCamera", "permission asked");
+        ActivityCompat.requestPermissions(activity, new String[]{
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+        }, 2);
+    }
+
+    public static boolean checkPermissionsCamera(Activity activity) {
+        boolean permission = ActivityCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+
+        if (!permission)
+            requestPermissionCamera(activity);
+
+        permission = ActivityCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+
+        return permission;
     }
 
     public static void refreshToken(Context context) {

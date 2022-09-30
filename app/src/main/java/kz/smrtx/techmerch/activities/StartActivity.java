@@ -60,6 +60,7 @@ public class StartActivity extends AppCompatActivity {
         check();
 
         Ius.checkPermissions(this);
+        Ius.checkPermissionsCamera(this);
 
         Bundle arguments = getIntent().getExtras();
         if (arguments.getBoolean("SYNC"))

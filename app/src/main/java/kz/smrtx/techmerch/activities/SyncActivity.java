@@ -43,16 +43,19 @@ import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.items.entities.Element;
 import kz.smrtx.techmerch.items.entities.History;
 import kz.smrtx.techmerch.items.entities.Note;
+import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.entities.SalePoint;
 import kz.smrtx.techmerch.items.entities.SalePointItem;
 import kz.smrtx.techmerch.items.entities.User;
+import kz.smrtx.techmerch.items.repositories.PhotoRepository;
 import kz.smrtx.techmerch.items.reqres.synctables.SyncTables;
 import kz.smrtx.techmerch.items.reqres.synctables.Table;
 import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 import kz.smrtx.techmerch.items.viewmodels.ElementViewModel;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.NoteViewModel;
+import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SalePointViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
@@ -89,6 +92,7 @@ public class SyncActivity extends AppCompatActivity {
     private ElementViewModel elementViewModel;
     private HistoryViewModel historyViewModel;
     private NoteViewModel noteViewModel;
+    private PhotoViewModel photoViewModel;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -123,6 +127,7 @@ public class SyncActivity extends AppCompatActivity {
         elementViewModel = new ViewModelProvider(this).get(ElementViewModel.class);
         historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
         noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
+        photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
 
         startSync();
 
@@ -195,8 +200,8 @@ public class SyncActivity extends AppCompatActivity {
 
         @SuppressLint("Range")
         public void getAll(){
-            String[] tables = {"ST_SESSION", "ST_VISIT", "ST_REQUEST", "ST_NOTES"};
-            String[] tablesOnServer = {"sync.WT_SYNC_A_ST_SESSION", "sync.WT_SYNC_A_ST_VISIT", "sync.WT_SYNC_ST_REQUEST", "sync.WT_SYNC_ST_NOTES"};
+            String[] tables = {"ST_SESSION", "ST_VISIT", "ST_REQUEST", "ST_NOTES", "ST_REQUEST_PHOTO"};
+            String[] tablesOnServer = {"sync.WT_SYNC_A_ST_SESSION", "sync.WT_SYNC_A_ST_VISIT", "sync.WT_SYNC_ST_REQUEST", "sync.WT_SYNC_ST_NOTES", "sync.WT_SYNC_ST_REQUEST_PHOTO"};
 
             for(int i = 0; i < tables.length; i++){
                 SimpleSQLiteQuery query = new SimpleSQLiteQuery("SELECT * FROM "+tables[i], null);
@@ -281,6 +286,7 @@ public class SyncActivity extends AppCompatActivity {
                 stepCounter++;
                 syncInfo.setText("Получение данных " + (stepCounter*100/requests.size()) + "/ 100%");
             }, throwable ->{
+                Log.e("getSyncData", throwable.getLocalizedMessage());
                 if(Objects.equals(throwable.getLocalizedMessage(), "timeout"))
                     lastSync.setText(getResources().getString(R.string.server_timeout));
                 else
@@ -292,6 +298,7 @@ public class SyncActivity extends AppCompatActivity {
     private void handleResults(JSONObject obj, String tableName) throws JSONException {
         if (obj.getString("status").trim().toUpperCase().equals("OK") && obj.getJSONArray("data").length() > 0) {
             try {
+                Log.i("tableName", tableName);
                 switch (tableName) {
                     case "ST_USER":
                         Type typeUser = new TypeToken<List<User>>() {
@@ -339,6 +346,14 @@ public class SyncActivity extends AppCompatActivity {
                         List<Note> notes = new Gson().fromJson(obj.getJSONArray("data").toString(), noteType);
                         if (notes.size() > 0) {
                             noteViewModel.insertNotes(notes);
+                        }
+                        break;
+                    case "ST_REQUEST_PHOTO":
+                        Type photoType = new TypeToken<List<Photo>>() {
+                        }.getType();
+                        List<Photo> photos = new Gson().fromJson(obj.getJSONArray("data").toString(), photoType);
+                        if (photos.size() > 0) {
+                            photoViewModel.insertPhotos(photos);
                         }
                         break;
                 }
@@ -454,6 +469,7 @@ public class SyncActivity extends AppCompatActivity {
         elementViewModel.deleteElements();
         historyViewModel.deleteHistory();
         noteViewModel.deleteAllNotes();
+        photoViewModel.deleteAllPhotos();
     }
 
     private void unlockButtons() {

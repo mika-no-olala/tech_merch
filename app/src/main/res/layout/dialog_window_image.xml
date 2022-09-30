@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:background="@color/transparent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/image_example"
+        android:background="@color/pink_antique"/>
+
+    <LinearLayout
+        android:id="@+id/twoButtons"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/negative"
+            style="@style/button"
+            android:layout_weight="1"
+            android:text="@string/back"
+            android:background="@drawable/button_dark"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="4sp"
+            android:layout_marginEnd="10sp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/positive"
+            style="@style/button"
+            android:layout_weight="1"
+            android:text="@string/delete"
+            android:background="@drawable/button_danger"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="4sp"/>
+    </LinearLayout>
+
+</LinearLayout>

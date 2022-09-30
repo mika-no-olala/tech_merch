@@ -528,4 +528,8 @@ public class CreateRequestActivity extends AppCompatActivity {
         pages.get(6).setYouCanGoNext(comment.length()>1);
         request.setREQ_COMMENT(comment);
     }
+
+    public boolean checkPermissions() {
+        return Ius.checkPermissionsCamera(this);
+    }
 }
