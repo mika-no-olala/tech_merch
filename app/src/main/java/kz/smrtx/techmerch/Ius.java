@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -417,6 +418,16 @@ public class Ius extends Application {
         }catch (Exception e){
             Log.e("WriteToFile", e.toString());
         }
+    }
+
+    public static void deleteFromDirectory(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            Log.e("deleteFile", "file does not exist");
+            return;
+        }
+
+        file.delete();
     }
 
 }

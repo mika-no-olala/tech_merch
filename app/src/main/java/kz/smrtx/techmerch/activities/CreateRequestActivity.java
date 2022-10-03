@@ -4,20 +4,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.adapters.CardAdapterImages;
+import kz.smrtx.techmerch.adapters.CardAdapterNotes;
 import kz.smrtx.techmerch.fragments.OperationsFragment;
 import kz.smrtx.techmerch.fragments.RCAddressFragment;
 import kz.smrtx.techmerch.fragments.RCEndingFragment;
@@ -28,9 +40,12 @@ import kz.smrtx.techmerch.fragments.RCTypeFragment;
 import kz.smrtx.techmerch.fragments.RCWorkFragment;
 import kz.smrtx.techmerch.fragments.RCWorkSubtypeFragment;
 import kz.smrtx.techmerch.items.RequestPages;
+import kz.smrtx.techmerch.items.entities.Note;
+import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.entities.Visit;
 import kz.smrtx.techmerch.items.viewmodels.ElementViewModel;
+import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
 
@@ -42,6 +57,7 @@ public class CreateRequestActivity extends AppCompatActivity {
     private VisitViewModel visitViewModel;
     private RequestViewModel requestViewModel;
     private Request request;
+    private PhotoViewModel photoViewModel;
 
     private boolean guarantee = true;
     private boolean repair = false;
@@ -51,6 +67,7 @@ public class CreateRequestActivity extends AppCompatActivity {
     private static final String REPAIR = "Ремонт";
     private static final String REPLACE = "Перемещение";
     private ArrayList<String> work = new ArrayList<>();
+    private List<Photo> photoList;
 
     private TextView percentage;
     private Button next;
@@ -70,6 +87,8 @@ public class CreateRequestActivity extends AppCompatActivity {
     private TextView specialSummary;
     private TextView executorSummary;
     private TextView commentSummary;
+    private RecyclerView recyclerView;
+
     private Button sendSummary;
     private View summaryView;
 
@@ -83,6 +102,7 @@ public class CreateRequestActivity extends AppCompatActivity {
 
         visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
         requestViewModel = new ViewModelProvider(this).get(RequestViewModel.class);
+        photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
 
         createPagesRoute();
 
@@ -99,7 +119,6 @@ public class CreateRequestActivity extends AppCompatActivity {
         containerForFragment = findViewById(R.id.container);
 
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.container);
-        Log.e("sss", String.valueOf(f));
 
         setPercentage(pageIndex);
 
@@ -214,6 +233,7 @@ public class CreateRequestActivity extends AppCompatActivity {
         specialSummary = findViewById(R.id.special);
         executorSummary = findViewById(R.id.executor);
         commentSummary = findViewById(R.id.comment);
+        recyclerView = findViewById(R.id.recyclerView);
         sendSummary = findViewById(R.id.send);
         summaryView = findViewById(R.id.summary);
 
@@ -229,6 +249,7 @@ public class CreateRequestActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void makeSummaryFragment() {
+        setAdapter();
         cloud.animate().translationY(cloud.getHeight()).setDuration(300);
         cloud.setVisibility(View.GONE);
 
@@ -321,6 +342,38 @@ public class CreateRequestActivity extends AppCompatActivity {
         next.setVisibility(View.VISIBLE);
     }
 
+    private void setAdapter() {
+        RecyclerView.LayoutManager layoutManager;
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+
+        if (photoList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            return;
+        }
+
+        CardAdapterImages cardAdapter = new CardAdapterImages(photoList, this);
+        recyclerView.setAdapter(cardAdapter);
+        cardAdapter.setOnItemClickListener(position -> {
+            createDialog(photoList.get(position).getREP_PHOTO());
+        });
+    }
+
+    private void createDialog(String photoName) {
+        Dialog dialog = Ius.createDialog(this, R.layout.dialog_window_image, "");
+        ImageView image = dialog.findViewById(R.id.image);
+
+        File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + photoName);
+
+        if (file.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            image.setImageBitmap(bitmap);
+        }
+
+        dialog.show();
+    }
+
     private boolean isNull(String text) {
         if (text==null)
             return true;
@@ -396,6 +449,7 @@ public class CreateRequestActivity extends AppCompatActivity {
             case 6:
                 request.setREQ_USE_NAME_APPOINTED(null);
                 request.setREQ_USE_CODE_APPOINTED(0);
+                photoViewModel.deleteRequestPhotos(request.getREQ_CODE());
                 break;
         }
     }
@@ -410,6 +464,10 @@ public class CreateRequestActivity extends AppCompatActivity {
         }
         pageIndex = indexBackTo;
         return indexBackTo;
+    }
+
+    private void setImages() {
+
     }
 
     private void createPagesRoute() {
@@ -527,6 +585,24 @@ public class CreateRequestActivity extends AppCompatActivity {
     public void setComment(String comment) {
         pages.get(6).setYouCanGoNext(comment.length()>1);
         request.setREQ_COMMENT(comment);
+    }
+
+    public void setPhotos(String[] photos) {
+        Log.i("setPhotos", Arrays.toString(photos));
+        photoList = new ArrayList<>();
+        String userCode = String.valueOf(request.getREQ_USE_CODE());
+        int roleCode = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_ROLE_CODE));
+
+        for (String s : photos) {
+            if (s==null)
+                continue;
+
+            if (s.length()>0) {
+                photoList.add(new Photo(s, request.getREQ_CODE(), s + ".jpg", userCode, roleCode, "yes"));
+            }
+        }
+
+        photoViewModel.insertPhotos(photoList);
     }
 
     public boolean checkPermissions() {

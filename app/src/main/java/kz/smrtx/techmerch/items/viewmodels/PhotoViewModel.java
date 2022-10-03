@@ -31,6 +31,9 @@ public class PhotoViewModel extends AndroidViewModel {
     public void deleteAllPhotos() {
         photoRepository.deleteAllPhotos();
     }
+    public void deleteRequestPhotos(String requestCode) {
+        photoRepository.deleteRequestPhotos(requestCode);
+    }
     public LiveData<List<Photo>> getPhotosByTMR(String requestCode) {
         return photoRepository.getPhotosByTMR(requestCode);
     }

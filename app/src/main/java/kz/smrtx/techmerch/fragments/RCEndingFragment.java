@@ -1,6 +1,7 @@
 package kz.smrtx.techmerch.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +31,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -56,15 +59,10 @@ public class RCEndingFragment extends Fragment {
     private ImageView photo_3;
     private ImageView photo_4;
     private ImageView photo_5;
-    private String photoName_1 = "";
-    private String photoName_2 = "";
-    private String photoName_3 = "";
-    private String photoName_4 = "";
-    private String photoName_5 = "";
+    private String[] photoNames = new String[5];
 
     public static RCEndingFragment getInstance() {
-        RCEndingFragment fragment = new RCEndingFragment();
-        return fragment;
+        return new RCEndingFragment();
     }
 
     @SuppressLint("SetTextI18n")
@@ -120,23 +118,24 @@ public class RCEndingFragment extends Fragment {
             }
         });
 
-        photo_1.setOnClickListener(photo -> {
-            captureImage(1);
-        });
-        photo_2.setOnClickListener(photo -> {
-            captureImage(2);
-        });
-        photo_3.setOnClickListener(photo -> {
-            captureImage(3);
-        });
-        photo_4.setOnClickListener(photo -> {
-            captureImage(4);
-        });
-        photo_5.setOnClickListener(photo -> {
-            captureImage(5);
-        });
+        photo_1.setOnClickListener(photo -> redirectClick(1));
+        photo_2.setOnClickListener(photo -> redirectClick(2));
+        photo_3.setOnClickListener(photo -> redirectClick(3));
+        photo_4.setOnClickListener(photo -> redirectClick(4));
+        photo_5.setOnClickListener(photo -> redirectClick(5));
 
         return view;
+    }
+
+    private void redirectClick(int photoNumber) {
+        chooseImageByNumber(photoNumber);
+        String tag = String.valueOf(chosenImageView.getTag());
+        if(tag.equals("changed")) {
+            createDialog(chosenImageView);
+            return;
+        }
+
+        captureImage(photoNumber);
     }
 
     private void getList() {
@@ -165,6 +164,7 @@ public class RCEndingFragment extends Fragment {
 
             Uri uri = FileProvider.getUriForFile(this.requireContext(), "com.example.android.fileprovider", imageFile);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
             startActivityForResult(cameraIntent, 121);
         }
     }
@@ -176,35 +176,41 @@ public class RCEndingFragment extends Fragment {
     }
 
     private File getImageFile(int photoNumber) {
-        String fileName = Ius.generateUniqueCode(this.getContext(), "img");
-        switch (photoNumber) {
-            case 1:
-                photoName_1 = fileName;
-                currentImageView = photo_1;
-                break;
-            case 2:
-                photoName_2 = fileName;
-                currentImageView = photo_2;
-                break;
-            case 3:
-                photoName_3 = fileName;
-                currentImageView = photo_3;
-                break;
-            case 4:
-                photoName_4 = fileName;
-                currentImageView = photo_4;
-                break;
-            case 5:
-                photoName_5 = fileName;
-                currentImageView = photo_5;
-                break;
-        }
+        String userCode = Ius.readSharedPreferences(this.getContext(), Ius.USER_CODE);
 
         File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File imageFile = null;
         try {
-            imageFile = File.createTempFile(fileName, "jpg", storageDir);
+            imageFile = File.createTempFile("u"+userCode+"r", ".jpg", storageDir);
             currentImagePath = imageFile.getAbsolutePath();
+
+            int indexOfLastSlash = currentImagePath.lastIndexOf('/') + 1;
+            int indexOfDot = currentImagePath.lastIndexOf('.');
+            String fileName = currentImagePath.substring(indexOfLastSlash, indexOfDot);
+
+            switch (photoNumber) {
+                case 1:
+                    photoNames[0] = fileName;
+                    currentImageView = photo_1;
+                    break;
+                case 2:
+                    photoNames[1] = fileName;
+                    currentImageView = photo_2;
+                    break;
+                case 3:
+                    photoNames[2] = fileName;
+                    currentImageView = photo_3;
+                    break;
+                case 4:
+                    photoNames[3] = fileName;
+                    currentImageView = photo_4;
+                    break;
+                case 5:
+                    photoNames[4] = fileName;
+                    currentImageView = photo_5;
+                    break;
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             createToast(getResources().getString(R.string.error), false);
@@ -217,30 +223,36 @@ public class RCEndingFragment extends Fragment {
         Bitmap bitmap = BitmapFactory.decodeFile(currentImagePath);
         currentImageView.setImageBitmap(bitmap);
         currentImageView.setPadding(0, 0, 0, 0);
-        changeNumberOfActiveImg(1);
+        ((CreateRequestActivity)requireActivity()).setPhotos(photoNames);
+
+        String tag = String.valueOf(currentImageView.getTag());
+        if (!tag.equals("changed")) {
+            currentImageView.setTag("changed");
+            changeNumberOfActiveImg(1);
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void changeNumberOfActiveImg(int changing) {
+        if ((numberOfActiveImg==5 && changing>0) || (numberOfActiveImg==1 && changing<0))
+            return;
+
         numberOfActiveImg = numberOfActiveImg + changing;
 
-        if (changing>0) {
-            if (numberOfActiveImg==5)
-                return;
+        Log.i("ActiveImg", "number of active images: " + numberOfActiveImg);
 
+        if (changing>0) {
             chooseImageByNumber(numberOfActiveImg);
             chosenCardView.setVisibility(View.VISIBLE);
         }
         else if (changing<0) {
-            if (numberOfActiveImg==1)
-                return;
-
             chooseImageByNumber(numberOfActiveImg+1);
             chosenCardView.setVisibility(View.INVISIBLE);
 
             chooseImageByNumber(numberOfActiveImg);
             chosenImageView.setPadding(22, 22, 22, 22);
             chosenImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_photo));
+            chosenImageView.setTag("");
         }
     }
 
@@ -267,6 +279,15 @@ public class RCEndingFragment extends Fragment {
                 chosenCardView = view.findViewById(R.id.card_5);
                 break;
         }
+    }
+
+    private void createDialog(ImageView imageClicked) {
+        Dialog dialog = Ius.createDialog(this.getContext(), R.layout.dialog_window_image, "");
+        ImageView image = dialog.findViewById(R.id.image);
+
+        image.setImageDrawable(imageClicked.getDrawable());
+
+        dialog.show();
     }
 
     private void createToast(String text, boolean success) {

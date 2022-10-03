@@ -27,6 +27,9 @@ public interface PhotoDao {
     @Query("delete from ST_REQUEST_PHOTO")
     void deleteAllPhotos();
 
+    @Query("delete from ST_REQUEST_PHOTO where REP_REQ_CODE=:requestCode")
+    void deleteRequestPhotos(String requestCode);
+
     @Query("select * from ST_REQUEST_PHOTO where REP_REQ_CODE=:requestCode and REP_USE_ROLE=5")
     LiveData<List<Photo>> getPhotosByTMR(String requestCode);
 

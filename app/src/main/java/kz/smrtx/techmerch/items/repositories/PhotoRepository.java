@@ -30,6 +30,9 @@ public class PhotoRepository {
     public void deleteAllPhotos() {
         new DeleteAllPhotosAsyncTask(photoDao).execute();
     }
+    public void deleteRequestPhotos(String requestCode) {
+        new DeleteRequestPhotosAsyncTask(photoDao).execute(requestCode);
+    }
     public LiveData<List<Photo>> getPhotosByTech(String requestCode) { return photoDao.getPhotosByTech(requestCode); }
     public LiveData<List<Photo>> getPhotosByTMR(String requestCode) { return photoDao.getPhotosByTMR(requestCode); }
 
@@ -83,6 +86,19 @@ public class PhotoRepository {
         @Override
         protected Void doInBackground(Void... voids) {
             photoDao.deleteAllPhotos();
+            return null;
+        }
+    }
+    private static class DeleteRequestPhotosAsyncTask extends AsyncTask<String, Void, Void> {
+        private final PhotoDao photoDao;
+
+        private DeleteRequestPhotosAsyncTask(PhotoDao photoDao) {
+            this.photoDao = photoDao;
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            photoDao.deleteRequestPhotos(strings[0]);
             return null;
         }
     }

@@ -15,6 +15,10 @@
     <string name="request_is_loading">Загружаем заявку…</string>
     <string name="server_error">Ошибка подключения к серверу</string>
     <string name="uploading_data_error">Ошибка при отправке данных</string>
+    <string name="downloading_images_data_error">Ошибка при скачивании фото</string>
+    <string name="no_write_permission_error">Ошибка: приложению нужен доступ к файловой системе</string>
+    <string name="not_all_photos_error">Синхронизация завершена. Но не все фото были получены</string>
+    <string name="sync_ended_errors">Синхронизация завершена. Но с некоторыми ошибками</string>
     <string name="executor_error">Введите исполнителя правильно, выберете из списка</string>
     <string name="success">Успех</string>
     <string name="rejected">Отклонено</string>
@@ -52,6 +56,7 @@
     <string name="approve">Одобрить</string>
     <string name="perform">Выполнить</string>
     <string name="delete">Удалить</string>
+    <string name="reshoot">Переснять</string>
     <string name="get_started">Приступить к выполнению</string>
     <string name="short_example">Короткий текст</string>
     <string name="start_work">Начать работу</string>

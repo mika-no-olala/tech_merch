@@ -27,8 +27,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,6 +87,9 @@ public class SyncActivity extends AppCompatActivity {
     private Button repeat;
     private ImageView animationStopped;
     private GifImageView animation;
+
+    private ArrayList<String> imagesUrlForDownload = new ArrayList<>();
+    private ArrayList<String> allImagesUrl = new ArrayList<>();
 
     private RequestViewModel requestViewModel;
     private SessionViewModel sessionViewModel;
@@ -292,7 +299,9 @@ public class SyncActivity extends AppCompatActivity {
                 else
                     lastSync.setText(getResources().getString(R.string.sync_server_connection));
                 unlockButtons();
-            }, this::endSync);
+            }, () -> {
+                new DownloadImages().execute();
+            });
     }
 
     private void handleResults(JSONObject obj, String tableName) throws JSONException {
@@ -354,6 +363,7 @@ public class SyncActivity extends AppCompatActivity {
                         List<Photo> photos = new Gson().fromJson(obj.getJSONArray("data").toString(), photoType);
                         if (photos.size() > 0) {
                             photoViewModel.insertPhotos(photos);
+                            makeListForDownload(photos);
                         }
                         break;
                 }
@@ -363,12 +373,173 @@ public class SyncActivity extends AppCompatActivity {
         }
     }
 
-    private void endSync() {
+    @SuppressLint("StaticFieldLeak")
+    private class DownloadImages extends AsyncTask<Void, Void, Void> {
+        
+        int progressPercentage = 0;
+        int progress = 0;
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+            syncInfo.setText("Скачивание фото: " + progress + "/" + imagesUrlForDownload.size());
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            syncInfo.setText("Очистка мусора...");
+            dataActualization();
+            endSync(true);
+        }
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            downloadImages();
+            return null;
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            syncInfo.setText(getResources().getString(R.string.downloading_images_data_error));
+            Log.e("DownloadImages", "onCancelled");
+            unlockButtons();
+        }
+        
+        private void downloadImages() {
+            try {
+                for (String downloadUrl: imagesUrlForDownload) {
+                    URL url = new URL(Ius.PHOTO_URL+downloadUrl);
+                    HttpURLConnection c = (HttpURLConnection) url.openConnection();
+                    c.setRequestMethod("GET");
+                    c.connect();
+                    
+                    if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                        Log.e("downloadImages", "Server returned HTTP " + c.getResponseCode()
+                                + " " + c.getResponseMessage());
+                        continue;
+                    }
+
+                    String[] separated = downloadUrl.split("/");
+
+                    if (!isExternalStorageWritable()) {
+                        syncInfo.setText(getResources().getString(R.string.no_write_permission_error));
+                        unlockButtons();
+                        return;
+                    }
+                    String root = Objects.requireNonNull(getExternalFilesDir(Environment.DIRECTORY_PICTURES)).toString();
+                    File myDir = new File(root + separated[0]);
+                    myDir.mkdirs();
+
+                    String fname = separated[1];
+
+                    File file = new File(myDir, fname);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+
+                    if (!file.exists()) {
+                        try {
+                            file.createNewFile();
+                        } catch (IOException e) {
+                            syncInfo.setText(getResources().getString(R.string.not_all_photos_error));
+                            Log.e("downloadImages-no-exist", e.getLocalizedMessage());
+                            unlockButtons();
+                        }
+                    }
+
+                    FileOutputStream fos = new FileOutputStream(file);
+                    InputStream is = c.getInputStream();
+
+                    int fileLength = c.getContentLength();
+
+                    byte[] buffer = new byte[1024];
+                    int len1;
+                    long total = 0;
+                    progressPercentage = 0;
+                    progress++;
+
+                    while ((len1 = is.read(buffer)) != -1) {
+                        fos.write(buffer, 0, len1);
+                        total += len1;
+                        if (fileLength > 0){
+                            progressPercentage = (int)(total*100 / fileLength);
+                            publishProgress();
+                        }
+                    }
+
+                    fos.close();
+                    is.close();
+                }
+            } catch (Exception e) {
+                syncInfo.setText(getResources().getString(R.string.downloading_images_data_error));
+                Log.e("downloadImages-catch", e.getLocalizedMessage());
+                unlockButtons();
+            }
+        }
+    }
+
+    private void makeListForDownload(List<Photo> photoList) {
+        for (Photo p : photoList) {
+            if (p.getREP_PHOTO()==null)
+                continue;
+
+            allImagesUrl.add(p.getREP_PHOTO());
+
+            if (isFileExist(p.getREP_PHOTO()))
+                continue;
+            
+            imagesUrlForDownload.add(p.getREP_PHOTO());
+        }
+        
+        Log.e("sss", "need to download: " + imagesUrlForDownload.size());
+    }
+
+    private boolean isFileExist(String photoName) {
+        String path = String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+        File file = new File(path + "/" + photoName);
+        return file.exists();
+    }
+
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
+    private void endSync(boolean success) {
         unlockButtons();
         startWork.setEnabled(true);
         date = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
         Ius.writeSharedPreferences(context, Ius.LAST_SYNC, date);
-        lastSync.setText(getResources().getString(R.string.sync_success));
+        if (success)
+            lastSync.setText(getResources().getString(R.string.sync_success));
+        else
+            lastSync.setText(getResources().getString(R.string.sync_ended_errors));
+    }
+
+    private void dataActualization(){
+        String path = Objects.requireNonNull(getExternalFilesDir(Environment.DIRECTORY_PICTURES)).toString();
+        File myDir = new File(path);
+        try {
+            File[] files = myDir.listFiles();
+            if(files != null) {
+                for (File file : files) {
+                    boolean existInSyncFile = false;
+                    for (int j = 0; j < allImagesUrl.size(); j++) {
+                        if ((file.getName()).equals(allImagesUrl.get(j))) {
+                            existInSyncFile = true;
+                        }
+                    }
+                    if (!existInSyncFile) {
+                        file.delete();
+                    }
+                }
+            }
+        }catch (NullPointerException e){
+            Log.e("dataActualization", e.getLocalizedMessage());
+            syncInfo.setText(getResources().getString(R.string.sync_ended_errors));
+            endSync(false);
+        }
     }
 
     private void uploadFile(String zipName, String useCode) {
@@ -455,10 +626,8 @@ public class SyncActivity extends AppCompatActivity {
     }
 
     private void clearTablesAndVariables(){
-//        imageUrlListForDownload.clear();
-//        fileUrlListForDownload.clear();
-//        allImageUrlList.clear();
-//        folders.clear();
+        imagesUrlForDownload.clear();
+        allImagesUrl.clear();
 
         visitViewModel.deleteAllVisits();
         sessionViewModel.deleteAllSessions();

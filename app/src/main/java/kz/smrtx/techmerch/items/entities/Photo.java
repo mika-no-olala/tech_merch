@@ -8,9 +8,8 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "ST_REQUEST_PHOTO")
 public class Photo {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NonNull
-    private int REP_ID;
     @SerializedName("REP_CODE")
     private String REP_CODE;
     @SerializedName("REP_REQ_CODE")
@@ -24,20 +23,21 @@ public class Photo {
     @SerializedName("NES_TO_UPDATE")
     private String NES_TO_UPDATE;
 
+    public Photo(@NonNull String REP_CODE, String REP_REQ_CODE, String REP_PHOTO, String REP_USE_CODE, int REP_USE_ROLE, String NES_TO_UPDATE) {
+        this.REP_CODE = REP_CODE;
+        this.REP_REQ_CODE = REP_REQ_CODE;
+        this.REP_PHOTO = REP_PHOTO;
+        this.REP_USE_CODE = REP_USE_CODE;
+        this.REP_USE_ROLE = REP_USE_ROLE;
+        this.NES_TO_UPDATE = NES_TO_UPDATE;
+    }
+
     public String getNES_TO_UPDATE() {
         return NES_TO_UPDATE;
     }
 
     public void setNES_TO_UPDATE(String NES_TO_UPDATE) {
         this.NES_TO_UPDATE = NES_TO_UPDATE;
-    }
-
-    public int getREP_ID() {
-        return REP_ID;
-    }
-
-    public void setREP_ID(int REP_ID) {
-        this.REP_ID = REP_ID;
     }
 
     public String getREP_CODE() {
