@@ -48,9 +48,11 @@
                     android:id="@+id/textSyncInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/short_example"
+                    android:text="@string/text_example"
                     android:textSize="16sp"
-                    android:fontFamily="@font/bandera_pro_medium"/>
+                    android:fontFamily="@font/bandera_pro_medium"
+                    android:paddingHorizontal="20sp"
+                    android:textAlignment="center"/>
 
                 <TextView
                     android:id="@+id/lastSync"
@@ -61,7 +63,8 @@
                     android:textColor="@color/light_purple"
                     android:fontFamily="@font/bandera_pro_medium"
                     android:textAlignment="center"
-                    android:layout_marginTop="10sp"/>
+                    android:layout_marginTop="10sp"
+                    android:paddingHorizontal="20sp"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/buttons"

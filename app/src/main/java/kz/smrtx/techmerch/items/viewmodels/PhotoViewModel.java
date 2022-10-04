@@ -40,4 +40,7 @@ public class PhotoViewModel extends AndroidViewModel {
     public LiveData<List<Photo>> getPhotosByTech(String requestCode) {
         return photoRepository.getPhotosByTech(requestCode);
     }
+    public LiveData<List<Photo>> getPhotosForUpload() {
+        return photoRepository.getPhotosForUpload();
+    }
 }

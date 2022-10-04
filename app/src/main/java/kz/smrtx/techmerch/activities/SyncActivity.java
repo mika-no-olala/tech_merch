@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
@@ -35,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -65,6 +67,7 @@ import kz.smrtx.techmerch.items.viewmodels.SalePointViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
+import kz.smrtx.techmerch.utils.ZipManager;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -78,6 +81,7 @@ public class SyncActivity extends AppCompatActivity {
 
     private String syncCode;
 
+    private int processImagesToUpload = 1;
     private int stepCounter = 0;
     private String date;
     private final Context context = this;
@@ -90,6 +94,7 @@ public class SyncActivity extends AppCompatActivity {
 
     private ArrayList<String> imagesUrlForDownload = new ArrayList<>();
     private ArrayList<String> allImagesUrl = new ArrayList<>();
+    private List<String> allImagesToUpload = new ArrayList<>();
 
     private RequestViewModel requestViewModel;
     private SessionViewModel sessionViewModel;
@@ -144,12 +149,22 @@ public class SyncActivity extends AppCompatActivity {
 
         back.setOnClickListener(view -> finish());
     }
+
+    private void getAllPhotos() {
+        photoViewModel.getPhotosForUpload().observe(this, photos -> {
+            for (Photo p : photos) {
+                allImagesToUpload.add(p.getREP_PHOTO());
+            }
+        });
+    }
     
     private void startSync() {
         startWork.setEnabled(false);
         repeat.setEnabled(false);
         animationStopped.setVisibility(View.GONE);
         animation.setVisibility(View.VISIBLE);
+
+        getAllPhotos();
 
         Ius.refreshToken(this);
 
@@ -175,6 +190,9 @@ public class SyncActivity extends AppCompatActivity {
             if (result != null && result.size() > 0){
                 String path = Objects.requireNonNull(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)).getAbsolutePath()+"/"+Ius.DIRECTORY_FROM_SERVER+File.separator+"sync"+File.separator;
                 String zipName = syncCode + ".zip";
+
+                if (allImagesToUpload.size()>0)
+                    uploadPhotoFiles();
 
                 Ius.createAndWriteToFile(result, path, zipName);
                 uploadFile(zipName,  Ius.readSharedPreferences(context, Ius.USER_CODE));
@@ -413,6 +431,8 @@ public class SyncActivity extends AppCompatActivity {
                     HttpURLConnection c = (HttpURLConnection) url.openConnection();
                     c.setRequestMethod("GET");
                     c.connect();
+
+                    Log.e("sssurl", url.toString());
                     
                     if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
                         Log.e("downloadImages", "Server returned HTTP " + c.getResponseCode()
@@ -420,20 +440,14 @@ public class SyncActivity extends AppCompatActivity {
                         continue;
                     }
 
-                    String[] separated = downloadUrl.split("/");
-
                     if (!isExternalStorageWritable()) {
                         syncInfo.setText(getResources().getString(R.string.no_write_permission_error));
                         unlockButtons();
                         return;
                     }
                     String root = Objects.requireNonNull(getExternalFilesDir(Environment.DIRECTORY_PICTURES)).toString();
-                    File myDir = new File(root + separated[0]);
-                    myDir.mkdirs();
 
-                    String fname = separated[1];
-
-                    File file = new File(myDir, fname);
+                    File file = new File(root, downloadUrl);
                     if (file.exists()) {
                         file.delete();
                     }
@@ -472,9 +486,8 @@ public class SyncActivity extends AppCompatActivity {
                     is.close();
                 }
             } catch (Exception e) {
-                syncInfo.setText(getResources().getString(R.string.downloading_images_data_error));
+
                 Log.e("downloadImages-catch", e.getLocalizedMessage());
-                unlockButtons();
             }
         }
     }
@@ -511,6 +524,7 @@ public class SyncActivity extends AppCompatActivity {
         startWork.setEnabled(true);
         date = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
         Ius.writeSharedPreferences(context, Ius.LAST_SYNC, date);
+        syncInfo.setText(getResources().getString(R.string.finished));
         if (success)
             lastSync.setText(getResources().getString(R.string.sync_success));
         else
@@ -518,6 +532,7 @@ public class SyncActivity extends AppCompatActivity {
     }
 
     private void dataActualization(){
+        Log.e("sss", allImagesUrl.toString());
         String path = Objects.requireNonNull(getExternalFilesDir(Environment.DIRECTORY_PICTURES)).toString();
         File myDir = new File(path);
         try {
@@ -525,12 +540,14 @@ public class SyncActivity extends AppCompatActivity {
             if(files != null) {
                 for (File file : files) {
                     boolean existInSyncFile = false;
-                    for (int j = 0; j < allImagesUrl.size(); j++) {
-                        if ((file.getName()).equals(allImagesUrl.get(j))) {
+                    for (String str : allImagesUrl) {
+                        if ((file.getName()).equals(str)) {
                             existInSyncFile = true;
+                            break;
                         }
                     }
                     if (!existInSyncFile) {
+                        Log.e("dataActualization", "delete file " + file.getName());
                         file.delete();
                     }
                 }
@@ -582,6 +599,42 @@ public class SyncActivity extends AppCompatActivity {
         });
     }
 
+    private void uploadPhotoFiles(){
+        String path = String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+
+
+        for (String img : allImagesToUpload) {
+            File image = new File(path + "/" + img);
+            if (!image.exists()) {
+                Log.e("uploadPhotoFiles", "image does not exist");
+                continue;
+            }
+
+            RequestBody fbody = RequestBody.create(MediaType.parse("multipart/form-data"), image);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("photo", img, fbody);
+            RequestBody useCodeBody = RequestBody.create(MediaType.parse("multipart/form-data"), Ius.readSharedPreferences(this, Ius.USER_CODE));
+            Ius.getApiService().uploadFile(useCodeBody, body).enqueue(new Callback<JSONObject>() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("uploadPhoto Response", String.valueOf(response.code()));
+                        return;
+                    }
+                    syncInfo.setText("Отправка фото: " + processImagesToUpload + "/" + allImagesToUpload.size());
+                    Log.e("sss", "Фото " + img + " отправлено - " + response.code());
+                    processImagesToUpload++;
+                }
+
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onFailure(Call<JSONObject> call, Throwable t) {
+                    Log.e("uploadPhoto Failure", t.getMessage());
+                }
+            });
+        }
+    }
+
     public static String getFileChecksum(MessageDigest digest, File file) throws IOException {
         //Get file input stream for reading the file content
         FileInputStream fis = new FileInputStream(file);
@@ -628,6 +681,7 @@ public class SyncActivity extends AppCompatActivity {
     private void clearTablesAndVariables(){
         imagesUrlForDownload.clear();
         allImagesUrl.clear();
+        allImagesToUpload.clear();
 
         visitViewModel.deleteAllVisits();
         sessionViewModel.deleteAllSessions();

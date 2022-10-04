@@ -35,4 +35,7 @@ public interface PhotoDao {
 
     @Query("select * from ST_REQUEST_PHOTO where REP_REQ_CODE=:requestCode and REP_USE_ROLE=4")
     LiveData<List<Photo>> getPhotosByTech(String requestCode);
+
+    @Query("select * from ST_REQUEST_PHOTO where NES_TO_UPDATE='yes'")
+    LiveData<List<Photo>> getPhotosForUpload();
 }

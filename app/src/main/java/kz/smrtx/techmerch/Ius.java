@@ -92,7 +92,7 @@ public class Ius extends Application {
     public static final String DIRECTORY_FROM_SERVER = "prod";
     public static final String KEY_SYN_ID = "KEY_SYN_ID";
 
-    public static final String PHOTO_URL = "https://videobank.t2m.kz/services-manager/photo/";
+    public static final String PHOTO_URL = "https://dts2.bctu.tech//services-sync-manager/photo/";
 
     public static Ius getSingleton() {
         return singleton;
@@ -134,7 +134,7 @@ public class Ius extends Application {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://videobank.t2m.kz/")
+                .baseUrl("https://dts2.bctu.tech/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)

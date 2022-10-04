@@ -65,6 +65,7 @@
     <string name="synchronization_description">Обмен данными с центральным сервером</string>
     <string name="last_sync">Последняя синхронизация</string>
     <string name="sync_success">Синхронизация прошла успешно</string>
+    <string name="finished">Завершено</string>
     <string name="sync_server_connection">Ошибка: не удалось связаться с сервером</string>
     <string name="sync_server_error">Ошибка при синхронизации. Повторите попытку</string>
     <string name="server_timeout">Ошибка: запрос на сервер занял слишком много времени</string>

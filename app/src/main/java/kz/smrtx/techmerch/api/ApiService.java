@@ -1,5 +1,7 @@
 package kz.smrtx.techmerch.api;
 
+import org.json.JSONObject;
+
 import io.reactivex.Observable;
 import kz.smrtx.techmerch.items.reqres.JsonResponse;
 import kz.smrtx.techmerch.items.reqres.LoginResponse;
@@ -39,4 +41,8 @@ public interface ApiService {
     @Multipart
     @POST("services-sync-manager/uploadSyncFile")
     Call<ResponseBody> uploadSyncFile(@Part("USE_CODE") RequestBody use_code, @Part MultipartBody.Part file);
+
+    @Multipart
+    @POST("services-sync-manager/uploadFile")
+    Call<JSONObject> uploadFile(@Part("USE_CODE") RequestBody use_code, @Part MultipartBody.Part file);
 }

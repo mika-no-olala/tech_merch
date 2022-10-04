@@ -35,6 +35,7 @@ public class PhotoRepository {
     }
     public LiveData<List<Photo>> getPhotosByTech(String requestCode) { return photoDao.getPhotosByTech(requestCode); }
     public LiveData<List<Photo>> getPhotosByTMR(String requestCode) { return photoDao.getPhotosByTMR(requestCode); }
+    public LiveData<List<Photo>> getPhotosForUpload() { return photoDao.getPhotosForUpload(); }
 
     private static class InsertPhotoAsyncTask extends AsyncTask<Photo, Void, Void> {
         private final PhotoDao photoDao;
