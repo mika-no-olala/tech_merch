@@ -3,6 +3,8 @@ package kz.smrtx.techmerch.fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,11 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
@@ -30,6 +37,7 @@ import kz.smrtx.techmerch.utils.GPSTracker;
 public class OISalePointFragment extends Fragment {
 
     private String outletCode = "";
+    private ImageView image;
     private TextView name;
     private TextView code;
     private TextView requests;
@@ -97,6 +105,7 @@ public class OISalePointFragment extends Fragment {
     }
     
     private void initializeTextViews(View view) {
+        image = view.findViewById(R.id.image);
         name = view.findViewById(R.id.name);
         code = view.findViewById(R.id.code);
         requests = view.findViewById(R.id.requests);
@@ -163,6 +172,7 @@ public class OISalePointFragment extends Fragment {
         Activity context;
         int quantityNotes = 0;
         int quantityRequests = 0;
+        Bitmap bitmap = null;
 
         public GetDataNotes(Activity context, NoteViewModel noteViewModel, HistoryViewModel historyViewModel) {
             this.context = context;
@@ -173,16 +183,35 @@ public class OISalePointFragment extends Fragment {
         @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(Void unused) {
+            if (bitmap!=null) {
+                image.setImageBitmap(bitmap);
+                image.setPadding(0, 0, 0, 0);
+            }
             requests.setText(": " + quantityRequests);
             notes.setText(": " + quantityNotes);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
+            setImage();
             quantityNotes = noteViewModel.getNumberFromSalePoint(Integer.parseInt(salePoint.getCode()));
             quantityRequests = historyViewModel.getRequestsNumberOnSalePointByUser(
                     Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_CODE)), Integer.parseInt(salePoint.getCode()));
             return null;
+        }
+        private void setImage() {
+            try {
+                URL url = new URL(Ius.SP_PHOTO_URL + salePoint.getId() + ".jpg");
+                try {
+                    bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                } catch (IOException e) {
+                    Log.w("setImage", "no image for sale point");
+                }
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                Log.e("setImage", "can't do url");
+            }
         }
     }
 

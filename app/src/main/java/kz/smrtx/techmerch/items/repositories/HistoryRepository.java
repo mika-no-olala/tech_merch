@@ -41,6 +41,13 @@ public class HistoryRepository {
         return historyDao.getTMRCodeByRequest(requestCode);
     }
 
+    public LiveData<List<History>> getHistoryListWhichAreRelatedToAndFinished(int userCode) {
+        return historyDao.getHistoryListWhichAreRelatedToAndFinished(userCode);
+    }
+    public LiveData<List<History>> getHistoryListWhichAreRelatedToAndFinished(int userCode, int salePointCode) {
+        return historyDao.getHistoryListWhichAreRelatedToAndFinished(userCode, salePointCode);
+    }
+
     private static class insertHistoryAsyncTask extends AsyncTask<List<History>, Void, Void>{
         private HistoryDao historyDao;
         public insertHistoryAsyncTask(HistoryDao historyDao) {

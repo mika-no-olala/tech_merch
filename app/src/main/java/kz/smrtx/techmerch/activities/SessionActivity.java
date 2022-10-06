@@ -155,4 +155,8 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
             }
         });
     }
+
+    public boolean checkPermissions() {
+        return Ius.checkPermissionsCamera(this);
+    }
 }

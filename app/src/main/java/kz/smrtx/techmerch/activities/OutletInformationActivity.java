@@ -17,16 +17,19 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.fragments.OISalePointFragment;
 import kz.smrtx.techmerch.fragments.OITechnicFragment;
 import kz.smrtx.techmerch.fragments.OperationsFragment;
+import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.entities.Visit;
 import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
+import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
@@ -43,6 +46,7 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
     private ChoosePointsViewModel choosePointsViewModel;
     private VisitViewModel visitViewModel;
     private UserViewModel userViewModel;
+    private PhotoViewModel photoViewModel;
     private ArrayList<String> pageNames = new ArrayList<>();
 
     private ScrollView scrollView;
@@ -63,6 +67,7 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
             visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
             choosePointsViewModel = new ViewModelProvider(this).get(ChoosePointsViewModel.class);
             userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+            photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
             getRequest(arguments.get("requestCode").toString());
         }
         else if(scenario.equals("detail")) {
@@ -149,13 +154,28 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
         });
     }
 
-    public void sendRequest(String comment, boolean accept) {
+    public void sendRequest(String comment, String[] photos, boolean accept) {
+        List<Photo> photoList = new ArrayList<>();
+        String userCode = String.valueOf(request.getREQ_USE_CODE_APPOINTED());
+        int roleCode = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_ROLE_CODE));
+
+        for (String s : photos) {
+            if (s==null)
+                continue;
+
+            if (s.length()>0) {
+                photoList.add(new Photo(s, request.getREQ_CODE(), s + ".jpg", userCode, roleCode, "yes"));
+            }
+        }
+        if (photoList.size()>0)
+            photoViewModel.insertPhotos(photoList);
+
+        request.setREQ_COMMENT(comment);
+
         if (accept)
             new GetData(this, historyViewModel).execute();
         else
             new GetDataUser(this, userViewModel).execute();
-
-        request.setREQ_COMMENT(comment);
     }
 
     private void setGeneralData() {

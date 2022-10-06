@@ -33,6 +33,7 @@ public class CardAdapterHistory extends RecyclerView.Adapter<CardAdapterHistory.
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
         public TextView dateUpdated;
+        public TextView salePoint;
         public TextView status;
         public TextView fromUser;
         public TextView comment;
@@ -42,6 +43,7 @@ public class CardAdapterHistory extends RecyclerView.Adapter<CardAdapterHistory.
         public CardViewHolder(@NonNull View itemView, onItemClickListener listener) {
             super(itemView);
             dateUpdated = itemView.findViewById(R.id.dateUpdated);
+            salePoint = itemView.findViewById(R.id.salePoint);
             status = itemView.findViewById(R.id.status);
             fromUser = itemView.findViewById(R.id.fromUser);
             comment = itemView.findViewById(R.id.comment);
@@ -67,6 +69,7 @@ public class CardAdapterHistory extends RecyclerView.Adapter<CardAdapterHistory.
         this.context = context;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setHistoryList(List<History> histories) {
         if (histories!=null) {
             this.histories = histories;
@@ -92,13 +95,18 @@ public class CardAdapterHistory extends RecyclerView.Adapter<CardAdapterHistory.
                 ), "dd.MM.yyyy HH:mm");
 
         holder.dateUpdated.setText(date);
+        holder.salePoint.setText(history.getSalePointName());
         holder.status.setText(context.getResources().getString(R.string.request_status) + ": " + history.getStatus());
-        holder.fromUser.setText(context.getResources().getString(R.string.completing) + ": " + history.getUserNameAppointed());
 
-//        if (history.getComment().length()==0)
+        if (history.getUserNameAppointed()==null)
+            holder.fromUser.setVisibility(View.GONE);
+        else
+            holder.fromUser.setText(context.getResources().getString(R.string.completing) + ": " + history.getUserNameAppointed());
+
+        if (history.getComment().length()==0)
             holder.comment.setVisibility(View.GONE);
-//        else
-//            holder.comment.setText("");
+        else
+            holder.comment.setText(history.getComment());
 
         if (history.getStatus().contains(context.getResources().getString(R.string.rejected)))
             holder.status.setTextColor(context.getResources().getColor(R.color.pink_antique));

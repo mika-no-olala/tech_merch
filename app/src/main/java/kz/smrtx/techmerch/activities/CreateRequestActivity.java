@@ -67,7 +67,7 @@ public class CreateRequestActivity extends AppCompatActivity {
     private static final String REPAIR = "Ремонт";
     private static final String REPLACE = "Перемещение";
     private ArrayList<String> work = new ArrayList<>();
-    private List<Photo> photoList;
+    private List<Photo> photoList = new ArrayList<>();
 
     private TextView percentage;
     private Button next;
@@ -466,10 +466,6 @@ public class CreateRequestActivity extends AppCompatActivity {
         return indexBackTo;
     }
 
-    private void setImages() {
-
-    }
-
     private void createPagesRoute() {
         pages.add(new RequestPages(0, "type", 0, true, true));
         pages.add(new RequestPages(1, "equipment", 14, false, false));
@@ -589,9 +585,10 @@ public class CreateRequestActivity extends AppCompatActivity {
 
     public void setPhotos(String[] photos) {
         Log.i("setPhotos", Arrays.toString(photos));
-        photoList = new ArrayList<>();
         String userCode = String.valueOf(request.getREQ_USE_CODE());
         int roleCode = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_ROLE_CODE));
+
+        photoList.clear();
 
         for (String s : photos) {
             if (s==null)
@@ -602,7 +599,8 @@ public class CreateRequestActivity extends AppCompatActivity {
             }
         }
 
-        photoViewModel.insertPhotos(photoList);
+        if (photoList.size()>0)
+            photoViewModel.insertPhotos(photoList);
     }
 
     public boolean checkPermissions() {

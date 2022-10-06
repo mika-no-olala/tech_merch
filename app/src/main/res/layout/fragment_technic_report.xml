@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.OperationsTechnicReport"
+    android:background="@color/lavender_background"
+    android:layout_marginBottom="40sp"
+    android:orientation="vertical">
+
+    <CheckBox
+        android:id="@+id/iDoItMyself"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_manually"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:textSize="16sp"
+        android:buttonTint="@color/old_linen"
+        android:button="@drawable/button_checkbox"
+        android:paddingHorizontal="10sp"
+        android:layout_marginBottom="16sp"
+        tools:targetApi="lollipop" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/consumable"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/consumable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/consumable"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:focusable="false"
+        android:cursorVisible="false"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cost_and_quantity"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/cost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/bandera_pro"
+            android:textSize="16sp"
+            android:hint="@string/cost"
+            android:textColorHint="@color/light_purple"
+            android:background="@drawable/background_edit_text"
+            android:elevation="3sp"
+            android:layout_marginBottom="18sp"
+            android:padding="10sp"
+            android:layout_marginRight="14sp"
+            android:importantForAutofill="no"
+            tools:targetApi="lollipop" />
+
+        <EditText
+            android:id="@+id/quantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/bandera_pro"
+            android:textSize="16sp"
+            android:hint="@string/quantity"
+            android:textColorHint="@color/light_purple"
+            android:background="@drawable/background_edit_text"
+            android:elevation="3sp"
+            android:layout_marginBottom="18sp"
+            android:padding="10sp"
+            android:layout_marginLeft="14sp"
+            android:importantForAutofill="no"
+            tools:targetApi="lollipop" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/fullCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/full_cost"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/send"
+        style="@style/button"
+        android:layout_marginTop="24sp"
+        android:text="@string/send" />
+
+</LinearLayout>

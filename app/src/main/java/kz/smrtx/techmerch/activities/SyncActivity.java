@@ -431,8 +431,6 @@ public class SyncActivity extends AppCompatActivity {
                     HttpURLConnection c = (HttpURLConnection) url.openConnection();
                     c.setRequestMethod("GET");
                     c.connect();
-
-                    Log.e("sssurl", url.toString());
                     
                     if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
                         Log.e("downloadImages", "Server returned HTTP " + c.getResponseCode()
@@ -504,8 +502,8 @@ public class SyncActivity extends AppCompatActivity {
             
             imagesUrlForDownload.add(p.getREP_PHOTO());
         }
-        
-        Log.e("sss", "need to download: " + imagesUrlForDownload.size());
+
+        Log.i("makeListForDownload", "need to download " + imagesUrlForDownload.size() + " photos");
     }
 
     private boolean isFileExist(String photoName) {
@@ -532,7 +530,6 @@ public class SyncActivity extends AppCompatActivity {
     }
 
     private void dataActualization(){
-        Log.e("sss", allImagesUrl.toString());
         String path = Objects.requireNonNull(getExternalFilesDir(Environment.DIRECTORY_PICTURES)).toString();
         File myDir = new File(path);
         try {
@@ -541,14 +538,16 @@ public class SyncActivity extends AppCompatActivity {
                 for (File file : files) {
                     boolean existInSyncFile = false;
                     for (String str : allImagesUrl) {
-                        if ((file.getName()).equals(str)) {
+                        if (file.getName().equals(str)) {
                             existInSyncFile = true;
                             break;
                         }
                     }
                     if (!existInSyncFile) {
-                        Log.e("dataActualization", "delete file " + file.getName());
-                        file.delete();
+                        if(file.delete())
+                            Log.i("dataActualization", "delete file " + file.getName());
+                        else
+                            Log.w("dataActualization", "can't delete " + file.getName());
                     }
                 }
             }
@@ -601,7 +600,7 @@ public class SyncActivity extends AppCompatActivity {
 
     private void uploadPhotoFiles(){
         String path = String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES));
-
+        int totalImages = allImagesToUpload.size();
 
         for (String img : allImagesToUpload) {
             File image = new File(path + "/" + img);
@@ -612,8 +611,10 @@ public class SyncActivity extends AppCompatActivity {
 
             RequestBody fbody = RequestBody.create(MediaType.parse("multipart/form-data"), image);
             MultipartBody.Part body = MultipartBody.Part.createFormData("photo", img, fbody);
-            RequestBody useCodeBody = RequestBody.create(MediaType.parse("multipart/form-data"), Ius.readSharedPreferences(this, Ius.USER_CODE));
-            Ius.getApiService().uploadFile(useCodeBody, body).enqueue(new Callback<JSONObject>() {
+
+            RequestBody fileName = RequestBody.create(MediaType.parse("multipart/form-data"), img);
+            RequestBody folderName = RequestBody.create(MediaType.parse("multipart/form-data"), "photo");
+            Ius.getApiService().uploadFile(fileName, folderName, body).enqueue(new Callback<JSONObject>() {
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
@@ -621,7 +622,7 @@ public class SyncActivity extends AppCompatActivity {
                         Log.e("uploadPhoto Response", String.valueOf(response.code()));
                         return;
                     }
-                    syncInfo.setText("Отправка фото: " + processImagesToUpload + "/" + allImagesToUpload.size());
+                    syncInfo.setText("Отправка фото: " + processImagesToUpload + "/" + totalImages);
                     Log.e("sss", "Фото " + img + " отправлено - " + response.code());
                     processImagesToUpload++;
                 }

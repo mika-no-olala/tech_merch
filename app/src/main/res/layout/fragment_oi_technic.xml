@@ -18,14 +18,13 @@
             style="@style/card"
             android:layout_height="0dp"
             android:layout_weight="1"
-            tools:targetApi="lollipop"
-            android:layout_marginBottom="20sp">
+            tools:targetApi="lollipop">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingTop="20sp"
-                android:paddingBottom="25sp"
+
                 android:paddingHorizontal="22sp">
 
                 <TextView
@@ -79,8 +78,93 @@
                 <TextView
                     android:id="@+id/comment"
                     style="@style/listText"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="77sp"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20sp"
+                    tools:listitem="@layout/card_image"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="77sp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10sp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_1"
+                style="@style/square_card"
+                tools:targetApi="lollipop">
+                <ImageView
+                    android:id="@+id/photo_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_photo"
+                    android:padding="22sp"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_2"
+                android:visibility="invisible"
+                style="@style/square_card"
+                tools:targetApi="lollipop">
+                <ImageView
+                    android:id="@+id/photo_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_photo"
+                    android:scaleType="centerCrop"
+                    android:padding="22sp"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_3"
+                android:visibility="invisible"
+                style="@style/square_card"
+                tools:targetApi="lollipop">
+                <ImageView
+                    android:id="@+id/photo_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_photo"
+                    android:scaleType="centerCrop"
+                    android:padding="22sp"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_4"
+                android:visibility="invisible"
+                style="@style/square_card"
+                tools:targetApi="lollipop">
+                <ImageView
+                    android:id="@+id/photo_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_photo"
+                    android:scaleType="centerCrop"
+                    android:padding="22sp"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_5"
+                android:visibility="invisible"
+                style="@style/square_card"
+                tools:targetApi="lollipop">
+                <ImageView
+                    android:id="@+id/photo_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_photo"
+                    android:scaleType="centerCrop"
+                    android:padding="22sp"/>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
 
         <EditText
             android:id="@+id/technicComment"

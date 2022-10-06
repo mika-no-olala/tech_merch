@@ -92,7 +92,9 @@ public class Ius extends Application {
     public static final String DIRECTORY_FROM_SERVER = "prod";
     public static final String KEY_SYN_ID = "KEY_SYN_ID";
 
-    public static final String PHOTO_URL = "https://dts2.bctu.tech//services-sync-manager/photo/";
+    public static final String BASE_URL = "https://dts2.bctu.tech/";
+    public static final String PHOTO_URL = BASE_URL + "/services-manager/upload/photo/";
+    public static final String SP_PHOTO_URL = BASE_URL + "/services-manager/upload/salePointsPhoto/";
 
     public static Ius getSingleton() {
         return singleton;

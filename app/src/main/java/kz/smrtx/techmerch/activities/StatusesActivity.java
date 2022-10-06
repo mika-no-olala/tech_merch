@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +22,23 @@ import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.adapters.CardAdapterHistory;
+import kz.smrtx.techmerch.adapters.CardAdapterImages;
 import kz.smrtx.techmerch.adapters.CardAdapterRequests;
 import kz.smrtx.techmerch.items.entities.History;
+import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
 
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
+import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 
 public class StatusesActivity extends AppCompatActivity {
@@ -38,24 +47,30 @@ public class StatusesActivity extends AppCompatActivity {
     private boolean myRequestOpened = false;
     private TextView pageName;
     private final Context context = this;
-    private final Activity activity = this;
     private int salePointCode = -1;
+    private int userCode;
 
     // <----  list ---->
 
     private View list;
     private RecyclerView waitingRecycler;
     private RecyclerView advancingRecycler;
+    private RecyclerView finishedRecycler;
     private TextView noRequestsW;
     private TextView noRequestsA;
+    private TextView noRequestsF;
     private CardView waitingView;
     private CardView advancingView;
+    private CardView finishedView;
     private List<Request> waitingList;
     private List<History> advancingList;
-    private boolean waitingListIsOpen = false;
+    private List<History> finishedList;
+    private boolean waitingListIsOpen = true;
     private boolean advancingListIsOpen = false;
+    private boolean finishedListIsOpen = false;
     private TextView waitingTextView;
     private TextView advancingTextView;
+    private TextView finishedTextView;
 
     private RequestViewModel requestViewModel;
     private HistoryViewModel historyViewModel;
@@ -82,8 +97,13 @@ public class StatusesActivity extends AppCompatActivity {
     private Request request;
     private Button negative;
     private Button positive;
-    private View twoButtons;
+    private Button technicButton;
     private boolean positiveButtonPressed = false;
+    private List<Photo> photoListTMR = new ArrayList<>();
+    private List<Photo> photoListTech = new ArrayList<>();
+    private RecyclerView recyclerViewTMR;
+    private RecyclerView recyclerViewTech;
+    private PhotoViewModel photoViewModel;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -93,14 +113,20 @@ public class StatusesActivity extends AppCompatActivity {
 
         noRequestsW = findViewById(R.id.noRequestsW);
         noRequestsA = findViewById(R.id.noRequestsA);
+        noRequestsF = findViewById(R.id.noRequestsF);
         waitingRecycler = findViewById(R.id.waitingRequestsRecycler);
         advancingRecycler = findViewById(R.id.advancingRequestsRecycler);
+        finishedRecycler = findViewById(R.id.finishedRequestsRecycler);
         waitingTextView = findViewById(R.id.waitingTextView);
         advancingTextView = findViewById(R.id.advancingTextView);
+        finishedTextView = findViewById(R.id.finishedTextView);
         pageName = findViewById(R.id.pageName);
 
         requestViewModel = new ViewModelProvider(this).get(RequestViewModel.class);
         historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+        photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
+
+        userCode = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE));
 
         Bundle arguments = getIntent().getExtras();
         if (arguments!=null) {
@@ -113,77 +139,68 @@ public class StatusesActivity extends AppCompatActivity {
 
         getWaitingRequests(salePointCode);
         getAdvancingRequests(salePointCode);
+        getFinishedRequests(salePointCode);
 
         TextView bottomBarText = findViewById(R.id.bottomBarText);
         View back = findViewById(R.id.back);
         CardView waitingButton = findViewById(R.id.waitingRequests);
         CardView advancingButton = findViewById(R.id.advancingRequests);
+        CardView finishedButton = findViewById(R.id.finishedRequests);
         ImageView waitingArrowIcon = findViewById(R.id.waitingArrowIcon);
         ImageView advancingArrowIcon = findViewById(R.id.advancingArrowIcon);
+        ImageView finishedArrowIcon = findViewById(R.id.finishedArrowIcon);
         waitingView = findViewById(R.id.waitingView);
         advancingView = findViewById(R.id.advancingView);
+        finishedView = findViewById(R.id.finishedView);
         list = findViewById(R.id.list);
         summary = findViewById(R.id.summary);
+        technicButton = findViewById(R.id.technicButton);
 
         bottomBarText.setText(Ius.readSharedPreferences(this, Ius.BOTTOM_BAR_TEXT));
 
         initializeSummaryStuff();
         technicStuff();
 
-        waitingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (waitingListIsOpen) {
-                    waitingArrowIcon.setRotation(180);
-                    waitingView.setVisibility(View.GONE);
-                    waitingListIsOpen = false;
-                }
-                else {
-                    waitingArrowIcon.setRotation(-90);
-                    waitingView.setVisibility(View.VISIBLE);
-                    waitingListIsOpen = true;
-                }
-            }
+        waitingButton.setOnClickListener(view -> listButtonIsPressed(waitingListIsOpen, waitingArrowIcon, waitingView, 1));
+        advancingButton.setOnClickListener(view -> listButtonIsPressed(advancingListIsOpen, advancingArrowIcon, advancingView, 2));
+        finishedButton.setOnClickListener(view -> listButtonIsPressed(finishedListIsOpen, finishedArrowIcon, finishedView, 3));
+
+        negative.setOnClickListener(view -> {
+            positiveButtonPressed = false;
+            openDialogCommentAcception();
         });
 
-        advancingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (advancingListIsOpen) {
-                    advancingArrowIcon.setRotation(180);
-                    advancingView.setVisibility(View.GONE);
-                    advancingListIsOpen = false;
-                }
-                else {
-                    advancingArrowIcon.setRotation(-90);
-                    advancingView.setVisibility(View.VISIBLE);
-                    advancingListIsOpen = true;
-                }
-            }
+        positive.setOnClickListener(view -> {
+            positiveButtonPressed = true;
+            openDialogCommentAcception();
         });
 
-        negative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                positiveButtonPressed = false;
-                openDialogCommentAcception();
-            }
-        });
+        back.setOnClickListener(view -> onBackPressed());
+    }
 
-        positive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                positiveButtonPressed = true;
-                openDialogCommentAcception();
-            }
-        });
+    private void listButtonIsPressed(boolean listIsOpen, ImageView arrowIcon, CardView contentView, int listNumber) {
+        if (listIsOpen) {
+            arrowIcon.setRotation(180);
+            contentView.setVisibility(View.GONE);
+            listIsOpen = false;
+        }
+        else {
+            arrowIcon.setRotation(-90);
+            contentView.setVisibility(View.VISIBLE);
+            listIsOpen = true;
+        }
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        switch (listNumber) {
+            case 1:
+                waitingListIsOpen = listIsOpen;
+                break;
+            case 2:
+                advancingListIsOpen = listIsOpen;
+                break;
+            case 3:
+                finishedListIsOpen = listIsOpen;
+                break;
+        }
     }
 
     private void initializeSummaryStuff() {
@@ -206,39 +223,37 @@ public class StatusesActivity extends AppCompatActivity {
 
         negative = findViewById(R.id.negative);
         positive = findViewById(R.id.positive);
+        recyclerViewTMR = findViewById(R.id.recyclerViewTMR);
+        recyclerViewTech = findViewById(R.id.recyclerViewTech);
     }
 
     private void technicStuff() {
         if (!Ius.readSharedPreferences(context, Ius.USER_ROLE_CODE).equals("4"))
             return;
 
-        twoButtons = findViewById(R.id.twoButtons);
-        Button technicButton = findViewById(R.id.technicButton);
+        View twoButtons = findViewById(R.id.twoButtons);
+        technicButton = findViewById(R.id.technicButton);
         twoButtons.setVisibility(View.GONE);
         technicButton.setVisibility(View.VISIBLE);
 
-        technicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, OutletInformationActivity.class);
-                intent.putExtra("salePointCode", request.getREQ_SAL_CODE());
-                intent.putExtra("scenario", "technic");
-                intent.putExtra("requestCode", request.getREQ_CODE());
-                startActivity(intent);
-            }
+        technicButton.setOnClickListener(view -> {
+            Intent intent = new Intent(context, OutletInformationActivity.class);
+            intent.putExtra("salePointCode", request.getREQ_SAL_CODE());
+            intent.putExtra("scenario", "technic");
+            intent.putExtra("requestCode", request.getREQ_CODE());
+            startActivity(intent);
         });
     }
 
     @SuppressLint("SetTextI18n")
     private void getWaitingRequests(int salePointCode) {
-        int userCode = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE));
         Log.i("gettingRequests from", String.valueOf(userCode));
 
         if (salePointCode!=-1) {
             requestViewModel.getRequestsByAppointed(userCode, salePointCode)
                 .observe(this, w -> {
                     waitingList = w;
-                    setAdapter(waitingRecycler, noRequestsW, true);
+                    setAdapter(waitingRecycler, noRequestsW, 1);
                     waitingTextView.setText(getResources().getString(R.string.request_waiting_status) + " (" + waitingList.size() + ")");
                 });
         }
@@ -246,7 +261,7 @@ public class StatusesActivity extends AppCompatActivity {
             requestViewModel.getRequestsByAppointed(userCode)
                 .observe(this, w -> {
                     waitingList = w;
-                    setAdapter(waitingRecycler, noRequestsW, true);
+                    setAdapter(waitingRecycler, noRequestsW, 1);
                     waitingTextView.setText(getResources().getString(R.string.request_waiting_status) + " (" + waitingList.size() + ")");
                 });
         }
@@ -254,13 +269,11 @@ public class StatusesActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void getAdvancingRequests(int salePointCode) {
-        int userCode = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE));
-
         if (salePointCode!=-1) {
             historyViewModel.getHistoryListWhichAreRelatedTo(userCode, salePointCode)
                 .observe(this, a -> {
                     advancingList = a;
-                    setAdapter(advancingRecycler, noRequestsA, false);
+                    setAdapter(advancingRecycler, noRequestsA, 2);
                     advancingTextView.setText(getResources().getString(R.string.request_advancing_status) + " (" + advancingList.size() + ")");
                 });
         }
@@ -268,62 +281,116 @@ public class StatusesActivity extends AppCompatActivity {
             historyViewModel.getHistoryListWhichAreRelatedTo(userCode)
                 .observe(this, a -> {
                     advancingList = a;
-                    setAdapter(advancingRecycler, noRequestsA, false);
+                    setAdapter(advancingRecycler, noRequestsA, 2);
                     advancingTextView.setText(getResources().getString(R.string.request_advancing_status) + " (" + advancingList.size() + ")");
                 });
         }
     }
 
-    private void setAdapter(RecyclerView recyclerView, TextView noRequests, boolean waiting) {
+    @SuppressLint("SetTextI18n")
+    private void getFinishedRequests(int salePointCode) {
+        if (salePointCode!=-1) {
+            historyViewModel.getHistoryListWhichAreRelatedToAndFinished(userCode, salePointCode)
+                .observe(this, f -> {
+                    finishedList = f;
+                    setAdapter(finishedRecycler, noRequestsF, 3);
+                    finishedTextView.setText(getResources().getString(R.string.request_finished_status) + " (" + finishedList.size() + ")");
+                });
+        }
+        else {
+            historyViewModel.getHistoryListWhichAreRelatedToAndFinished(userCode)
+                .observe(this, f -> {
+                    finishedList = f;
+                    setAdapter(finishedRecycler, noRequestsF, 3);
+                    finishedTextView.setText(getResources().getString(R.string.request_finished_status) + " (" + finishedList.size() + ")");
+                });
+        }
+    }
+
+    private void setAdapter(RecyclerView recyclerView, TextView noRequests, int listNumber) {
         RecyclerView.LayoutManager layoutManager;
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+        
+        boolean isTechnic = Ius.readSharedPreferences(context, Ius.USER_ROLE_CODE).equals("4");
 
-        if (waiting) {
-            if (waitingList.isEmpty()) {
-                noRequests.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.GONE);
-            }
-            else { // while db is loading, first case triggers. Need to set visibility back if it loads the data after
-                noRequests.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-            }
+        if (listNumber==1) {
+            // while db is loading, /first case/ triggers. Need to set visibility back if it loads the data after
+            checkNoRequestsInList(noRequests, recyclerView, waitingList.isEmpty());
 
             CardAdapterRequests cardAdapterRequests = new CardAdapterRequests(waitingList, this);
             recyclerView.setAdapter(cardAdapterRequests);
-            cardAdapterRequests.setOnItemClickListener(new CardAdapterRequests.onItemClickListener() {
-                @Override
-                public void onItemClick(int position) {
-                    request = waitingList.get(position);
-                    myRequestOpened = true;
-                    setRequest();
-                    requestLoading.setVisibility(View.GONE);
-                    closeList();
-                }
+            cardAdapterRequests.setOnItemClickListener(position -> {
+                request = waitingList.get(position);
+                myRequestOpened = true;
+                setRequest();
+                requestLoading.setVisibility(View.GONE);
+                closeList(isTechnic, true);
             });
         }
         else {
-            if (advancingList.isEmpty()) {
-                noRequests.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.GONE);
+            List<History> list;
+            CardAdapterHistory cardAdapterHistory;
+            if (listNumber==2) {
+                list = advancingList;
+                cardAdapterHistory = new CardAdapterHistory(advancingList, this);
             }
             else {
-                noRequests.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
+                list = finishedList;
+                cardAdapterHistory = new CardAdapterHistory(finishedList, this);
             }
 
-            CardAdapterHistory cardAdapterHistory = new CardAdapterHistory(advancingList, this);
+            checkNoRequestsInList(noRequests, recyclerView, list.isEmpty());
+
             recyclerView.setAdapter(cardAdapterHistory);
-            cardAdapterHistory.setOnItemClickListener(new CardAdapterHistory.onItemClickListener() {
-                @Override
-                public void onItemClick(int position) {
-                    getRequest(advancingList.get(position).getRequestCode());
-                    myRequestOpened = false;
-                    closeList();
-                }
+            cardAdapterHistory.setOnItemClickListener(position -> {
+                getRequest(list.get(position).getRequestCode());
+                myRequestOpened = false;
+                closeList(isTechnic, false);
             });
         }
+    }
+
+    private void checkNoRequestsInList(TextView noRequests, RecyclerView recyclerView, boolean listIsEmpty) {
+        if (listIsEmpty) {
+            noRequests.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        else {
+            noRequests.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setAdapter(RecyclerView recyclerView, List<Photo> photoList) {
+        RecyclerView.LayoutManager layoutManager;
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+
+        if (photoList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            return;
+        }
+
+        CardAdapterImages cardAdapter = new CardAdapterImages(photoList, this);
+        recyclerView.setAdapter(cardAdapter);
+        cardAdapter.setOnItemClickListener(position -> createDialog(photoList.get(position).getREP_PHOTO()));
+    }
+
+    private void createDialog(String photoName) {
+        Dialog dialog = Ius.createDialog(this, R.layout.dialog_window_image, "");
+        ImageView image = dialog.findViewById(R.id.image);
+
+        File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + photoName);
+
+        if (file.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            image.setImageBitmap(bitmap);
+        }
+
+        dialog.show();
     }
 
     private void getRequest(String code) {
@@ -342,6 +409,15 @@ public class StatusesActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void setRequest() {
+        photoViewModel.getPhotosByTMR(request.getREQ_CODE()).observe(this, tmr -> {
+            photoListTMR = tmr;
+            setAdapter(recyclerViewTMR, photoListTMR);
+        });
+        photoViewModel.getPhotosByTech(request.getREQ_CODE()).observe(this, tech -> {
+            photoListTech = tech;
+            setAdapter(recyclerViewTech, photoListTech);
+        });
+
         String dateCreated = Ius.getDateByFormat(
                 Ius.getDateFromString(
                         request.getREQ_CREATED(), "yyyy-MM-dd'T'HH:mm:ss"
@@ -366,10 +442,14 @@ public class StatusesActivity extends AppCompatActivity {
                 Ius.makeTextBold(this, getResources().getString(R.string.request_status) + ": " + request.getREQ_STATUS())
         );
 
-        appointed.setText(
-                Ius.makeTextBold(this, getResources().getString(R.string.appointed_on) + ": " + request.getREQ_USE_NAME_APPOINTED() + " " +
-                        getResources().getString(R.string.from_) + " " + dateUpdated)
-        );
+        if (request.getREQ_USE_NAME_APPOINTED()!=null)
+            appointed.setText(
+                    Ius.makeTextBold(this, getResources().getString(R.string.appointed_on) + ": " + request.getREQ_USE_NAME_APPOINTED() + " " +
+                            getResources().getString(R.string.from_) + " " + dateUpdated)
+            );
+        else
+            appointed.setText(
+                   getResources().getString(R.string.from_) + " " + " " + dateUpdated);
 
         typeSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.request_type) + ": " + request.getREQ_TYPE()));
 
@@ -444,44 +524,41 @@ public class StatusesActivity extends AppCompatActivity {
 
         dialog.show();
 
-        positive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String commentStr = "";
+        positive.setOnClickListener(view -> {
+            String commentStr = "";
 
-                if (needComment) {
-                    commentStr = comment.getText().toString().trim();
-                    if (commentStr.length()==0) {
-                        createToast(getResources().getString(R.string.fill_field), false);
-                        return;
-                    }
+            if (needComment) {
+                commentStr = comment.getText().toString().trim();
+                if (commentStr.length()==0) {
+                    createToast(getResources().getString(R.string.fill_field), false);
+                    return;
                 }
-
-                if (userRole==6 && !positiveButtonPressed) { // sss SET POSITIVE BUTTON FOR MANAGER
-                    request.setREQ_STA_ID(6);
-                    request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
-                }
-
-                if (userRole==5 && !positiveButtonPressed) {
-                    request.setREQ_STA_ID(4);
-                    request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
-                }
-                if (userRole==5 && positiveButtonPressed) {
-                    request.setREQ_STA_ID(5);
-                    request.setREQ_USE_CODE_APPOINTED(0);
-                }
-
-                request.setREQ_COMMENT(commentStr);
-                request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_CODE)));
-                request.setREQ_UPDATED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
-                request.setNES_TO_UPDATE("yes");
-
-                requestViewModel.update(request);
-
-                createToast(getResources().getString(R.string.request_saved), true);
-                dialog.cancel();
-                closeSummary();
             }
+
+            if (userRole==6 && !positiveButtonPressed) { // sss SET POSITIVE BUTTON FOR MANAGER
+                request.setREQ_STA_ID(6);
+                request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
+            }
+
+            if (userRole==5 && !positiveButtonPressed) {
+                request.setREQ_STA_ID(4);
+                request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
+            }
+            if (userRole==5 && positiveButtonPressed) {
+                request.setREQ_STA_ID(5);
+                request.setREQ_USE_CODE_APPOINTED(8); // 8 is superadmin - means request is finished
+            }
+
+            request.setREQ_COMMENT(commentStr);
+            request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_CODE)));
+            request.setREQ_UPDATED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
+            request.setNES_TO_UPDATE("yes");
+
+            requestViewModel.update(request);
+
+            createToast(getResources().getString(R.string.request_saved), true);
+            dialog.cancel();
+            closeSummary();
         });
     }
 
@@ -491,7 +568,7 @@ public class StatusesActivity extends AppCompatActivity {
         || (userRole == 5 && !positiveButtonPressed);
     }
 
-    private void closeList() {
+    private void closeList(boolean isTechnic, boolean isWaitingList) {
         listIsOpen = false;
         summary.setVisibility(View.VISIBLE);
         list.setVisibility(View.GONE);
@@ -505,6 +582,13 @@ public class StatusesActivity extends AppCompatActivity {
             positive.setVisibility(View.VISIBLE);
         }
         pageName.setText(getResources().getString(R.string.request));
+
+        if (isTechnic) {
+            if (isWaitingList)
+                technicButton.setVisibility(View.VISIBLE);
+            else
+                technicButton.setVisibility(View.GONE);
+        }
     }
 
     private void closeSummary() {
@@ -528,6 +612,7 @@ public class StatusesActivity extends AppCompatActivity {
         super.onResume();
         getWaitingRequests(salePointCode);
         getAdvancingRequests(salePointCode);
+        getFinishedRequests(salePointCode);
         closeSummary();
     }
 
@@ -538,7 +623,7 @@ public class StatusesActivity extends AppCompatActivity {
     }
 
     private void createToast(String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) findViewById(R.id.toast));
+        View layout = getLayoutInflater().inflate(R.layout.toast_window, findViewById(R.id.toast));
         Ius.showToast(layout, this, text, success);
     }
 }

@@ -42,15 +42,16 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/bandera_pro"
                             android:text="@string/request_waiting_status" />
+
                         <ImageView
                             android:id="@+id/waitingArrowIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_arrow"
-                            android:rotation="180"
-                            android:layout_marginEnd="10sp"
                             android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"/>
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="10sp"
+                            android:rotation="-90"
+                            android:src="@drawable/ic_arrow" />
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -123,6 +124,58 @@
                         android:padding="50sp"/>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/advancingRequestsRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="16sp"
+                        android:paddingHorizontal="13sp"/>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/finishedRequests"
+                    style="@style/card"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingVertical="10sp"
+                        android:paddingHorizontal="12sp">
+
+                        <TextView
+                            android:id="@+id/finishedTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/bandera_pro"
+                            android:text="@string/request_finished_status" />
+                        <ImageView
+                            android:id="@+id/finishedArrowIcon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_arrow"
+                            android:rotation="180"
+                            android:layout_marginEnd="10sp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"/>
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/finishedView"
+                    style="@style/card"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+                    <TextView
+                        android:id="@+id/noRequestsF"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_requests"
+                        android:textColor="@color/light_purple"
+                        android:textAlignment="center"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:padding="50sp"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/finishedRequestsRecycler"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingVertical="16sp"
@@ -214,6 +267,22 @@
                         <TextView
                             android:id="@+id/comment"
                             style="@style/listText"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewTMR"
+                            android:layout_width="match_parent"
+                            android:layout_height="77sp"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="5sp"
+                            tools:listitem="@layout/card_image"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewTech"
+                            android:layout_width="match_parent"
+                            android:layout_height="77sp"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="20sp"
+                            tools:listitem="@layout/card_image"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

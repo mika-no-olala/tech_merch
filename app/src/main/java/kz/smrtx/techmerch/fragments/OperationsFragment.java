@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.activities.CreateRequestActivity;
 import kz.smrtx.techmerch.activities.StatusesActivity;
 import kz.smrtx.techmerch.activities.SessionActivity;
 
@@ -66,6 +68,10 @@ public class OperationsFragment extends Fragment {
         statuses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!((SessionActivity)requireActivity()).checkPermissions()) {
+                    Log.w("openStatusesActivity", "NO PERMISSION");
+                    return;
+                }
                 ((SessionActivity)requireActivity()).openActivityStatuses();
             }
         });

@@ -43,6 +43,6 @@ public interface ApiService {
     Call<ResponseBody> uploadSyncFile(@Part("USE_CODE") RequestBody use_code, @Part MultipartBody.Part file);
 
     @Multipart
-    @POST("services-sync-manager/uploadFile")
-    Call<JSONObject> uploadFile(@Part("USE_CODE") RequestBody use_code, @Part MultipartBody.Part file);
+    @POST("services-manager/api/FileUpload")
+    Call<JSONObject> uploadFile(@Part("file_name") RequestBody name, @Part("folder_name") RequestBody folder, @Part MultipartBody.Part file);
 }

@@ -22,33 +22,32 @@ public interface HistoryDao {
     @Query("select * from ST_REQUEST_HISTORY where salePointCode=:salePointCode")
     LiveData<List<History>> getHistoryListBySalCode(int salePointCode);
 
-    // remove ended requests from here
     @Query("SELECT * FROM ST_REQUEST_HISTORY srh " +
-            "WHERE (srh.userCode = :userCode OR srh.userCodeAppointed = :userCode) " +
+            "WHERE srh.userCode = :userCode AND srh.userCodeAppointed != :userCode " +
+            "  AND srh.userCodeAppointed != 8 " +
             "  AND srh.created = " +
             "    (" +
             "      SELECT MAX(created) " +
             "      FROM ST_REQUEST_HISTORY srhd " +
             "      WHERE srh.requestCode = srhd.requestCode " +
-            "      AND srhd.userCodeAppointed != :userCode " +
             "      GROUP BY srhd.requestCode " +
             "    )")
     LiveData<List<History>> getHistoryListWhichAreRelatedTo(int userCode);
 
     @Query("SELECT * FROM ST_REQUEST_HISTORY srh " +
-            "WHERE (srh.userCode = :userCode OR srh.userCodeAppointed = :userCode) " +
+            "WHERE srh.userCode = :userCode AND srh.userCodeAppointed != :userCode " +
+            "  AND srh.userCodeAppointed != 8 " +
             "  AND srh.salePointCode=:salePointCode AND srh.created = " +
             "    (" +
             "      SELECT MAX(created) " +
             "      FROM ST_REQUEST_HISTORY srhd " +
             "      WHERE srh.requestCode = srhd.requestCode " +
-            "      AND srhd.userCodeAppointed != :userCode " +
             "      GROUP BY srhd.requestCode " +
             "    )")
     LiveData<List<History>> getHistoryListWhichAreRelatedTo(int userCode, int salePointCode);
 
     @Query("SELECT count(*) FROM ST_REQUEST_HISTORY srh " +
-            "WHERE (srh.userCode = :userCode OR srh.userCodeAppointed = :userCode) " +
+            "WHERE srh.userCode = :userCode AND srh.userCodeAppointed != :userCode " +
             "  AND srh.salePointCode = :salePointCode " +
             "  AND srh.created = " +
             "    (" +
@@ -61,4 +60,38 @@ public interface HistoryDao {
 
     @Query("SELECT userCode FROM ST_REQUEST_HISTORY WHERE requestCode=:requestCode AND userRole=5")
     int getTMRCodeByRequest(String requestCode);
+
+    @Query("SELECT * FROM ST_REQUEST_HISTORY srh " +
+            "   WHERE srh.userCodeAppointed = 8 " +
+            "   AND srh.requestCode IN " +
+            "       (" +
+            "           SELECT srhd.requestCode FROM ST_REQUEST_HISTORY srhd " +
+            "           WHERE srhd.userCode = :userCode " +
+            "       )")
+    LiveData<List<History>> getHistoryListWhichAreRelatedToAndFinished(int userCode);
+
+    @Query("SELECT * FROM ST_REQUEST_HISTORY srh " +
+            "   WHERE srh.userCodeAppointed = 8 " +
+            "   AND srh.salePointCode= :salePointCode " +
+            "   AND srh.requestCode IN " +
+            "       (" +
+            "           SELECT srhd.requestCode FROM ST_REQUEST_HISTORY srhd " +
+            "           WHERE srhd.userCode = :userCode " +
+            "       )")
+    LiveData<List<History>> getHistoryListWhichAreRelatedToAndFinished(int userCode, int salePointCode);
 }
+/*
+
+@Query("SELECT * FROM ST_REQUEST_HISTORY srh " +
+        "WHERE (srh.userCode = :userCode OR srh.userCodeAppointed = :userCode) " +
+        "  AND srh.salePointCode=:salePointCode AND srh.created = " +
+        "    (" +
+        "      SELECT MAX(created) " +
+        "      FROM ST_REQUEST_HISTORY srhd " +
+        "      WHERE srh.requestCode = srhd.requestCode " +
+        "      AND srhd.userCodeAppointed != :userCode " +
+        "      AND srhd.userCodeAppointed != 8 " +
+        "      GROUP BY srhd.requestCode " +
+        "    )")
+
+ */

@@ -64,7 +64,7 @@ public interface ChoosePointsDao {
             "name,  " +
             "house, " +
             "code, " +
-            "coalesce(owner, 'Нет данных'), " +
+            "owner, " +
             "phone," +
             "longitude, " +
             "latitude " +

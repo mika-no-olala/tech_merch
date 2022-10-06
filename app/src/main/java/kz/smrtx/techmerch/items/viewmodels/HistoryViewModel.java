@@ -48,4 +48,12 @@ public class HistoryViewModel extends AndroidViewModel {
     public int getTMRCodeByRequest(String requestCode) {
         return historyRepository.getTMRCodeByRequest(requestCode);
     }
+
+    public LiveData<List<History>> getHistoryListWhichAreRelatedToAndFinished(int userCode) {
+        return historyRepository.getHistoryListWhichAreRelatedToAndFinished(userCode);
+    }
+
+    public LiveData<List<History>> getHistoryListWhichAreRelatedToAndFinished(int userCode, int salePoint) {
+        return historyRepository.getHistoryListWhichAreRelatedToAndFinished(userCode, salePoint);
+    }
 }

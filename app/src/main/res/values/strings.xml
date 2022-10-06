@@ -30,6 +30,7 @@
     <string name="note_deleting_desc">Вы действительно хотите удалить заметку?</string>
     <string name="request_waiting_status">Ожидающие моего ответа</string>
     <string name="request_advancing_status">Продвигающиеся заявки</string>
+    <string name="request_finished_status">Завершившиеся заявки</string>
     <string name="request_acception">Подтверждение заявки</string>
     <string name="request_completion">Выполнение заявки</string>
     <string name="request_hand_over">Передать заявку</string>
@@ -45,7 +46,7 @@
     <string name="yes">Да</string>
     <string name="ok">Ок</string>
     <string name="from">От</string>
-    <string name="from_">С</string>
+    <string name="from_">c</string>
     <string name="appointed_on">Сейчас назначено на</string>
     <string name="completing">Выполняет</string>
     <string name="cancel">Отмена</string>
@@ -178,4 +179,12 @@
     <string name="add_photos">Добавить фотографии</string>
     <string name="send">Отправить</string>
     <string name="accept_send">Принять и отправить</string>
+    <string name="enter_manually">Ввести вручную</string>
+    <string name="consumable">Расходный материал</string>
+    <string name="cost_and_quantity">Стоимость и количество материала</string>
+    <string name="cost">Стоимость</string>
+    <string name="quantity">Количество</string>
+    <string name="full_cost">Общая стоимость</string>
+    <string name="total">Итого</string>
+    <string name="report">Отчет</string>
 </resources>
