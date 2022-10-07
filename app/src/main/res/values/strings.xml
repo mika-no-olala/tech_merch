@@ -9,6 +9,8 @@
     <string name="no_server_connection">Нет подключения</string>
     <string name="no_server_connection_description">Без доступа к серверу - проверьте подключение к интернету</string>
     <string name="fill_field">Заполните поле</string>
+    <string name="report_empty">Отчет не может быть пустым</string>
+    <string name="report_send">Отчет отправлен</string>
     <string name="wrong_data_log_in">Неправильный логин или пароль</string>
     <string name="error">Ошибка</string>
     <string name="error_certification">Ошибка: проверьте работоспособность Play Market и перезапустите приложение</string>
@@ -101,6 +103,7 @@
     <string name="daily_countdown_description">Просмотр отчетов по совершенным действиям</string>
     <string name="statuses">Статус заявок</string>
     <string name="statuses_description">Просмотр моих заявок с разбивкой по статусам</string>
+    <string name="report_description">Заполнение ежемесячного отчета по расходным материалам</string>
     <string name="operations">Операции</string>
     <string name="outlets">Торговые точки</string>
     <string name="outlet_information">Информация ТТ</string>
@@ -178,6 +181,7 @@
     <string name="comment">Комментарий</string>
     <string name="add_photos">Добавить фотографии</string>
     <string name="send">Отправить</string>
+    <string name="add">Добавить</string>
     <string name="accept_send">Принять и отправить</string>
     <string name="enter_manually">Ввести вручную</string>
     <string name="consumable">Расходный материал</string>

@@ -49,38 +49,32 @@ public class OperationsFragment extends Fragment {
             dateStarted = getArguments().getString("DATE_STARTED");
         }
 
+        int roleCode = Integer.parseInt(Ius.readSharedPreferences(this.getContext(), Ius.USER_ROLE_CODE));
+
         TextView startWork = view.findViewById(R.id.startWorkCheckPoint);
         Button workIsOver = view.findViewById(R.id.workIsOver);
         CardView outlet = view.findViewById(R.id.outlet);
         CardView statuses = view.findViewById(R.id.statuses);
+        CardView report = view.findViewById(R.id.report);
         listener.getPageName(getResources().getString(R.string.operations));
         startWork.setText(getResources().getString(R.string.start_work_check_point) + ": " + dateStarted);
 
-        if (Ius.readSharedPreferences(this.getContext(), Ius.USER_ROLE_CODE).equals("4"))
+        if (roleCode==4)
             outlet.setVisibility(View.GONE);
 
-        outlet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((SessionActivity)requireActivity()).openFragment(OutletsFragment.getInstance("tmr"), false);
+        if (roleCode!=4)
+            report.setVisibility(View.GONE);
+
+        outlet.setOnClickListener(view13 -> ((SessionActivity)requireActivity()).openFragment(OutletsFragment.getInstance("tmr"), false));
+        statuses.setOnClickListener(view12 -> {
+            if (!((SessionActivity)requireActivity()).checkPermissions()) {
+                Log.w("openStatusesActivity", "NO PERMISSION");
+                return;
             }
+            ((SessionActivity)requireActivity()).openActivityStatuses();
         });
-        statuses.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!((SessionActivity)requireActivity()).checkPermissions()) {
-                    Log.w("openStatusesActivity", "NO PERMISSION");
-                    return;
-                }
-                ((SessionActivity)requireActivity()).openActivityStatuses();
-            }
-        });
-        workIsOver.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((SessionActivity)requireActivity()).openDialog();
-            }
-        });
+        report.setOnClickListener(view14 -> ((SessionActivity)requireActivity()).openFragment(TechnicReportFragment.getInstance(), true));
+        workIsOver.setOnClickListener(view1 -> ((SessionActivity)requireActivity()).openDialog());
         return view;
     }
 

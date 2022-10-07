@@ -33,8 +33,7 @@ public class RCEquipmentFragment extends Fragment {
     private EditText subtype;
 
     public static RCEquipmentFragment getInstance() {
-        RCEquipmentFragment fragment = new RCEquipmentFragment();
-        return fragment;
+        return new RCEquipmentFragment();
     }
 
     @SuppressLint("SetTextI18n")
@@ -50,19 +49,9 @@ public class RCEquipmentFragment extends Fragment {
 
         new GetDataAsync(elementViewModel).execute();
 
-        type.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDialog(type, types, true);
-            }
-        });
+        type.setOnClickListener(view1 -> openDialog(type, types, true));
 
-        subtype.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDialog(subtype, filteredSubtypes, false);
-            }
-        });
+        subtype.setOnClickListener(view12 -> openDialog(subtype, filteredSubtypes, false));
 
         return view;
     }
@@ -75,32 +64,29 @@ public class RCEquipmentFragment extends Fragment {
         SearchView search = dialog.findViewById(R.id.search);
         dialog.show();
 
-        adapter.setOnItemClickListener(new CardAdapterString.onItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                editText.setText(array.get(position).getName());
-                if (equipmentType) {
-                    subtype.setText("");
-                    ((CreateRequestActivity) requireActivity()).setEquipment(type.getText().toString());
-                    filterSubtypeList(array.get(position).getId());
-                }
-                else {
-                    ((CreateRequestActivity) requireActivity()).setEquipmentSubtype(subtype.getText().toString());
-                    if (Ius.isEmpty(type)) {
-                        filterSubtypeList(array.get(position).getSubtypeFrom());
+        adapter.setOnItemClickListener(position -> {
+            editText.setText(array.get(position).getName());
+            if (equipmentType) {
+                subtype.setText("");
+                ((CreateRequestActivity) requireActivity()).setEquipment(type.getText().toString());
+                filterSubtypeList(array.get(position).getId());
+            }
+            else {
+                ((CreateRequestActivity) requireActivity()).setEquipmentSubtype(subtype.getText().toString());
+                if (Ius.isEmpty(type)) {
+                    filterSubtypeList(array.get(position).getSubtypeFrom());
 
-                        for (Element e : types) {
-                            if (e.getId() == array.get(position).getSubtypeFrom()) {
-                                type.setText(e.getName());
-                                ((CreateRequestActivity) requireActivity()).setEquipment(e.getName());
-                                break;
-                            }
+                    for (Element e : types) {
+                        if (e.getId() == array.get(position).getSubtypeFrom()) {
+                            type.setText(e.getName());
+                            ((CreateRequestActivity) requireActivity()).setEquipment(e.getName());
+                            break;
                         }
                     }
                 }
-
-                dialog.cancel();
             }
+
+            dialog.cancel();
         });
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
