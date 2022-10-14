@@ -28,9 +28,7 @@
                 android:text=""
                 android:fontFamily="@font/bandera_pro_medium"
                 android:paddingHorizontal="21sp"
-                android:paddingVertical="18sp"
-                android:inputType="textMultiLine"
-                />
+                android:paddingVertical="18sp" />
             
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"

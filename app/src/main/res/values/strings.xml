@@ -9,6 +9,7 @@
     <string name="no_server_connection">Нет подключения</string>
     <string name="no_server_connection_description">Без доступа к серверу - проверьте подключение к интернету</string>
     <string name="fill_field">Заполните поле</string>
+    <string name="fill_time_interval">Заполните временной промежуток</string>
     <string name="report_empty">Отчет не может быть пустым</string>
     <string name="report_send">Отчет отправлен</string>
     <string name="wrong_data_log_in">Неправильный логин или пароль</string>
@@ -49,6 +50,7 @@
     <string name="ok">Ок</string>
     <string name="from">От</string>
     <string name="from_">c</string>
+    <string name="to">по</string>
     <string name="appointed_on">Сейчас назначено на</string>
     <string name="completing">Выполняет</string>
     <string name="cancel">Отмена</string>
@@ -183,7 +185,7 @@
     <string name="send">Отправить</string>
     <string name="add">Добавить</string>
     <string name="accept_send">Принять и отправить</string>
-    <string name="enter_manually">Ввести вручную</string>
+    <string name="enter_manually">Ввести наименование вручную</string>
     <string name="consumable">Расходный материал</string>
     <string name="cost_and_quantity">Стоимость и количество материала</string>
     <string name="cost">Стоимость</string>
@@ -191,4 +193,5 @@
     <string name="full_cost">Общая стоимость</string>
     <string name="total">Итого</string>
     <string name="report">Отчет</string>
+    <string name="time_interval">Временной промежуток</string>
 </resources>

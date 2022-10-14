@@ -42,4 +42,6 @@ public interface RequestDao {
     @Query("select * from ST_REQUEST where REQ_CODE=:code")
     LiveData<Request> getRequestByCode(String code);
 
+    @Query("select REQ_UPDATED from ST_REQUEST where NES_TO_UPDATE='yes' and REQ_VIS_NUMBER=:visitNumber")
+    List<String> getCurrentSessionRequests(String visitNumber);
 }

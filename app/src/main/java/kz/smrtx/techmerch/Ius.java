@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -183,7 +184,7 @@ public class Ius extends Application {
     }
 
     public static Dialog createDialogAcception(Context context, String title, String text, boolean twoVariants) {
-        Dialog dialog = new Dialog(context, android.R.style.Theme_Light);
+        Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawableResource(R.color.black_transparent);
         dialog.setContentView(R.layout.dialog_window_acception);
@@ -234,10 +235,11 @@ public class Ius extends Application {
     }
 
     public static Dialog createDialog(Context context, int layoutId, String title) {
-        Dialog dialog = new Dialog(context, android.R.style.Theme_Light);
+        Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawableResource(R.color.black_transparent);
         dialog.setContentView(layoutId);
+        dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
 
         Button cancel = dialog.findViewById(R.id.cancel);

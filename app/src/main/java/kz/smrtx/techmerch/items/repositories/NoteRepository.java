@@ -35,6 +35,9 @@ public class NoteRepository {
     }
     public int getNumberFromSalePoint(int salePointCode) { return noteDao.getNumberFromSalePoint(salePointCode); }
     public LiveData<List<Note>> getNotesFromSalePoint(int salePointCode) { return noteDao.getNotesFromSalePoint(salePointCode); }
+    public List<String> getCurrentSessionNotes(String visitNumber) {
+        return noteDao.getCurrentSessionNotes(visitNumber);
+    }
 
     private static class InsertNoteAsyncTask extends AsyncTask<Note, Void, Void> {
         private final NoteDao noteDao;

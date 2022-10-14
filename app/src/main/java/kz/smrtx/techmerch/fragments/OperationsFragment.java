@@ -54,6 +54,7 @@ public class OperationsFragment extends Fragment {
         TextView startWork = view.findViewById(R.id.startWorkCheckPoint);
         Button workIsOver = view.findViewById(R.id.workIsOver);
         CardView outlet = view.findViewById(R.id.outlet);
+        CardView daily = view.findViewById(R.id.daily);
         CardView statuses = view.findViewById(R.id.statuses);
         CardView report = view.findViewById(R.id.report);
         listener.getPageName(getResources().getString(R.string.operations));
@@ -66,6 +67,7 @@ public class OperationsFragment extends Fragment {
             report.setVisibility(View.GONE);
 
         outlet.setOnClickListener(view13 -> ((SessionActivity)requireActivity()).openFragment(OutletsFragment.getInstance("tmr"), false));
+
         statuses.setOnClickListener(view12 -> {
             if (!((SessionActivity)requireActivity()).checkPermissions()) {
                 Log.w("openStatusesActivity", "NO PERMISSION");

@@ -40,4 +40,7 @@ public class NoteViewModel extends AndroidViewModel {
     public LiveData<List<Note>> getNotesFromSalePoint(int salePointCode) {
         return noteRepository.getNotesFromSalePoint(salePointCode);
     }
+    public List<String> getCurrentSessionRequests(String visitNumber) {
+        return noteRepository.getCurrentSessionNotes(visitNumber);
+    }
 }

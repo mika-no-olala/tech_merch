@@ -50,4 +50,7 @@ public class RequestViewModel extends AndroidViewModel {
     public LiveData<Request> getRequestByCode(String code) {
         return requestRepository.getRequestByCode(code);
     }
+    public List<String> getCurrentSessionRequests(String visitNumber) {
+        return requestRepository.getCurrentSessionRequests(visitNumber);
+    }
 }

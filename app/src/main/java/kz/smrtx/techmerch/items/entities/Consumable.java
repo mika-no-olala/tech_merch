@@ -26,6 +26,10 @@ public class Consumable {
     private int TER_USE_CODE;
     @SerializedName("TER_USE_NAME")
     private String TER_USE_NAME;
+    @SerializedName("TER_FROM")
+    private String TER_FROM;
+    @SerializedName("TER_TO")
+    private String TER_TO;
     @SerializedName("TER_CREATED")
     private String TER_CREATED;
 
@@ -98,6 +102,22 @@ public class Consumable {
 
     public void setTER_USE_NAME(String TER_USE_NAME) {
         this.TER_USE_NAME = TER_USE_NAME;
+    }
+
+    public String getTER_FROM() {
+        return TER_FROM;
+    }
+
+    public void setTER_FROM(String TER_FROM) {
+        this.TER_FROM = TER_FROM;
+    }
+
+    public String getTER_TO() {
+        return TER_TO;
+    }
+
+    public void setTER_TO(String TER_TO) {
+        this.TER_TO = TER_TO;
     }
 
     public String getTER_CREATED() {

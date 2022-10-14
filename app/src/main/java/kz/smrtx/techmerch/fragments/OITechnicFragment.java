@@ -327,6 +327,13 @@ public class OITechnicFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode==0) {
+            File file = new File(currentImagePath);
+            if (file.delete())
+                Log.i("onActivityResult", "camera cancelled, image deleted");
+
+            return;
+        }
         parseImage();
     }
 

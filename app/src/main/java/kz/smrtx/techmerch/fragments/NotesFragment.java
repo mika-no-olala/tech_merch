@@ -133,7 +133,9 @@ public class NotesFragment extends Fragment {
 
             String date = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
             String name = Ius.readSharedPreferences(this.getContext(), Ius.USER_NAME);
-            Note note = new Note(date, salePointCode, userCode, name, commentStr, "yes");
+            String visitNumber = Ius.readSharedPreferences(this.getContext(), Ius.LAST_VISIT_NUMBER);
+
+            Note note = new Note(date, salePointCode, userCode, name, commentStr, visitNumber,"yes");
             noteViewModel.insert(note);
 
             createToast(getResources().getString(R.string.note_success), true);
@@ -158,7 +160,11 @@ public class NotesFragment extends Fragment {
             if (note.getNES_TO_UPDATE().equals("yes"))
                 noteViewModel.delete(note);
             else {
+                String visitNumber = Ius.readSharedPreferences(this.getContext(), Ius.LAST_VISIT_NUMBER);
+
                 note.setNES_TO_UPDATE("delete");
+                note.setNOT_VIS_NUMBER(visitNumber);
+                note.setNOT_CREATED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss")); //need for deleting unnec visit data
                 noteViewModel.update(note);
             }
             dialog.cancel();

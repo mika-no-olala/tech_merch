@@ -10,13 +10,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
@@ -36,7 +35,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -52,12 +50,10 @@ import kz.smrtx.techmerch.items.entities.Note;
 import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.entities.SalePoint;
-import kz.smrtx.techmerch.items.entities.SalePointItem;
 import kz.smrtx.techmerch.items.entities.User;
-import kz.smrtx.techmerch.items.repositories.PhotoRepository;
 import kz.smrtx.techmerch.items.reqres.synctables.SyncTables;
 import kz.smrtx.techmerch.items.reqres.synctables.Table;
-import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
+import kz.smrtx.techmerch.items.viewmodels.ConsumableViewModel;
 import kz.smrtx.techmerch.items.viewmodels.ElementViewModel;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.NoteViewModel;
@@ -67,7 +63,6 @@ import kz.smrtx.techmerch.items.viewmodels.SalePointViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
-import kz.smrtx.techmerch.utils.ZipManager;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -83,7 +78,6 @@ public class SyncActivity extends AppCompatActivity {
 
     private int processImagesToUpload = 1;
     private int stepCounter = 0;
-    private String date;
     private final Context context = this;
     private TextView syncInfo;
     private TextView lastSync;
@@ -92,9 +86,9 @@ public class SyncActivity extends AppCompatActivity {
     private ImageView animationStopped;
     private GifImageView animation;
 
-    private ArrayList<String> imagesUrlForDownload = new ArrayList<>();
-    private ArrayList<String> allImagesUrl = new ArrayList<>();
-    private List<String> allImagesToUpload = new ArrayList<>();
+    private final ArrayList<String> imagesUrlForDownload = new ArrayList<>();
+    private final ArrayList<String> allImagesUrl = new ArrayList<>();
+    private final List<String> allImagesToUpload = new ArrayList<>();
 
     private RequestViewModel requestViewModel;
     private SessionViewModel sessionViewModel;
@@ -105,6 +99,7 @@ public class SyncActivity extends AppCompatActivity {
     private HistoryViewModel historyViewModel;
     private NoteViewModel noteViewModel;
     private PhotoViewModel photoViewModel;
+    private ConsumableViewModel consumableViewModel;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -140,6 +135,7 @@ public class SyncActivity extends AppCompatActivity {
         historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
         noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
         photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
+        consumableViewModel = new ViewModelProvider(this).get(ConsumableViewModel.class);
 
         startSync();
 
@@ -211,6 +207,7 @@ public class SyncActivity extends AppCompatActivity {
             unlockButtons();
         }
 
+        @SuppressWarnings("deprecation")
         public GatherDataFromLocal(Activity context, VisitViewModel visitViewModel) {
             this.context = context;
             this.visitViewModel = visitViewModel;
@@ -225,8 +222,8 @@ public class SyncActivity extends AppCompatActivity {
 
         @SuppressLint("Range")
         public void getAll(){
-            String[] tables = {"ST_SESSION", "ST_VISIT", "ST_REQUEST", "ST_NOTES", "ST_REQUEST_PHOTO"};
-            String[] tablesOnServer = {"sync.WT_SYNC_A_ST_SESSION", "sync.WT_SYNC_A_ST_VISIT", "sync.WT_SYNC_ST_REQUEST", "sync.WT_SYNC_ST_NOTES", "sync.WT_SYNC_ST_REQUEST_PHOTO"};
+            String[] tables = {"ST_SESSION", "ST_VISIT", "ST_REQUEST", "ST_NOTES", "ST_REQUEST_PHOTO", "ST_TECHNIC_REPORT"};
+            String[] tablesOnServer = {"sync.WT_SYNC_A_ST_SESSION", "sync.WT_SYNC_A_ST_VISIT", "sync.WT_SYNC_ST_REQUEST", "sync.WT_SYNC_ST_NOTES", "sync.WT_SYNC_ST_REQUEST_PHOTO", "sync.WT_SYNC_ST_TECHNIC_REPORT"};
 
             for(int i = 0; i < tables.length; i++){
                 SimpleSQLiteQuery query = new SimpleSQLiteQuery("SELECT * FROM "+tables[i], null);
@@ -270,7 +267,7 @@ public class SyncActivity extends AppCompatActivity {
 
         Ius.getApiService().getSyncTables(userCode).enqueue(new Callback<SyncTables>() {
             @Override
-            public void onResponse(Call<SyncTables> call, Response<SyncTables> response) {
+            public void onResponse(@NonNull Call<SyncTables> call, @NonNull Response<SyncTables> response) {
                 if (!response.isSuccessful()) {
                     createToast(String.valueOf(response.code()), false);
                     Log.e("getSyncTables", "response is not successful - " + response.code());
@@ -283,7 +280,7 @@ public class SyncActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<SyncTables> call, Throwable t) {
+            public void onFailure(@NonNull Call<SyncTables> call, @NonNull Throwable t) {
                 createToast(t.getMessage(), false);
                 Log.e("getSyncTables", "onFailure - " + t.getMessage());
                 unlockButtons();
@@ -291,6 +288,7 @@ public class SyncActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint({"CheckResult", "SetTextI18n"})
     private void getSyncData(final SyncTables syncTables) {
         stepCounter = 0;
@@ -317,13 +315,11 @@ public class SyncActivity extends AppCompatActivity {
                 else
                     lastSync.setText(getResources().getString(R.string.sync_server_connection));
                 unlockButtons();
-            }, () -> {
-                new DownloadImages().execute();
-            });
+            }, () -> new DownloadImages().execute());
     }
 
     private void handleResults(JSONObject obj, String tableName) throws JSONException {
-        if (obj.getString("status").trim().toUpperCase().equals("OK") && obj.getJSONArray("data").length() > 0) {
+        if (obj.getString("status").trim().equalsIgnoreCase("OK") && obj.getJSONArray("data").length() > 0) {
             try {
                 Log.i("tableName", tableName);
                 switch (tableName) {
@@ -391,6 +387,7 @@ public class SyncActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @SuppressLint("StaticFieldLeak")
     private class DownloadImages extends AsyncTask<Void, Void, Void> {
         
@@ -424,6 +421,7 @@ public class SyncActivity extends AppCompatActivity {
             unlockButtons();
         }
         
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         private void downloadImages() {
             try {
                 for (String downloadUrl: imagesUrlForDownload) {
@@ -434,7 +432,7 @@ public class SyncActivity extends AppCompatActivity {
                     
                     if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
                         Log.e("downloadImages", "Server returned HTTP " + c.getResponseCode()
-                                + " " + c.getResponseMessage());
+                                + " " + c.getResponseMessage() + " - " + downloadUrl);
                         continue;
                     }
 
@@ -520,7 +518,7 @@ public class SyncActivity extends AppCompatActivity {
     private void endSync(boolean success) {
         unlockButtons();
         startWork.setEnabled(true);
-        date = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
+        String date = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
         Ius.writeSharedPreferences(context, Ius.LAST_SYNC, date);
         syncInfo.setText(getResources().getString(R.string.finished));
         if (success)
@@ -558,6 +556,7 @@ public class SyncActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void uploadFile(String zipName, String useCode) {
         File file = new File(Objects.requireNonNull(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)).getAbsolutePath()+"/"+Ius.DIRECTORY_FROM_SERVER+"/sync/"+zipName);
         RequestBody fbody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
@@ -566,7 +565,7 @@ public class SyncActivity extends AppCompatActivity {
 
         Ius.getApiService().uploadSyncFile(useCodeBody, body).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()){
                     try {
                         JSONObject jsonObj = new JSONObject(response.body().string());
@@ -590,7 +589,7 @@ public class SyncActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 lastSync.setText(getResources().getString(R.string.sync_server_error));
                 Log.e("uploadFile", "onFailure");
                 unlockButtons();
@@ -598,6 +597,7 @@ public class SyncActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressWarnings("deprecation")
     private void uploadPhotoFiles(){
         String path = String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES));
         int totalImages = allImagesToUpload.size();
@@ -617,7 +617,7 @@ public class SyncActivity extends AppCompatActivity {
             Ius.getApiService().uploadFile(fileName, folderName, body).enqueue(new Callback<JSONObject>() {
                 @SuppressLint("SetTextI18n")
                 @Override
-                public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                public void onResponse(@NonNull Call<JSONObject> call, @NonNull Response<JSONObject> response) {
                     if (!response.isSuccessful()) {
                         Log.e("uploadPhoto Response", String.valueOf(response.code()));
                         return;
@@ -629,7 +629,7 @@ public class SyncActivity extends AppCompatActivity {
 
                 @SuppressLint("SetTextI18n")
                 @Override
-                public void onFailure(Call<JSONObject> call, Throwable t) {
+                public void onFailure(@NonNull Call<JSONObject> call, @NonNull Throwable t) {
                     Log.e("uploadPhoto Failure", t.getMessage());
                 }
             });
@@ -694,6 +694,7 @@ public class SyncActivity extends AppCompatActivity {
         historyViewModel.deleteHistory();
         noteViewModel.deleteAllNotes();
         photoViewModel.deleteAllPhotos();
+        consumableViewModel.deleteReport();
     }
 
     private void unlockButtons() {
@@ -703,7 +704,7 @@ public class SyncActivity extends AppCompatActivity {
     }
 
     private void createToast(String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) findViewById(R.id.toast));
+        View layout = getLayoutInflater().inflate(R.layout.toast_window, findViewById(R.id.toast));
         Ius.showToast(layout, context, text, success);
     }
 

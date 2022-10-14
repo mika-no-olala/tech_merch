@@ -19,13 +19,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import kz.smrtx.techmerch.BuildConfig;
 import kz.smrtx.techmerch.activities.OutletInformationActivity;
 import kz.smrtx.techmerch.activities.StatusesActivity;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.NoteViewModel;
+import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.utils.GPSTracker;
 import kz.smrtx.techmerch.Ius;
@@ -41,6 +44,7 @@ public class OperationsOnOutletFragment extends Fragment {
     private VisitViewModel visitViewModel;
     private NoteViewModel noteViewModel;
     private HistoryViewModel historyViewModel;
+    private RequestViewModel requestViewModel;
     private Visit visit;
     private TextView name;
     private TextView requestsTitle;
@@ -81,6 +85,7 @@ public class OperationsOnOutletFragment extends Fragment {
         visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
         noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
         historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+        requestViewModel = new ViewModelProvider(this).get(RequestViewModel.class);
 
         if (getArguments()!=null) {
             salePointCode = getArguments().getString("OUT_CODE");
@@ -88,33 +93,13 @@ public class OperationsOnOutletFragment extends Fragment {
             getOutlet(salePointCode);
         }
 
-        createRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((SessionActivity)requireActivity()).openActivityCreateRequest();
-            }
-        });
+        createRequest.setOnClickListener(view14 -> ((SessionActivity)requireActivity()).openActivityCreateRequest());
 
-        requests.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openActivityStatuses();
-            }
-        });
+        requests.setOnClickListener(view13 -> openActivityStatuses());
 
-        notes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((SessionActivity)requireActivity()).openFragment(NotesFragment.getInstance(salePointCode), false);
-            }
-        });
+        notes.setOnClickListener(view12 -> ((SessionActivity)requireActivity()).openFragment(NotesFragment.getInstance(salePointCode), false));
 
-        detailInformation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openActivityOutletInformation();
-            }
-        });
+        detailInformation.setOnClickListener(view1 -> openActivityOutletInformation());
 
         return view;
     }
@@ -186,6 +171,54 @@ public class OperationsOnOutletFragment extends Fragment {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
+    private class DoIDelete extends AsyncTask<Void, Void, Void> {
+        NoteViewModel noteViewModel;
+        RequestViewModel requestViewModel;
+        Activity context;
+        boolean deleteVisit = true;
+        Date dateFinished;
+
+        public DoIDelete(Activity context, NoteViewModel noteViewModel, RequestViewModel requestViewModel) {
+            this.context = context;
+            this.noteViewModel = noteViewModel;
+            this.requestViewModel = requestViewModel;
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onPostExecute(Void unused) {
+            if (deleteVisit) {
+                visitViewModel.delete(visit);
+                Log.w("OnPostExecute", "visit deleted");
+            }
+            else {
+                visit.setVIS_FINISH_DATE(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
+                visitViewModel.update(visit);
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            dateFinished = new Date();
+            checkList(requestViewModel.getCurrentSessionRequests(visit.getVIS_NUMBER()));
+            if (deleteVisit)
+                checkList(noteViewModel.getCurrentSessionRequests(visit.getVIS_NUMBER()));
+            return null;
+        }
+
+        private void checkList(List<String> list) {
+            for(String dateStr : list) {
+                Date date = Ius.getDateFromString(dateStr, "dd.MM.yyyy HH:mm:ss");
+                Log.e("sss", String.valueOf(Ius.getDifferenceBetweenDates(date, dateFinished, "s")));
+                if (Ius.getDifferenceBetweenDates(date, dateFinished, "s") > 0) {
+                    deleteVisit = false;
+                    break;
+                }
+            }
+        }
+    }
+
     private void openActivityOutletInformation() {
         Intent intent = new Intent(this.getContext(), OutletInformationActivity.class);
         intent.putExtra("scenario", "detail");
@@ -221,16 +254,6 @@ public class OperationsOnOutletFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //  sss CHECK NOTES, REQUESTS AND HISTORY. IF THERE IS NO, THEN DELETE
-
-//        Date dateFinished = new Date();
-//        long minutes = Ius.getDifferenceBetweenDates(dateStarted, dateFinished, "m");
-//        if (minutes>=5) {
-            visit.setVIS_FINISH_DATE(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
-            visitViewModel.update(visit);
-//        }
-//        else {
-//            visitViewModel.delete(visit);
-//        }
+        new DoIDelete(this.getActivity(), noteViewModel, requestViewModel).execute();
     }
 }

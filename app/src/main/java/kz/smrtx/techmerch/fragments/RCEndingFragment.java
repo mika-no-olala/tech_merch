@@ -146,6 +146,7 @@ public class RCEndingFragment extends Fragment {
         });
     }
 
+    @SuppressWarnings("deprecation")
     private void captureImage(int photoNumber) {
         if (!((CreateRequestActivity)requireActivity()).checkPermissions()) {
             Log.w("captureImage", "NO PERMISSION");
@@ -154,7 +155,7 @@ public class RCEndingFragment extends Fragment {
 
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(this.getActivity().getPackageManager())!=null) {
-            File imageFile = null;
+            File imageFile;
 
             imageFile = getImageFile(photoNumber);
             if (imageFile==null) {
@@ -169,10 +170,20 @@ public class RCEndingFragment extends Fragment {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        parseImage();
+
+        if (resultCode==0) {
+            File file = new File(currentImagePath);
+            if (file.delete())
+                Log.i("onActivityResult", "camera cancelled, image deleted");
+
+            return;
+        }
+
+            parseImage();
     }
 
     private File getImageFile(int photoNumber) {

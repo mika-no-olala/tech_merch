@@ -1,6 +1,7 @@
 package kz.smrtx.techmerch.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -24,13 +26,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
-import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.adapters.CardAdapterConsumable;
 import kz.smrtx.techmerch.adapters.CardAdapterString;
 import kz.smrtx.techmerch.items.entities.Consumable;
@@ -40,6 +43,8 @@ import kz.smrtx.techmerch.items.viewmodels.ElementViewModel;
 
 public class TechnicReportFragment extends Fragment {
 
+    private final Calendar calendar = Calendar.getInstance();
+    private boolean fromFieldChosen;
     private final List<Consumable> consumables = new ArrayList<>();
     private List<Element> elements = new ArrayList<>();
     private List<Element> elementsFiltered = new ArrayList<>(elements);
@@ -56,6 +61,8 @@ public class TechnicReportFragment extends Fragment {
     private AutoCompleteTextView consumable;
     private EditText cost;
     private EditText quantity;
+    private EditText from;
+    private EditText to;
     private TextView fullCost;
     private TextView total;
 
@@ -84,7 +91,7 @@ public class TechnicReportFragment extends Fragment {
         CheckBox iDoItMyself = view.findViewById(R.id.iDoItMyself);
         Button add = view.findViewById(R.id.add);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, elementsStr);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_list_item_1, elementsStr);
         consumable.setAdapter(adapter);
         setAdapter();
 
@@ -191,6 +198,9 @@ public class TechnicReportFragment extends Fragment {
             return;
         }
 
+        if (!isIntervalCorrect(view))
+            return;
+
         String code = Ius.generateUniqueCode(this.getContext(), "c");
         int userCode = Integer.parseInt(Ius.readSharedPreferences(this.getContext(), Ius.USER_CODE));
         String userName = Ius.readSharedPreferences(this.getContext(), Ius.USER_NAME);
@@ -205,7 +215,20 @@ public class TechnicReportFragment extends Fragment {
 
         consumableViewModel.insertReport(consumables);
         createToast(view, getResources().getString(R.string.report_send), true);
-        ((SessionActivity)requireActivity()).onBackPressed();
+        requireActivity().onBackPressed();
+    }
+
+    private boolean isIntervalCorrect(View view) {
+        if (Ius.isEmpty(from)) {
+            createToast(view, getString(R.string.fill_time_interval), false);
+            return false;
+        }
+
+        if (Ius.isEmpty(to)) {
+            createToast(view, getString(R.string.fill_time_interval), false);
+            return false;
+        }
+
     }
 
     private void openDialog() {
@@ -244,7 +267,6 @@ public class TechnicReportFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     private void setAdapter() {
         RecyclerView.LayoutManager layoutManager;
-        recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
@@ -272,6 +294,7 @@ public class TechnicReportFragment extends Fragment {
         });
     }
 
+    @SuppressWarnings("deprecation")
     @SuppressLint("StaticFieldLeak")
     public class GetDataAsync extends AsyncTask<Void, Void, Void> {
         private final ElementViewModel elementViewModel;
@@ -293,7 +316,7 @@ public class TechnicReportFragment extends Fragment {
     }
 
     private void createToast(View view, String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) view.findViewById(R.id.toast));
+        View layout = getLayoutInflater().inflate(R.layout.toast_window, view.findViewById(R.id.toast));
         Ius.showToast(layout, this.getContext(), text, success);
     }
 
@@ -301,11 +324,37 @@ public class TechnicReportFragment extends Fragment {
         consumable = view.findViewById(R.id.consumable);
         cost = view.findViewById(R.id.cost);
         quantity = view.findViewById(R.id.quantity);
+        from = view.findViewById(R.id.from);
+        to = view.findViewById(R.id.to);
         fullCost = view.findViewById(R.id.fullCost);
         total = view.findViewById(R.id.total);
         send = view.findViewById(R.id.send);
         totalList = view.findViewById(R.id.totalList);
         recyclerView = view.findViewById(R.id.recyclerView);
+
+        DatePickerDialog.OnDateSetListener date = (datePicker, i, i1, i2) -> {
+            calendar.set(Calendar.YEAR, i);
+            calendar.set(Calendar.MONTH, i1);
+            calendar.set(Calendar.DAY_OF_MONTH, i2);
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+            if (fromFieldChosen)
+                from.setText(simpleDateFormat.format(calendar.getTime()));
+            else
+                to.setText(simpleDateFormat.format(calendar.getTime()));
+        };
+
+        from.setOnClickListener(from -> {
+            fromFieldChosen = true;
+            new DatePickerDialog(this.getContext(), R.style.DialogTheme, date, calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+
+        to.setOnClickListener(to -> {
+            fromFieldChosen = false;
+            new DatePickerDialog(this.getContext(), R.style.DialogTheme, date, calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+
 
         cost.addTextChangedListener(new TextWatcher() {
             @Override

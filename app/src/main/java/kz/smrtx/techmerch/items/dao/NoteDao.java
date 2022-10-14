@@ -36,4 +36,7 @@ public interface NoteDao {
     @Query("select * from ST_NOTES where NOT_SAL_CODE=:salePointCode AND NES_TO_UPDATE!='delete' " +
             "order by NOT_CREATED desc")
     LiveData<List<Note>> getNotesFromSalePoint(int salePointCode);
+
+    @Query("select NOT_CREATED from ST_NOTES where (NES_TO_UPDATE='yes' or NES_TO_UPDATE='delete') and NOT_VIS_NUMBER=:visitNumber")
+    List<String> getCurrentSessionNotes(String visitNumber);
 }

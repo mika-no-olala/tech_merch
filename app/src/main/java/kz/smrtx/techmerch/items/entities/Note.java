@@ -21,15 +21,18 @@ public class Note {
     private String NOT_USE_NAME;
     @SerializedName("NOT_TEXT")
     private String NOT_TEXT;
+    @SerializedName("NOT_VIS_NUMBER")
+    private String NOT_VIS_NUMBER;
     @SerializedName("NES_TO_UPDATE")
     private String NES_TO_UPDATE;
 
-    public Note(String NOT_CREATED, int NOT_SAL_CODE, int NOT_USE_CODE, String NOT_USE_NAME, String NOT_TEXT, String NES_TO_UPDATE) {
+    public Note(String NOT_CREATED, int NOT_SAL_CODE, int NOT_USE_CODE, String NOT_USE_NAME, String NOT_TEXT, String NOT_VIS_NUMBER, String NES_TO_UPDATE) {
         this.NOT_CREATED = NOT_CREATED;
         this.NOT_SAL_CODE = NOT_SAL_CODE;
         this.NOT_USE_CODE = NOT_USE_CODE;
         this.NOT_USE_NAME = NOT_USE_NAME;
         this.NOT_TEXT = NOT_TEXT;
+        this.NOT_VIS_NUMBER = NOT_VIS_NUMBER;
         this.NES_TO_UPDATE = NES_TO_UPDATE;
     }
 
@@ -79,6 +82,14 @@ public class Note {
 
     public void setNOT_USE_NAME(String NOT_USE_NAME) {
         this.NOT_USE_NAME = NOT_USE_NAME;
+    }
+
+    public String getNOT_VIS_NUMBER() {
+        return NOT_VIS_NUMBER;
+    }
+
+    public void setNOT_VIS_NUMBER(String NOT_VIS_NUMBER) {
+        this.NOT_VIS_NUMBER = NOT_VIS_NUMBER;
     }
 
     public String getNES_TO_UPDATE() {

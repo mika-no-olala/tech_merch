@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="TextViewTheme">
+        <item name="android:textColor">@color/main_deep_purple</item>
+    </style>
+
+    <style name="dialog">
+    </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/main_deep_purple</item>
+        <item name="colorPrimary">@color/main_deep_purple</item>
+        <item name="colorPrimaryDark">@color/main_deep_purple</item>
+        <item name="android:buttonBarNegativeButtonStyle" tools:targetApi="lollipop">@style/DatePickerTheme.ButtonBarButtonStyle</item>
+        <item name="android:buttonBarPositiveButtonStyle" tools:targetApi="lollipop">@style/DatePickerTheme.ButtonBarButtonStyle</item>
+    </style>
+
+    <style name="DatePickerTheme.ButtonBarButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/main_deep_purple</item>
     </style>
 
