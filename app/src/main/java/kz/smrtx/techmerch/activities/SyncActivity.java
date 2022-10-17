@@ -44,6 +44,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.items.entities.Consumable;
 import kz.smrtx.techmerch.items.entities.Element;
 import kz.smrtx.techmerch.items.entities.History;
 import kz.smrtx.techmerch.items.entities.Note;
@@ -378,6 +379,14 @@ public class SyncActivity extends AppCompatActivity {
                         if (photos.size() > 0) {
                             photoViewModel.insertPhotos(photos);
                             makeListForDownload(photos);
+                        }
+                        break;
+                    case "ST_TECHNIC_REPORT":
+                        Type reportType = new TypeToken<List<Consumable>>() {
+                        }.getType();
+                        List<Consumable> report = new Gson().fromJson(obj.getJSONArray("data").toString(), reportType);
+                        if (report.size() > 0) {
+                            consumableViewModel.insertReport(report);
                         }
                         break;
                 }

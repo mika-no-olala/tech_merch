@@ -32,6 +32,9 @@ public class ConsumableRepository {
     public LiveData<List<Consumable>> getReportByUser(int userCode) {
         return consumableDao.getReportByUser(userCode);
     }
+    public LiveData<List<Consumable>> getReports() {
+        return consumableDao.getReports();
+    }
 
     private static class insertReportAsyncTask extends AsyncTask<List<Consumable>, Void, Void>{
         private ConsumableDao consumableDao;

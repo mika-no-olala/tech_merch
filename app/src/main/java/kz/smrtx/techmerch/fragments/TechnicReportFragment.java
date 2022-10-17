@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ public class TechnicReportFragment extends Fragment {
     private boolean heCanDoItHimself = false;
     private int fullCostInt = 0;
     private int totalInt = 0;
+    private Date now;
     private ConsumableViewModel consumableViewModel;
 
     private RecyclerView recyclerView;
@@ -198,19 +200,24 @@ public class TechnicReportFragment extends Fragment {
             return;
         }
 
+        now = new Date();
+
         if (!isIntervalCorrect(view))
             return;
 
         String code = Ius.generateUniqueCode(this.getContext(), "c");
         int userCode = Integer.parseInt(Ius.readSharedPreferences(this.getContext(), Ius.USER_CODE));
         String userName = Ius.readSharedPreferences(this.getContext(), Ius.USER_NAME);
-        String date = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
+        String date = Ius.getDateByFormat(now, "dd.MM.yyyy HH:mm:ss");
 
         for (Consumable c : consumables) {
             c.setTER_CODE(code);
             c.setTER_USE_CODE(userCode);
             c.setTER_USE_NAME(userName);
             c.setTER_CREATED(date);
+            c.setTER_FROM(from.getText().toString());
+            c.setTER_TO(to.getText().toString());
+            c.setNES_TO_UPDATE("yes");
         }
 
         consumableViewModel.insertReport(consumables);
@@ -229,6 +236,36 @@ public class TechnicReportFragment extends Fragment {
             return false;
         }
 
+        Date dateTo = Ius.getDateFromString(to.getText().toString(), "dd.MM.yyyy");
+        Date dateFrom = Ius.getDateFromString(from.getText().toString(), "dd.MM.yyyy");
+        long difference = Ius.getDifferenceBetweenDates(dateFrom, dateTo, "d");
+
+        if (difference<0) {
+            createToast(view, getString(R.string.time_interval_negative), false);
+            return false;
+        }
+
+        if (difference>31) {
+            createToast(view, getString(R.string.time_interval_too_big), false);
+            return false;
+        }
+
+        difference = Ius.getDifferenceBetweenDates(now, dateTo, "d");
+
+        if (difference>0) {
+            createToast(view, getString(R.string.time_interval_time_walker), false);
+            return false;
+        }
+
+        if (difference<0)
+            difference = difference * -1;
+
+        if (difference > 90) {
+            createToast(view, getString(R.string.time_interval_non_actual), false);
+            return false;
+        }
+
+        return true;
     }
 
     private void openDialog() {

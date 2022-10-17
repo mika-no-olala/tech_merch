@@ -56,6 +56,7 @@
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/drawable/ic_photo.xml" value="0.1635" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/drawable/ic_triangle_button.xml" value="0.2245" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout-v21/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout-v21/card_report.xml" value="0.20854700854700856" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout-v21/toast_window.xml" value="0.264" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/activity_create_request.xml" value="0.264" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/activity_main.xml" value="0.264" />
@@ -74,6 +75,7 @@
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/card_image.xml" value="0.20854700854700856" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/card_note.xml" value="0.264" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/card_outlet.xml" value="0.4" />
+        <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/card_report.xml" value="0.264" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/card_request.xml" value="0.264" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/card_text.xml" value="0.2" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/dialog_window_acception.xml" value="0.2" />
@@ -83,11 +85,12 @@
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/dialog_window_list_checkbox.xml" value="0.2" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/dialog_window_password.xml" value="0.264" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/dialog_window_request_acception.xml" value="0.20854700854700856" />
+        <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/fragment_all_reports.xml" value="0.264" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/fragment_maps.xml" value="0.10192147034252297" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/fragment_notes.xml" value="0.264" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/fragment_oi_salepoint.xml" value="0.1644021739130435" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/fragment_oi_technic.xml" value="0.18478260869565216" />
-        <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/fragment_operations.xml" value="0.2" />
+        <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/fragment_operations.xml" value="0.264" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/fragment_operations_on_outlet.xml" value="0.21403508771929824" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/fragment_outlet_information.xml" value="0.264" />
         <entry key="..\:/Users/Mika/important/projects/smartex/app/src/main/res/layout/fragment_outlets.xml" value="0.264" />

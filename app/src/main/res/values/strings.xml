@@ -10,6 +10,10 @@
     <string name="no_server_connection_description">Без доступа к серверу - проверьте подключение к интернету</string>
     <string name="fill_field">Заполните поле</string>
     <string name="fill_time_interval">Заполните временной промежуток</string>
+    <string name="time_interval_negative">Вторая дата должна быть позже первой</string>
+    <string name="time_interval_too_big">Временной интервал больше месяца</string>
+    <string name="time_interval_time_walker">Заполнение отчета наперед?</string>
+    <string name="time_interval_non_actual">Временной интервал слишком далёк от текущего дня</string>
     <string name="report_empty">Отчет не может быть пустым</string>
     <string name="report_send">Отчет отправлен</string>
     <string name="wrong_data_log_in">Неправильный логин или пароль</string>
@@ -193,5 +197,10 @@
     <string name="full_cost">Общая стоимость</string>
     <string name="total">Итого</string>
     <string name="report">Отчет</string>
+    <string name="write_report">Написать отчет</string>
+    <string name="reports">Отчеты</string>
+    <string name="no_reports">Нет отчетов</string>
+    <string name="reports_for_3">Просмотр отчетов за 3 месяца</string>
     <string name="time_interval">Временной промежуток</string>
+    <string name="report_for">Отчет за</string>
 </resources>

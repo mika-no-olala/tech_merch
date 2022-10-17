@@ -32,4 +32,7 @@ public class ConsumableViewModel extends AndroidViewModel {
     public LiveData<List<Consumable>> getReportByUser(int userCode) {
         return consumableRepository.getReportByUser(userCode);
     }
+    public LiveData<List<Consumable>> getReports() {
+        return consumableRepository.getReports();
+    }
 }

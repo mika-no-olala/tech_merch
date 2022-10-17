@@ -32,6 +32,8 @@ public class Consumable {
     private String TER_TO;
     @SerializedName("TER_CREATED")
     private String TER_CREATED;
+    @SerializedName("NES_TO_UPDATE")
+    private String NES_TO_UPDATE;
 
     public Consumable(String TER_CONSUMABLE_NAME, int TER_CONSUMABLE_ID, int TER_COST, int TER_QUANTITY) {
         this.TER_CONSUMABLE_NAME = TER_CONSUMABLE_NAME;
@@ -126,5 +128,13 @@ public class Consumable {
 
     public void setTER_CREATED(String TER_CREATED) {
         this.TER_CREATED = TER_CREATED;
+    }
+
+    public String getNES_TO_UPDATE() {
+        return NES_TO_UPDATE;
+    }
+
+    public void setNES_TO_UPDATE(String NES_TO_UPDATE) {
+        this.NES_TO_UPDATE = NES_TO_UPDATE;
     }
 }

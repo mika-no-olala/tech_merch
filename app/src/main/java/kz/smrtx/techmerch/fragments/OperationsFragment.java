@@ -57,26 +57,30 @@ public class OperationsFragment extends Fragment {
         CardView daily = view.findViewById(R.id.daily);
         CardView statuses = view.findViewById(R.id.statuses);
         CardView report = view.findViewById(R.id.report);
+        CardView allReports = view.findViewById(R.id.reportList);
         listener.getPageName(getResources().getString(R.string.operations));
         startWork.setText(getResources().getString(R.string.start_work_check_point) + ": " + dateStarted);
 
         if (roleCode==4)
             outlet.setVisibility(View.GONE);
 
-        if (roleCode!=4)
+        if (roleCode!=4) {
             report.setVisibility(View.GONE);
+            allReports.setVisibility(View.GONE);
+        }
 
-        outlet.setOnClickListener(view13 -> ((SessionActivity)requireActivity()).openFragment(OutletsFragment.getInstance("tmr"), false));
+        outlet.setOnClickListener(outletView -> ((SessionActivity)requireActivity()).openFragment(OutletsFragment.getInstance("tmr"), false));
 
-        statuses.setOnClickListener(view12 -> {
+        statuses.setOnClickListener(statusesView -> {
             if (!((SessionActivity)requireActivity()).checkPermissions()) {
                 Log.w("openStatusesActivity", "NO PERMISSION");
                 return;
             }
             ((SessionActivity)requireActivity()).openActivityStatuses();
         });
-        report.setOnClickListener(view14 -> ((SessionActivity)requireActivity()).openFragment(TechnicReportFragment.getInstance(), true));
-        workIsOver.setOnClickListener(view1 -> ((SessionActivity)requireActivity()).openDialog());
+        report.setOnClickListener(reportView -> ((SessionActivity)requireActivity()).openFragment(TechnicReportFragment.getInstance(), true));
+        allReports.setOnClickListener(allReportsView -> ((SessionActivity)requireActivity()).openFragment(AllReportsFragment.getInstance(), true));
+        workIsOver.setOnClickListener(workIsOverView -> ((SessionActivity)requireActivity()).openDialog());
         return view;
     }
 

@@ -299,6 +299,11 @@ public class Ius extends Application {
         return new Date();
     }
 
+    public static String remakeDate(String inputted, String patternFrom, String patternTo) {
+        Date date = Ius.getDateFromString(inputted, patternFrom);
+        return Ius.getDateByFormat(date, patternTo);
+    }
+
     public static Date plusDaysToDate(Date date, int days) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -327,6 +332,8 @@ public class Ius extends Application {
                 return difference / (60 * 1000) % 60;
             case "h":
                 return difference / (60 * 60 * 1000);
+            case "d":
+                return difference / (60 * 60 * 24 * 1000);
         }
     }
 

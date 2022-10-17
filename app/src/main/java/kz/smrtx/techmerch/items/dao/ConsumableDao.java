@@ -25,4 +25,7 @@ public interface ConsumableDao {
 
     @Query("select * from ST_TECHNIC_REPORT where TER_CODE=:userCode")
     LiveData<List<Consumable>> getReportByUser(int userCode);
+
+    @Query("select * from ST_TECHNIC_REPORT")
+    LiveData<List<Consumable>> getReports();
 }
