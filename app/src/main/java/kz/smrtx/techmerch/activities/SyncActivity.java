@@ -64,6 +64,7 @@ import kz.smrtx.techmerch.items.viewmodels.SalePointViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
+import kz.smrtx.techmerch.utils.LocaleHelper;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -721,5 +722,10 @@ public class SyncActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SessionActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase));
     }
 }

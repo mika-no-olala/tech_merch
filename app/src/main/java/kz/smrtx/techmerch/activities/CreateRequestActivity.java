@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ import kz.smrtx.techmerch.items.viewmodels.ElementViewModel;
 import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
+import kz.smrtx.techmerch.utils.LocaleHelper;
 
 public class CreateRequestActivity extends AppCompatActivity {
 
@@ -125,46 +127,41 @@ public class CreateRequestActivity extends AppCompatActivity {
         initializeVisit();
         initializeSummaryStuff();
 
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!pages.get(pageIndex).isYouCanGoNext()) {
-                    createToast(getResources().getString(R.string.fill_field), false);
-                    return;
-                }
-
-                if (pageIndex==6 && !responsibleChosen) {
-                    createToast(getResources().getString(R.string.executor_error), false);
-                    return;
-                }
-
-                if(pageIndex==6) {
-                    makeSummaryFragment();
-                }
-
-                route();
-                Log.i("NextClicked", "now it is page #" + pageIndex);
+        next.setOnClickListener(view -> {
+            if (!pages.get(pageIndex).isYouCanGoNext()) {
+                createToast(getResources().getString(R.string.fill_field), false);
+                return;
             }
+
+            if (pageIndex==6 && !responsibleChosen) {
+                createToast(getResources().getString(R.string.executor_error), false);
+                return;
+            }
+
+            if(pageIndex==6) {
+                makeSummaryFragment();
+            }
+
+            route();
+            Log.i("NextClicked", "now it is page #" + pageIndex);
         });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("BackClicked", "it was page #" + pageIndex);
-                if (pageIndex==0)
-                    finish();
-                if (containerForFragment.getVisibility() == View.GONE)
-                    hideSummary();
 
-                pages.get(pageIndex).setYouCanGoNext(false);
-                deleteDataAfterGettingBack();
+        back.setOnClickListener(view -> {
+            Log.i("BackClicked", "it was page #" + pageIndex);
+            if (pageIndex==0)
+                finish();
+            if (containerForFragment.getVisibility() == View.GONE)
+                hideSummary();
 
-                // removing previous page from active pages
-                pages.get(pageIndex).setActive(false);
+            pages.get(pageIndex).setYouCanGoNext(false);
+            deleteDataAfterGettingBack();
 
-                int routeBackIndex = routeBack();
-                setPercentage(routeBackIndex);
-                getSupportFragmentManager().popBackStackImmediate();
-            }
+            // removing previous page from active pages
+            pages.get(pageIndex).setActive(false);
+
+            int routeBackIndex = routeBack();
+            setPercentage(routeBackIndex);
+            getSupportFragmentManager().popBackStackImmediate();
         });
     }
 
@@ -179,7 +176,6 @@ public class CreateRequestActivity extends AppCompatActivity {
         request.setREQ_CREATED(created);
         request.setREQ_DEADLINE(deadline);
         request.setREQ_UPDATED(created);
-        request.setREQ_STA_ID(2);
         request.setREQ_HISTORY_CODE(Ius.generateUniqueCode(this, "h"));
         request.setREQ_TYPE("Гарантированная");
         request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE)));
@@ -447,6 +443,7 @@ public class CreateRequestActivity extends AppCompatActivity {
                 request.setREQ_WORK_SPECIAL(null);
                 break;
             case 6:
+                responsibleChosen = false;
                 request.setREQ_USE_NAME_APPOINTED(null);
                 request.setREQ_USE_CODE_APPOINTED(0);
                 photoViewModel.deleteRequestPhotos(request.getREQ_CODE());
@@ -560,21 +557,23 @@ public class CreateRequestActivity extends AppCompatActivity {
         request.setREQ_WORK_SPECIAL(special);
     }
 
-    public void setExecutor(String code, boolean correct) {
-        if(!correct) {
-            responsibleChosen = false;
-            return;
-        }
+    public void setExecutor(String code, int executorRole) {
         String piece = code.substring(0, code.indexOf("-")-1);
         String pieceName = code.substring(code.indexOf("-")+2);
-        Log.e("sss name", pieceName);
         try {
             int codeInt = Integer.parseInt(piece);
             request.setREQ_USE_CODE_APPOINTED(codeInt);
             request.setREQ_USE_NAME_APPOINTED(pieceName);
+
+            if (executorRole==4)
+                request.setREQ_STA_ID(2);
+            else if (executorRole==6)
+                request.setREQ_STA_ID(1);
+            // make status for coordinator
+
             responsibleChosen = true;
         } catch (Exception e) {
-            createToast(getResources().getString(R.string.executor_error), false);
+            createToast(getResources().getString(R.string.executor_error), false); // change output text!
         }
     }
 
@@ -605,5 +604,10 @@ public class CreateRequestActivity extends AppCompatActivity {
 
     public boolean checkPermissions() {
         return Ius.checkPermissionsCamera(this);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase));
     }
 }

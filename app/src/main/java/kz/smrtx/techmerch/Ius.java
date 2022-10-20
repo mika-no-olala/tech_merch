@@ -9,8 +9,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -36,8 +35,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 
-import org.w3c.dom.Text;
-
+import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.utils.CustomTypefaceSpan;
 import kz.smrtx.techmerch.utils.ZipManager;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -81,6 +79,8 @@ public class Ius extends Application {
     public static final String USER_NAME = "USER_NAME";
     public static final String USER_ROLE_CODE = "USER_ROLE_CODE";
     public static final String USER_ROLE_NAME = "USER_ROLE_NAME";
+    public static final String USER_LANGUAGE = "USER_LANGUAGE";
+    public static final String USER_CITIES = "USER_CITIES";
 
     public static final String BOTTOM_BAR_TEXT = "BOTTOM_BAR_TEXT";
     public static final String DEVICE_ID = "DEVICE_ID";
@@ -91,7 +91,6 @@ public class Ius extends Application {
     public static final String LAST_SESSION_CODE = "LAST_SESSION_CODE";
     public static final String LAST_SALE_POINT_ADDRESS = "LAST_SALE_POINT_ADDRESS";
     public static final String DIRECTORY_FROM_SERVER = "prod";
-    public static final String KEY_SYN_ID = "KEY_SYN_ID";
 
     public static final String BASE_URL = "https://dts2.bctu.tech/";
     public static final String PHOTO_URL = BASE_URL + "/services-manager/upload/photo/";
@@ -234,6 +233,24 @@ public class Ius extends Application {
         return dialog;
     }
 
+    public static Dialog createDialogList(Context context, CardAdapterString adapter) {
+        Dialog dialog = new Dialog(context, android.R.style.Theme_Light);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawableResource(R.color.black_transparent);
+        dialog.setContentView(R.layout.dialog_window_list);
+        dialog.setCanceledOnTouchOutside(true);
+
+        RecyclerView.LayoutManager layoutManager;
+        layoutManager = new LinearLayoutManager(dialog.getContext());
+
+        RecyclerView recyclerView = dialog.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
+        return dialog;
+    }
+
     public static Dialog createDialog(Context context, int layoutId, String title) {
         Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -248,12 +265,7 @@ public class Ius extends Application {
         if (title.length()>0)
             titleView.setText(title);
 
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.cancel();
-            }
-        });
+        cancel.setOnClickListener(view -> dialog.cancel());
 
         return dialog;
     }

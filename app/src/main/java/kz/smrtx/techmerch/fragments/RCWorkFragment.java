@@ -110,7 +110,8 @@ public class RCWorkFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     private void openDialog() {
-        CardAdapterString adapter = new CardAdapterString(additional);
+        CardAdapterString adapter = new CardAdapterString();
+        adapter.setAdapterElement(additional);
         Dialog dialog = Ius.createDialogList(this.getContext(), adapter, true);
         TextView listChoice = dialog.findViewById(R.id.listChoice);
         Button positive = dialog.findViewById(R.id.positive);

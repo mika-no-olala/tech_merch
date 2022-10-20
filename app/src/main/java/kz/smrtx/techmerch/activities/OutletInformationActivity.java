@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,7 @@ import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
 import kz.smrtx.techmerch.utils.GPSTracker;
+import kz.smrtx.techmerch.utils.LocaleHelper;
 
 public class OutletInformationActivity extends AppCompatActivity implements OISalePointFragment.FragmentListener, OITechnicFragment.FragmentListener {
 
@@ -270,7 +272,12 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
     }
 
     private void createToast(String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) findViewById(R.id.toast));
+        View layout = getLayoutInflater().inflate(R.layout.toast_window, findViewById(R.id.toast));
         Ius.showToast(layout, this, text, success);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase));
     }
 }

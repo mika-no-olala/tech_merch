@@ -68,7 +68,8 @@ public class RCWorkSubtypeFragment extends Fragment {
     }
 
     private void openDialog(EditText editText, List<Element> arrayOriginal, boolean special) {
-        CardAdapterString adapter = new CardAdapterString(arrayOriginal);
+        CardAdapterString adapter = new CardAdapterString();
+        adapter.setAdapterElement(arrayOriginal);
         array = new ArrayList<>(arrayOriginal);
         Dialog dialog = Ius.createDialogList(this.getContext(), adapter, false);
         SearchView search = dialog.findViewById(R.id.search);
@@ -114,7 +115,7 @@ public class RCWorkSubtypeFragment extends Fragment {
                     if (e.getName().toLowerCase().contains(newText.toLowerCase()))
                         array.add(e);
                 }
-                adapter.setAdapter(array);
+                adapter.setAdapterElement(array);
 
                 return false;
             }

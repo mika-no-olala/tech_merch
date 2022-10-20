@@ -40,6 +40,7 @@ import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
+import kz.smrtx.techmerch.utils.LocaleHelper;
 
 public class StatusesActivity extends AppCompatActivity {
 
@@ -625,5 +626,10 @@ public class StatusesActivity extends AppCompatActivity {
     private void createToast(String text, boolean success) {
         View layout = getLayoutInflater().inflate(R.layout.toast_window, findViewById(R.id.toast));
         Ius.showToast(layout, this, text, success);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase));
     }
 }

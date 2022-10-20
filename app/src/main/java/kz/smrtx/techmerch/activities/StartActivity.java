@@ -26,6 +26,7 @@ import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
+import kz.smrtx.techmerch.utils.LocaleHelper;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -63,36 +64,21 @@ public class StartActivity extends AppCompatActivity {
         Ius.checkPermissionsCamera(this);
 
         Bundle arguments = getIntent().getExtras();
-        if (arguments.getBoolean("SYNC"))
-            openActivitySync();
 
-        startWork.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openActivitySession();
-            }
-        });
-
-        synchronization.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if (arguments!=null) {
+            if (arguments.getBoolean("SYNC"))
                 openActivitySync();
-            }
-        });
+        }
 
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openActivitySettings();
-            }
-        });
+        startWork.setOnClickListener(startWorkView -> openActivitySession());
 
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Ius.writeSharedPreferences(context, Ius.DATE_LOGIN, "");
-                finish();
-            }
+        synchronization.setOnClickListener(synchronizationView -> openActivitySync());
+
+        settings.setOnClickListener(settingsView -> openActivitySettings());
+
+        signOut.setOnClickListener(signOutView -> {
+            Ius.writeSharedPreferences(context, Ius.DATE_LOGIN, "");
+            onBackPressed();
         });
     }
 
@@ -181,5 +167,23 @@ public class StartActivity extends AppCompatActivity {
     private void openActivitySettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+        finish();
+    }
+
+    private void openActivityLogin() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        openActivityLogin();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase));
     }
 }

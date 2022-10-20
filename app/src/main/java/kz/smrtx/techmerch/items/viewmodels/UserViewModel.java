@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import kz.smrtx.techmerch.items.entities.User;
@@ -27,7 +28,18 @@ public class UserViewModel extends AndroidViewModel {
     public LiveData<List<User>> getUserList(int roleCode) {
         return userRepository.getUserList(roleCode);
     }
+
+    public LiveData<List<User>> getUserList(int cityId, int roleCode) {
+        return userRepository.getUsersByCityAndRole(cityId, roleCode);
+    }
+
     public int getUserRole(int userCode) {
         return userRepository.getUserRole(userCode);
     }
+    public int getNumberOfUsers(int cityId, int roleCode) {
+        return userRepository.getNumberOfUsers(cityId, roleCode);
+    }
+
+
+
 }

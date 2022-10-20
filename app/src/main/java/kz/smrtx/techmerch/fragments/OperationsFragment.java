@@ -58,15 +58,20 @@ public class OperationsFragment extends Fragment {
         CardView statuses = view.findViewById(R.id.statuses);
         CardView report = view.findViewById(R.id.report);
         CardView allReports = view.findViewById(R.id.reportList);
+        CardView newDeliveries = view.findViewById(R.id.newDeliveries);
         listener.getPageName(getResources().getString(R.string.operations));
         startWork.setText(getResources().getString(R.string.start_work_check_point) + ": " + dateStarted);
 
-        if (roleCode==4)
+        if (roleCode!=5)
             outlet.setVisibility(View.GONE);
 
         if (roleCode!=4) {
             report.setVisibility(View.GONE);
             allReports.setVisibility(View.GONE);
+        }
+
+        if (roleCode!=6) {
+            newDeliveries.setVisibility(View.GONE);
         }
 
         outlet.setOnClickListener(outletView -> ((SessionActivity)requireActivity()).openFragment(OutletsFragment.getInstance("tmr"), false));

@@ -27,23 +27,22 @@
         android:fontFamily="@font/bandera_pro_medium"
         android:layout_marginBottom="9sp"/>
 
-    <AutoCompleteTextView
+    <EditText
         android:id="@+id/executor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/bandera_pro"
         android:textSize="16sp"
-        android:hint="@string/input_executor_name"
+        android:hint="@string/choose_from"
         android:textColorHint="@color/light_purple"
         android:background="@drawable/background_edit_text"
         android:completionThreshold="1"
+        android:focusable="false"
+        android:cursorVisible="false"
         android:elevation="3sp"
         android:layout_marginBottom="18sp"
         android:padding="10sp"
         tools:targetApi="lollipop" />
-
-<!--    android:focusable="false"-->
-<!--    android:cursorVisible="false"-->
 
     <TextView
         android:layout_width="wrap_content"

@@ -26,6 +26,9 @@ public interface ApiService {
     @POST("services-manager/api/ExecQuery")
     Call<StringResponse> query(@Query("token") String token, @Query("query") String query);
 
+    @POST("services-manager/api/ExecQuery")
+    Call<ResponseBody> getQuery(@Query("token") String token, @Query("query") String query);
+
     @FormUrlEncoded
     @POST("services-manager/api/Login")
     Call<LoginResponse> getToken(@Field("login") String login, @Field("password") String password);

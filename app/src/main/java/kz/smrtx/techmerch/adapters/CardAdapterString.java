@@ -14,10 +14,13 @@ import java.util.List;
 
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.items.entities.Element;
+import kz.smrtx.techmerch.items.entities.User;
 
 public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.CardViewHolder> {
 
     private List<Element> elements;
+    private List<User> users;
+    private String listType;
     private onItemClickListener listener;
 
     public interface onItemClickListener {
@@ -30,10 +33,12 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
         public TextView text;
+        public View line;
 
         public CardViewHolder(@NonNull View itemView, onItemClickListener listener) {
             super(itemView);
             text = itemView.findViewById(R.id.text);
+            line = itemView.findViewById(R.id.line);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -49,12 +54,18 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
         }
     }
 
-    public CardAdapterString(List<Element> elements) {
-        this.elements = elements;
+    public CardAdapterString() {
     }
 
-    public void setAdapter(List<Element> elements) {
+    public void setAdapterElement(List<Element> elements) {
         this.elements = elements;
+        listType = "e";
+        notifyDataSetChanged();
+    }
+
+    public void setAdapterUser(List<User> users) {
+        this.users = users;
+        listType = "u";
         notifyDataSetChanged();
     }
 
@@ -68,14 +79,28 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        String str = elements.get(position).getName();
-        
-        holder.text.setText(str);
+        if (listType.equals("e")) {
+            String str = elements.get(position).getName();
+            holder.text.setText(str);
+        }
+        else if (listType.equals("u")) {
+            holder.text.setText(
+                    "[" + users.get(position).getCode() + "] - " + users.get(position).getRoleName()  + "\n" +
+                            users.get(position).getName());
+        }
+
+        if (getItemCount()==position)
+            holder.line.setVisibility(View.GONE);
     }
 
     @Override
     public int getItemCount() {
-        return elements.size();
+        if (listType.equals("e"))
+            return elements.size();
+        else if (listType.equals("u"))
+            return users.size();
+
+        return 0;
     }
 
 }

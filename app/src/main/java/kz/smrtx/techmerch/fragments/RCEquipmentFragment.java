@@ -57,7 +57,8 @@ public class RCEquipmentFragment extends Fragment {
     }
 
     private void openDialog(EditText editText, List<Element> originalArray, boolean equipmentType) {
-        CardAdapterString adapter = new CardAdapterString(originalArray);
+        CardAdapterString adapter = new CardAdapterString();
+        adapter.setAdapterElement(originalArray);
         array = new ArrayList<>(originalArray);
         Dialog dialog = Ius.createDialogList(this.getContext(), adapter, false);
 
@@ -102,7 +103,7 @@ public class RCEquipmentFragment extends Fragment {
                     if (e.getName().toLowerCase().contains(s.toLowerCase()))
                         array.add(e);
                 }
-                adapter.setAdapter(array);
+                adapter.setAdapterElement(array);
 
                 return false;
             }

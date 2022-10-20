@@ -152,7 +152,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Настройки"
+                            android:text="@string/settings"
                             android:fontFamily="@font/bandera_pro_bold"
                             android:textSize="20sp"
                             android:layout_marginBottom="7sp"/>

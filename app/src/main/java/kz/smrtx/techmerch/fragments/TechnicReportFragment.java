@@ -269,7 +269,8 @@ public class TechnicReportFragment extends Fragment {
     }
 
     private void openDialog() {
-        CardAdapterString adapter = new CardAdapterString(elements);
+        CardAdapterString adapter = new CardAdapterString();
+        adapter.setAdapterElement(elements);
         elementsFiltered = new ArrayList<>(elements);
         Dialog dialog = Ius.createDialogList(this.getContext(), adapter, false);
 
@@ -294,7 +295,7 @@ public class TechnicReportFragment extends Fragment {
                     if (e.getName().toLowerCase().contains(s.toLowerCase()))
                         elementsFiltered.add(e);
                 }
-                adapter.setAdapter(elementsFiltered);
+                adapter.setAdapterElement(elementsFiltered);
 
                 return false;
             }

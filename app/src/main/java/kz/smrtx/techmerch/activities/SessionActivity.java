@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -29,6 +30,7 @@ import kz.smrtx.techmerch.fragments.OutletsFragment;
 import kz.smrtx.techmerch.fragments.TechnicReportFragment;
 import kz.smrtx.techmerch.items.entities.Session;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
+import kz.smrtx.techmerch.utils.LocaleHelper;
 
 public class SessionActivity extends AppCompatActivity implements OperationsFragment.FragmentListener, OutletsFragment.FragmentListener,
         OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener, NotesFragment.FragmentListener,
@@ -160,5 +162,10 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
 
     public boolean checkPermissions() {
         return Ius.checkPermissionsCamera(this);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase));
     }
 }

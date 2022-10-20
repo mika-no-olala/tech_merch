@@ -15,11 +15,31 @@ public class StringQuery {
                 "and USE_LOGIN='" + login + "' and USE_PASSWORD='" + password + "'";
     }
 
+    public static String getUserCity(int userCode) {
+        return "select USC_CIT_ID" +
+                " from dbo.RS_USER_CITIES" +
+                " where USC_USE_CODE = " + userCode;
+    }
+
     public static String changePassword(String user, String old, String newP) {
         return "update dbo.ST_USER" +
                 " set USE_PASSWORD='" + newP +
                 "' where USE_ID=" + user +
                 " and USE_PASSWORD='" + old + "'" +
+                " select @@ROWCOUNT as 'rows'";
+    }
+
+    public static String changeLanguage(String userCode, String language) {
+        return "update dbo.ST_USER" +
+                " set USE_LANG='" + language +
+                "' where USE_CODE=" + userCode +
+                " select @@ROWCOUNT as 'rows'";
+    }
+
+    public static String changeVersionCode(String userCode, int versionCode) {
+        return "update dbo.ST_USER" +
+                " set USE_VERSION_CODE=" + versionCode +
+                " where USE_CODE=" + userCode +
                 " select @@ROWCOUNT as 'rows'";
     }
 }

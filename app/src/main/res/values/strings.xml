@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TechMerch</string>
+    <string name="app_name" translatable="false">TechMerch</string>
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
     <string name="sign_in">Войти</string>
@@ -26,7 +26,8 @@
     <string name="no_write_permission_error">Ошибка: приложению нужен доступ к файловой системе</string>
     <string name="not_all_photos_error">Синхронизация завершена. Но не все фото были получены</string>
     <string name="sync_ended_errors">Синхронизация завершена. Но с некоторыми ошибками</string>
-    <string name="executor_error">Введите исполнителя правильно, выберете из списка</string>
+    <string name="executor_error">Введите исполнителя</string>
+    <string name="no_executor_error">Для заявки нет ни одного подходящего человека</string>
     <string name="success">Успех</string>
     <string name="rejected">Отклонено</string>
     <string name="request_success">Заявка создана</string>
@@ -203,4 +204,6 @@
     <string name="reports_for_3">Просмотр отчетов за 3 месяца</string>
     <string name="time_interval">Временной промежуток</string>
     <string name="report_for">Отчет за</string>
+    <string name="new_delivery">Новые поставки</string>
+    <string name="new_delivery_description">Поставки оборудования со склада DSD</string>
 </resources>

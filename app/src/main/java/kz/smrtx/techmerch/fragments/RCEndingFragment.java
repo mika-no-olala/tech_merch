@@ -2,44 +2,43 @@ package kz.smrtx.techmerch.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.CreateRequestActivity;
-import kz.smrtx.techmerch.items.entities.Request;
+import kz.smrtx.techmerch.adapters.CardAdapterString;
 import kz.smrtx.techmerch.items.entities.User;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 
@@ -47,7 +46,9 @@ public class RCEndingFragment extends Fragment {
 
     private View view;
     private UserViewModel userViewModel;
-    private ArrayList<String> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
+    private EditText executor;
+    private int executorRole;
 
     private int numberOfActiveImg = 1;
     private String currentImagePath = null;
@@ -72,7 +73,7 @@ public class RCEndingFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_rc_ending, container, false);
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        AutoCompleteTextView executor = view.findViewById(R.id.executor);
+        executor = view.findViewById(R.id.executor);
         EditText comment = view.findViewById(R.id.comment);
         photo_1 = view.findViewById(R.id.photo_1);
         photo_2 = view.findViewById(R.id.photo_2);
@@ -80,27 +81,20 @@ public class RCEndingFragment extends Fragment {
         photo_4 = view.findViewById(R.id.photo_4);
         photo_5 = view.findViewById(R.id.photo_5);
 
-        getList();
+        String city = Ius.readSharedPreferences(getContext(), Ius.USER_CITIES);
+        if (city.contains("-")) { // tmr should not have more than one city, but just in case
+            int indexOfLine = city.indexOf("-");
+            city = city.substring(0, indexOfLine);
+        }
+        new WhatRoleToGet(userViewModel, Integer.parseInt(city), 6).execute();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, users);
-        executor.setAdapter(adapter);
-
-        executor.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+        executor.setOnClickListener(executorView -> {
+            if (!users.isEmpty()) {
+                openDialogUsers();
+                return;
             }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                boolean correct = users.contains(editable.toString());
-                ((CreateRequestActivity)requireActivity()).setExecutor(editable.toString().trim(), correct);
-            }
+            createToast(getString(R.string.no_executor_error), false);
         });
 
         comment.addTextChangedListener(new TextWatcher() {
@@ -138,13 +132,13 @@ public class RCEndingFragment extends Fragment {
         captureImage(photoNumber);
     }
 
-    private void getList() {
-        userViewModel.getUserList(4).observe(getViewLifecycleOwner(), u -> {
-            for (User user : u) {
-                users.add(user.getCode() + " - " + user.getName());
-            }
+    private void getList(int cityId, int roleCode) {
+        userViewModel.getUserList(cityId, roleCode).observe(this, u -> {
+            users = u;
         });
     }
+
+
 
     @SuppressWarnings("deprecation")
     private void captureImage(int photoNumber) {
@@ -299,6 +293,67 @@ public class RCEndingFragment extends Fragment {
         image.setImageDrawable(imageClicked.getDrawable());
 
         dialog.show();
+    }
+
+    private void openDialogUsers() {
+        CardAdapterString adapter = new CardAdapterString();
+        adapter.setAdapterUser(users);
+        Dialog dialog = Ius.createDialogList(this.getContext(), adapter);
+        SearchView search = dialog.findViewById(R.id.search);
+
+        search.setVisibility(View.GONE);
+
+        dialog.show();
+
+        adapter.setOnItemClickListener((CardAdapterString.onItemClickListener) position -> {
+            String userInfo = users.get(position).getCode() + " - " + users.get(position).getName();
+            executor.setText(userInfo);
+            ((CreateRequestActivity) requireActivity()).setExecutor(userInfo, executorRole);
+            dialog.cancel();
+        });
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class WhatRoleToGet extends AsyncTask<Void, Void, Void> {
+        UserViewModel userViewModel;
+        int cityId;
+        int roleCode;
+
+        public WhatRoleToGet(UserViewModel userViewModel, int cityId, int roleCode) {
+            this.userViewModel = userViewModel;
+            this.cityId = cityId;
+            this.roleCode = roleCode;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            executorRole = roleCode;
+            getList(cityId, roleCode);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (roleCode==6) {
+                searchInManagers();
+            }
+            else if (roleCode==7) {
+                searchInCoordinators();
+            }
+
+            return null;
+        }
+
+        private void searchInManagers() {
+            if (userViewModel.getNumberOfUsers(cityId, roleCode)==0) {
+                searchInCoordinators();
+                roleCode = 7;
+            }
+        }
+
+        private void searchInCoordinators() {
+            if (userViewModel.getNumberOfUsers(cityId, roleCode)==0)
+                roleCode = 4;
+        }
     }
 
     private void createToast(String text, boolean success) {

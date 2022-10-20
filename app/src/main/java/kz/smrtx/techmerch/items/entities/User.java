@@ -9,11 +9,13 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "ST_USER")
 public class User {
+
+    @PrimaryKey(autoGenerate = true)
+    private int idid;
+
     @SerializedName("USE_ID")
     private String id;
 
-    @PrimaryKey
-    @NonNull
     @SerializedName("USE_CODE")
     private int code;
 
@@ -30,6 +32,12 @@ public class User {
     @SerializedName("USE_LOC_CODE")
     private int locationCode;
 
+    @SerializedName("USE_CIT_ID")
+    private int cityId;
+
+    @SerializedName("USE_CIT_NAME")
+    private String cityName;
+
     @SerializedName("USE_VERSION_CODE")
     private int versionCode;
 
@@ -40,6 +48,14 @@ public class User {
         this.roleName = roleName;
         this.locationCode = locationCode;
         this.versionCode = versionCode;
+    }
+
+    public int getIdid() {
+        return idid;
+    }
+
+    public void setIdid(int idid) {
+        this.idid = idid;
     }
 
     public String getId() {
@@ -88,6 +104,22 @@ public class User {
 
     public void setLocationCode(int locationCode) {
         this.locationCode = locationCode;
+    }
+
+    public int getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(int cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
     public int getVersionCode() {
