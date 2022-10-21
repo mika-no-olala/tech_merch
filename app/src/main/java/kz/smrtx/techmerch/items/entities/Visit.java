@@ -16,26 +16,14 @@ public class Visit implements Serializable {
     @Expose
     @SerializedName("VIS_CODE")
     private int VIS_CODE;
-    @Expose
-    @SerializedName("VIS_PARENT_CODE")
-    private int VIS_PARENT_CODE;
     @PrimaryKey
     @NonNull
     @Expose
     @SerializedName("VIS_NUMBER")
     private String VIS_NUMBER;
     @Expose
-    @SerializedName("VIS_PARENT_NUMBER")
-    private String VIS_PARENT_NUMBER;
-    @Expose
     @SerializedName("VIS_USE_CODE")
     private int VIS_USE_CODE;
-    @Expose
-    @SerializedName("VIS_VIT_CODE")
-    private int VIS_VIT_CODE;
-    @Expose
-    @SerializedName("VIS_VIT_ID")
-    private int VIS_VIT_ID;
     @Expose
     @SerializedName("VIS_SAL_CODE")
     private int VIS_SAL_CODE;
@@ -75,14 +63,6 @@ public class Visit implements Serializable {
         this.VIS_CODE = VIS_CODE;
     }
 
-    public int getVIS_PARENT_CODE() {
-        return VIS_PARENT_CODE;
-    }
-
-    public void setVIS_PARENT_CODE(int VIS_PARENT_CODE) {
-        this.VIS_PARENT_CODE = VIS_PARENT_CODE;
-    }
-
     @NonNull
     public String getVIS_NUMBER() {
         return VIS_NUMBER;
@@ -92,13 +72,6 @@ public class Visit implements Serializable {
         this.VIS_NUMBER = VIS_NUMBER;
     }
 
-    public String getVIS_PARENT_NUMBER() {
-        return VIS_PARENT_NUMBER;
-    }
-
-    public void setVIS_PARENT_NUMBER(String VIS_PARENT_NUMBER) {
-        this.VIS_PARENT_NUMBER = VIS_PARENT_NUMBER;
-    }
 
     public int getVIS_USE_CODE() {
         return VIS_USE_CODE;
@@ -106,22 +79,6 @@ public class Visit implements Serializable {
 
     public void setVIS_USE_CODE(int VIS_USE_CODE) {
         this.VIS_USE_CODE = VIS_USE_CODE;
-    }
-
-    public int getVIS_VIT_CODE() {
-        return VIS_VIT_CODE;
-    }
-
-    public void setVIS_VIT_CODE(int VIS_VIT_CODE) {
-        this.VIS_VIT_CODE = VIS_VIT_CODE;
-    }
-
-    public int getVIS_VIT_ID() {
-        return VIS_VIT_ID;
-    }
-
-    public void setVIS_VIT_ID(int VIS_VIT_ID) {
-        this.VIS_VIT_ID = VIS_VIT_ID;
     }
 
     public int getVIS_SAL_CODE() {

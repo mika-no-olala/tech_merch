@@ -2,7 +2,7 @@
 package kz.smrtx.techmerch.items.entities;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -25,42 +25,36 @@ public class SalePoint implements Serializable{
     @SerializedName("SAL_NAME")
     @Expose
     private String name;
-    @SerializedName("SAL_NOTES")
+    @SerializedName("SAL_STREET")
     @Expose
-    private String notes;
-    @SerializedName("SAL_HOUSE")
-    @Expose
-    private String house;
-    @SerializedName("SAL_CHA_CODE")
-    @Expose
-    private int chaCode;
+    private String street;
     @SerializedName("SAL_LOC_CODE")
     @Expose
-    private int locCode;
-    @SerializedName("VISITED")
-    @Expose
-    private int visited;
-    @SerializedName("SAL_OWNER")
-    @Expose
-    private String owner;
-    @SerializedName("SAL_LAST_VISIT")
-    @Expose
-    private String lastVisit;
-    @SerializedName("SAL_USE_COMMENT")
-    @Expose
-    private String userComment;
-    @SerializedName("SAL_PHOTO")
-    @Expose
-    private String photo;
-    @SerializedName("SAL_PHONE")
-    @Expose
-    private String phone;
+    private int locationCode;
     @SerializedName("SAL_LATITUDE")
     @Expose
     private String latitude;
     @SerializedName("SAL_LONGITUDE")
     @Expose
     private String longitude;
+    @SerializedName("SAL_CONTACT")
+    @Expose
+    private String contact;
+    @SerializedName("SAL_NOTES")
+    @Expose
+    private String note;
+    @SerializedName("SAL_LEGAL_ENTITY")
+    @Expose
+    private String legalEntity;
+    @SerializedName("SAL_CHANNEL")
+    @Expose
+    private String channel;
+    @SerializedName("SAL_CATEGORY")
+    @Expose
+    private String category;
+    @SerializedName("SAL_TYPE")
+    @Expose
+    private String type;
     @SerializedName("USE_CODE")
     @Expose
     private int userCode;
@@ -89,84 +83,20 @@ public class SalePoint implements Serializable{
         this.name = name;
     }
 
-    public String getNotes() {
-        return notes;
+    public String getStreet() {
+        return street;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
-    public String getHouse() {
-        return house;
+    public int getLocationCode() {
+        return locationCode;
     }
 
-    public void setHouse(String house) {
-        this.house = house;
-    }
-
-    public int getChaCode() {
-        return chaCode;
-    }
-
-    public void setChaCode(int chaCode) {
-        this.chaCode = chaCode;
-    }
-
-    public int getLocCode() {
-        return locCode;
-    }
-
-    public void setLocCode(int locCode) {
-        this.locCode = locCode;
-    }
-
-    public int getVisited() {
-        return visited;
-    }
-
-    public void setVisited(int visited) {
-        this.visited = visited;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    public String getLastVisit() {
-        return lastVisit;
-    }
-
-    public void setLastVisit(String lastVisit) {
-        this.lastVisit = lastVisit;
-    }
-
-    public String getUserComment() {
-        return userComment;
-    }
-
-    public void setUserComment(String userComment) {
-        this.userComment = userComment;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setLocationCode(int locationCode) {
+        this.locationCode = locationCode;
     }
 
     public String getLatitude() {
@@ -183,6 +113,54 @@ public class SalePoint implements Serializable{
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getLegalEntity() {
+        return legalEntity;
+    }
+
+    public void setLegalEntity(String legalEntity) {
+        this.legalEntity = legalEntity;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getUserCode() {

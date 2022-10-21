@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import kz.smrtx.techmerch.items.entities.SalePoint;
 import kz.smrtx.techmerch.items.entities.SalePointItem;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.NoteViewModel;
@@ -91,12 +90,7 @@ public class OutletInformationFragment extends Fragment {
             getOutlet(outletCode);
         }
 
-        startWork.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((SessionActivity)requireActivity()).openFragment(OperationsOnOutletFragment.getInstance("tmr", outletCode), true);
-            }
-        });
+        startWork.setOnClickListener(startWorkView -> ((SessionActivity)requireActivity()).openFragment(OperationsOnOutletFragment.getInstance("tmr", outletCode), true));
 
         showRoute.setOnClickListener(route -> {
             ((SessionActivity)requireActivity()).openFragment(MapsFragment.getInstance(
@@ -132,14 +126,14 @@ public class OutletInformationFragment extends Fragment {
 
                 name.setText(s.getName());
                 code.setText(": " + s.getId());
-                entity.setText(": " + s.getOwner());
-                category.setText(": " + getResources().getString(R.string.no_data));
-                salesChannel.setText(": " + getResources().getString(R.string.no_data));
-                type.setText(": " + getResources().getString(R.string.no_data));
-                phone.setText(": " + s.getPhone());
-                comment.setText(getResources().getString(R.string.no_data));
-                address.setText(s.getHouse());
-                Ius.writeSharedPreferences(this.getContext(), Ius.LAST_SALE_POINT_ADDRESS, s.getHouse());
+                entity.setText(": " + s.getLegalEntity());
+                category.setText(": " + s.getCategory());
+                salesChannel.setText(": " + s.getChannel());
+                type.setText(": " + s.getType());
+                phone.setText(": " + s.getContact());
+                comment.setText(": " + s.getNote());
+                address.setText(s.getStreet());
+                Ius.writeSharedPreferences(this.getContext(), Ius.LAST_SALE_POINT_ADDRESS, s.getStreet());
                 if (s.getLongitude()==null || s.getLatitude()==null)
                     distance.setText("? " + getResources().getString(R.string.km_from_you));
                 else
@@ -167,6 +161,7 @@ public class OutletInformationFragment extends Fragment {
         return distance;
     }
 
+    @SuppressWarnings("deprecation")
     @SuppressLint("StaticFieldLeak")
     private class GetDataNotes extends AsyncTask<Void, Void, Void> {
         NoteViewModel noteViewModel;
@@ -224,7 +219,7 @@ public class OutletInformationFragment extends Fragment {
         try {
             listener = (OutletInformationFragment.FragmentListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
+            throw new ClassCastException(context
                     + " must implement onFragmentListener");
         }
     }

@@ -140,7 +140,8 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray array = jsonObj.getJSONArray("data");
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject object = array.getJSONObject(i);
-                                int id = object.getInt("USC_CIT_ID");
+                                int id = object.getInt("USC_LOC_CODE");
+                                Log.i("getUserCity", "one of the city of user - " + id);
 
                                 if (i==0)
                                     cities = new StringBuilder(String.valueOf(id));

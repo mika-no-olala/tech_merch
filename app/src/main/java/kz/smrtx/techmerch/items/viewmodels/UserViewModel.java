@@ -29,15 +29,15 @@ public class UserViewModel extends AndroidViewModel {
         return userRepository.getUserList(roleCode);
     }
 
-    public LiveData<List<User>> getUserList(int cityId, int roleCode) {
-        return userRepository.getUsersByCityAndRole(cityId, roleCode);
+    public LiveData<List<User>> getUserList(int locationCode, int roleCode) {
+        return userRepository.getUsersByCityAndRole(locationCode, roleCode);
     }
 
     public int getUserRole(int userCode) {
         return userRepository.getUserRole(userCode);
     }
-    public int getNumberOfUsers(int cityId, int roleCode) {
-        return userRepository.getNumberOfUsers(cityId, roleCode);
+    public int getNumberOfUsers(int locationCode, int roleCode) {
+        return userRepository.getNumberOfUsers(locationCode, roleCode);
     }
 
 

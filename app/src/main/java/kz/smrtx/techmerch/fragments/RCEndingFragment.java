@@ -132,8 +132,8 @@ public class RCEndingFragment extends Fragment {
         captureImage(photoNumber);
     }
 
-    private void getList(int cityId, int roleCode) {
-        userViewModel.getUserList(cityId, roleCode).observe(this, u -> {
+    private void getList(int locationCode, int roleCode) {
+        userViewModel.getUserList(locationCode, roleCode).observe(this, u -> {
             users = u;
         });
     }
@@ -316,23 +316,26 @@ public class RCEndingFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     class WhatRoleToGet extends AsyncTask<Void, Void, Void> {
         UserViewModel userViewModel;
-        int cityId;
+        int locationCode;
         int roleCode;
 
-        public WhatRoleToGet(UserViewModel userViewModel, int cityId, int roleCode) {
+        public WhatRoleToGet(UserViewModel userViewModel, int locationCode, int roleCode) {
             this.userViewModel = userViewModel;
-            this.cityId = cityId;
+            this.locationCode = locationCode;
             this.roleCode = roleCode;
         }
 
         @Override
         protected void onPostExecute(Void unused) {
             executorRole = roleCode;
-            getList(cityId, roleCode);
+            Log.i("WhatRoleToGet", "process ended, getting list of role " + roleCode);
+            getList(locationCode, roleCode);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
+            Log.i("WhatRoleToGet", "search managers in " + locationCode);
+
             if (roleCode==6) {
                 searchInManagers();
             }
@@ -344,15 +347,18 @@ public class RCEndingFragment extends Fragment {
         }
 
         private void searchInManagers() {
-            if (userViewModel.getNumberOfUsers(cityId, roleCode)==0) {
+            if (userViewModel.getNumberOfUsers(locationCode, roleCode)==0) {
+                Log.w("WhatRoleToGet", "0 managers");
                 searchInCoordinators();
                 roleCode = 7;
             }
         }
 
         private void searchInCoordinators() {
-            if (userViewModel.getNumberOfUsers(cityId, roleCode)==0)
+            if (userViewModel.getNumberOfUsers(locationCode, roleCode)==0) {
+                Log.w("WhatRoleToGet", "0 coordinators");
                 roleCode = 4;
+            }
         }
     }
 

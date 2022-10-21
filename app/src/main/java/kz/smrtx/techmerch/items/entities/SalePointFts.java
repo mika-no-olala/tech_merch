@@ -13,11 +13,7 @@ public class SalePointFts {
 
     private String name;
 
-    private String house;
-
-    private String owner;
-
-    private String phone;
+    private String street;
 
     private String latitude;
 
@@ -47,28 +43,12 @@ public class SalePointFts {
         this.name = name;
     }
 
-    public String getHouse() {
-        return house;
+    public String getStreet() {
+        return street;
     }
 
-    public void setHouse(String house) {
-        this.house = house;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public String getLatitude() {

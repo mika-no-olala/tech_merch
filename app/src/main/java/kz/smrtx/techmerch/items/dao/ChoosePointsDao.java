@@ -11,25 +11,11 @@ import kz.smrtx.techmerch.items.entities.SalePointItem;
 @Dao
 public interface ChoosePointsDao {
 
-    @Query("select id, " +
-            "name,  " +
-            "house, " +
-            "code, " +
-            "owner, " +
-            "phone," +
-            "longitude, " +
-            "latitude " +
+    @Query("select * " +
             "from ST_SALEPOINT")
     LiveData<List<SalePointItem>> getSalePoints();
 
-    @Query("select id, " +
-            "name,  " +
-            "house, " +
-            "code, " +
-            "owner, " +
-            "phone," +
-            "longitude, " +
-            "latitude " +
+    @Query("select * " +
             "from ST_SALEPOINT_FTS sp " +
             "where ST_SALEPOINT_FTS match :statement")
     LiveData<List<SalePointItem>> getSalePointsByFilter(String statement);
@@ -62,12 +48,17 @@ public interface ChoosePointsDao {
 
     @Query("select id, " +
             "name,  " +
-            "house, " +
+            "street, " +
+            "locationCode, " +
             "code, " +
-            "owner, " +
-            "phone," +
             "longitude, " +
-            "latitude " +
+            "latitude, " +
+            "contact, " +
+            "note, " +
+            "legalEntity, " +
+            "channel, " +
+            "category, " +
+            "type " +
             "from ST_SALEPOINT sp " +
             "where sp.code like :salCode ")
     LiveData<SalePointItem> getSalePointByCode(String salCode);

@@ -14,12 +14,14 @@ import java.util.List;
 
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.items.entities.Element;
+import kz.smrtx.techmerch.items.entities.SalePointItem;
 import kz.smrtx.techmerch.items.entities.User;
 
 public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.CardViewHolder> {
 
     private List<Element> elements;
     private List<User> users;
+    private List<SalePointItem> salePointItems;
     private String listType;
     private onItemClickListener listener;
 
@@ -69,6 +71,12 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
         notifyDataSetChanged();
     }
 
+    public void setAdapterAddress(List<SalePointItem> salePointItems) {
+        this.salePointItems = salePointItems;
+        listType = "a";
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -79,14 +87,23 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        if (listType.equals("e")) {
-            String str = elements.get(position).getName();
-            holder.text.setText(str);
-        }
-        else if (listType.equals("u")) {
-            holder.text.setText(
-                    "[" + users.get(position).getCode() + "] - " + users.get(position).getRoleName()  + "\n" +
-                            users.get(position).getName());
+        switch (listType) {
+            case "a":
+                holder.text.setText(
+                        "[" + salePointItems.get(position).getId() + "]" + " \n" +
+                                salePointItems.get(position).getName() + " - " + salePointItems.get(position).getStreet());
+                break;
+
+            case "e":
+                String str = elements.get(position).getName();
+                holder.text.setText(str);
+                break;
+
+            case "u":
+                holder.text.setText(
+                        "[" + users.get(position).getCode() + "] - " + users.get(position).getRoleName()  + "\n" +
+                                users.get(position).getName());
+                break;
         }
 
         if (getItemCount()==position)
@@ -95,12 +112,12 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
 
     @Override
     public int getItemCount() {
-        if (listType.equals("e"))
+        if (listType.equals("a"))
+            return salePointItems.size();
+        else if (listType.equals("e"))
             return elements.size();
-        else if (listType.equals("u"))
+        else
             return users.size();
-
-        return 0;
     }
 
 }

@@ -16,8 +16,8 @@ public class StringQuery {
     }
 
     public static String getUserCity(int userCode) {
-        return "select USC_CIT_ID" +
-                " from dbo.RS_USER_CITIES" +
+        return "select USC_LOC_CODE" +
+                " from dbo.RS_USER_LOCATION" +
                 " where USC_USE_CODE = " + userCode;
     }
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -40,6 +41,7 @@ import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
+import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.utils.LocaleHelper;
 
 public class StatusesActivity extends AppCompatActivity {
@@ -621,6 +623,51 @@ public class StatusesActivity extends AppCompatActivity {
         if (text==null)
             return true;
         return text.length() == 0;
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class WhatRoleToGet extends AsyncTask<Void, Void, Void> {
+        UserViewModel userViewModel;
+        int salePointId;
+        int roleCode;
+        int locationCode;
+
+        public WhatRoleToGet(UserViewModel userViewModel, int salePointId, int roleCode) {
+            this.userViewModel = userViewModel;
+            this.salePointId = salePointId;
+            this.roleCode = roleCode;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+
+            if (roleCode==6) {
+                searchInManagers();
+            }
+            else if (roleCode==7) {
+                searchInCoordinators();
+            }
+
+            return null;
+        }
+
+        private void searchInManagers() {
+            if (userViewModel.getNumberOfUsers(locationCode, roleCode)==0) {
+                searchInCoordinators();
+                roleCode = 7;
+            }
+        }
+
+        private void searchInCoordinators() {
+            if (userViewModel.getNumberOfUsers(locationCode, roleCode)==0)
+                roleCode = 4;
+        }
     }
 
     private void createToast(String text, boolean success) {

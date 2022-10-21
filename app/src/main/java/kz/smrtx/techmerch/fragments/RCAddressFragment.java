@@ -2,20 +2,16 @@ package kz.smrtx.techmerch.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.EditText;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +20,6 @@ import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.CreateRequestActivity;
 import kz.smrtx.techmerch.adapters.CardAdapterString;
-import kz.smrtx.techmerch.adapters.CardAdapterStringAddress;
-import kz.smrtx.techmerch.items.entities.Element;
 import kz.smrtx.techmerch.items.entities.SalePointItem;
 import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 
@@ -54,32 +48,25 @@ public class RCAddressFragment extends Fragment {
 
         fromOutlet.setText(Ius.readSharedPreferences(this.getContext(), Ius.LAST_SALE_POINT_ADDRESS));
 
-        toOutlet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDialog();
-            }
-        });
+        toOutlet.setOnClickListener(toOutletView -> openDialog());
 
         return view;
     }
 
     private void openDialog() {
-        CardAdapterStringAddress adapter = new CardAdapterStringAddress(salePoints);
+        CardAdapterString adapter = new CardAdapterString();
+        adapter.setAdapterAddress(salePoints);
         array = new ArrayList<>(salePoints);
-        Dialog dialog = createDialogList(this.getContext(), adapter);
+        Dialog dialog = Ius.createDialogList(this.getContext(), adapter);
         SearchView search = dialog.findViewById(R.id.search);
 
         dialog.show();
 
-        adapter.setOnItemClickListener(new CardAdapterStringAddress.onItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                String address = array.get(position).getName() + " - " + array.get(position).getHouse();
-                toOutlet.setText(address);
-                ((CreateRequestActivity) requireActivity()).setAddress(address);
-                dialog.cancel();
-            }
+        adapter.setOnItemClickListener(position -> {
+            String address = array.get(position).getName() + " - " + array.get(position).getStreet();
+            toOutlet.setText(address);
+            ((CreateRequestActivity) requireActivity()).setAddress(address);
+            dialog.cancel();
         });
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -94,10 +81,10 @@ public class RCAddressFragment extends Fragment {
                 for (SalePointItem s : salePoints) {
                     if (s.getName().toLowerCase().contains(newText.toLowerCase()) ||
                         s.getCode().toLowerCase().contains(newText.toLowerCase()) ||
-                        s.getHouse().toLowerCase().contains(newText.toLowerCase()))
+                        s.getStreet().toLowerCase().contains(newText.toLowerCase()))
                         array.add(s);
                 }
-                adapter.setAdapter(array);
+                adapter.setAdapterAddress(array);
                 return false;
             }
         });
@@ -118,23 +105,5 @@ public class RCAddressFragment extends Fragment {
             salePoints = salePointItems;
 
         });
-    }
-
-    private Dialog createDialogList(Context context, CardAdapterStringAddress adapter) {
-        Dialog dialog = new Dialog(context, android.R.style.Theme_Light);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setBackgroundDrawableResource(R.color.black_transparent);
-        dialog.setContentView(R.layout.dialog_window_list);
-        dialog.setCanceledOnTouchOutside(true);
-
-        RecyclerView.LayoutManager layoutManager;
-        layoutManager = new LinearLayoutManager(dialog.getContext());
-
-        RecyclerView recyclerView = dialog.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-
-        return dialog;
     }
 }

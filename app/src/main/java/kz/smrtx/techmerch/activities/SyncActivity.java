@@ -35,6 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -321,9 +322,10 @@ public class SyncActivity extends AppCompatActivity {
     }
 
     private void handleResults(JSONObject obj, String tableName) throws JSONException {
-        if (obj.getString("status").trim().equalsIgnoreCase("OK") && obj.getJSONArray("data").length() > 0) {
+        int arraySize = obj.getJSONArray("data").length();
+        Log.i("handleResults", "got " + tableName + " with size " + arraySize);
+        if (obj.getString("status").trim().equalsIgnoreCase("OK") && arraySize > 0) {
             try {
-                Log.i("tableName", tableName);
                 switch (tableName) {
                     case "ST_USER":
                         Type typeUser = new TypeToken<List<User>>() {
@@ -350,9 +352,9 @@ public class SyncActivity extends AppCompatActivity {
                         }
                         break;
                     case "ST_SALEPOINT":
-                        Type salepointType = new TypeToken<List<SalePoint>>() {
+                        Type salePointType = new TypeToken<List<SalePoint>>() {
                         }.getType();
-                        List<SalePoint> salePoints = new Gson().fromJson(obj.getJSONArray("data").toString(), salepointType);
+                        List<SalePoint> salePoints = new Gson().fromJson(obj.getJSONArray("data").toString(), salePointType);
                         if (salePoints.size() > 0) {
                             salePointViewModel.insertSalePoints(salePoints);
                         }
@@ -392,7 +394,7 @@ public class SyncActivity extends AppCompatActivity {
                         break;
                 }
             }catch (Exception e){
-                Log.e("getSyncData", e.toString());
+                Log.e("getSyncData switch", e.toString());
             }
         }
     }

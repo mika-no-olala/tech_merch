@@ -60,6 +60,9 @@ public class StartActivity extends AppCompatActivity {
 
         check();
 
+        String city = Ius.readSharedPreferences(this, Ius.USER_CITIES);
+        Log.e("sss", city);
+
         Ius.checkPermissions(this);
         Ius.checkPermissionsCamera(this);
 

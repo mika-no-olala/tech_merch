@@ -5,11 +5,16 @@ public class SalePointItem {
     private String code;
     private String id;
     private String name;
-    private String house;
-    private String owner;
-    private String phone;
+    private String street;
+    private String locationCode;
     private String longitude;
     private String latitude;
+    private String contact;
+    private String note;
+    private String legalEntity;
+    private String channel;
+    private String category;
+    private String type;
 
     public String getCode() {
         return code;
@@ -35,28 +40,12 @@ public class SalePointItem {
         this.name = name;
     }
 
-    public String getHouse() {
-        return house;
+    public String getStreet() {
+        return street;
     }
 
-    public void setHouse(String house) {
-        this.house = house;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public String getLongitude() {
@@ -73,5 +62,61 @@ public class SalePointItem {
 
     public void setLatitude(String latitude) {
         this.latitude = latitude;
+    }
+
+    public String getLocationCode() {
+        return locationCode;
+    }
+
+    public void setLocationCode(String locationCode) {
+        this.locationCode = locationCode;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getLegalEntity() {
+        return legalEntity;
+    }
+
+    public void setLegalEntity(String legalEntity) {
+        this.legalEntity = legalEntity;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

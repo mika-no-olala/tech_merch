@@ -27,11 +27,11 @@ public class UserRepository {
     public LiveData<List<User>> getUserList(int roleCode) {
         return userDao.getUserList(roleCode);
     }
-    public LiveData<List<User>> getUsersByCityAndRole(int cityId, int roleCode) {
-        return userDao.getUsersByCityAndRole(cityId, roleCode);
+    public LiveData<List<User>> getUsersByCityAndRole(int locationCode, int roleCode) {
+        return userDao.getUsersByCityAndRole(locationCode, roleCode);
     }
     public int getUserRole(int userCode) { return userDao.getUserRole(userCode); }
-    public int getNumberOfUsers(int cityId, int roleCode) { return userDao.getNumberOfUsers(cityId, roleCode); }
+    public int getNumberOfUsers(int locationCode, int roleCode) { return userDao.getNumberOfUsers(locationCode, roleCode); }
 
     private static class insertUserAsyncTask extends AsyncTask<List<User>, Void, Void>{
         private UserDao userDao;

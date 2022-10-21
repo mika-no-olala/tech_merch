@@ -2,7 +2,6 @@ package kz.smrtx.techmerch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,8 +29,6 @@ import java.util.List;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.adapters.CardAdapterImages;
-import kz.smrtx.techmerch.adapters.CardAdapterNotes;
-import kz.smrtx.techmerch.fragments.OperationsFragment;
 import kz.smrtx.techmerch.fragments.RCAddressFragment;
 import kz.smrtx.techmerch.fragments.RCEndingFragment;
 import kz.smrtx.techmerch.fragments.RCEquipmentFragment;
@@ -41,11 +38,10 @@ import kz.smrtx.techmerch.fragments.RCTypeFragment;
 import kz.smrtx.techmerch.fragments.RCWorkFragment;
 import kz.smrtx.techmerch.fragments.RCWorkSubtypeFragment;
 import kz.smrtx.techmerch.items.RequestPages;
-import kz.smrtx.techmerch.items.entities.Note;
 import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.entities.Visit;
-import kz.smrtx.techmerch.items.viewmodels.ElementViewModel;
+
 import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
@@ -569,7 +565,7 @@ public class CreateRequestActivity extends AppCompatActivity {
                 request.setREQ_STA_ID(2);
             else if (executorRole==6)
                 request.setREQ_STA_ID(1);
-            // make status for coordinator
+            // sss make status for coordinator
 
             responsibleChosen = true;
         } catch (Exception e) {

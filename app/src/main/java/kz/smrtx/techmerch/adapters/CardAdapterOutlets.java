@@ -107,7 +107,7 @@ public class CardAdapterOutlets extends RecyclerView.Adapter<CardAdapterOutlets.
         
         holder.code.setText(salePointItem.getId());
         holder.name.setText(salePointItem.getName());
-        holder.address.setText(context.getResources().getString(R.string.address) + ": " + salePointItem.getHouse());
+        holder.address.setText(context.getResources().getString(R.string.address) + ": " + salePointItem.getStreet());
         holder.requests.setText(context.getResources().getString(R.string.requests) + ": " + 0);
         holder.distance.setText(distance + " км");
     }

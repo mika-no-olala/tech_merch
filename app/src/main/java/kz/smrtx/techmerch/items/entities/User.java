@@ -26,27 +26,25 @@ public class User {
     @Expose
     private int roleCode;
 
-    @SerializedName("USR_NAME")
+    @SerializedName("USE_USR_NAME")
     private String roleName;
 
     @SerializedName("USE_LOC_CODE")
     private int locationCode;
 
-    @SerializedName("USE_CIT_ID")
-    private int cityId;
-
-    @SerializedName("USE_CIT_NAME")
+    @SerializedName("USE_LOC_NAME")
     private String cityName;
 
     @SerializedName("USE_VERSION_CODE")
     private int versionCode;
 
-    public User(int code, String name, int roleCode, String roleName, int locationCode, int versionCode) {
+    public User(int code, String name, int roleCode, String roleName, int locationCode, String cityName, int versionCode) {
         this.code = code;
         this.name = name;
         this.roleCode = roleCode;
         this.roleName = roleName;
         this.locationCode = locationCode;
+        this.cityName = cityName;
         this.versionCode = versionCode;
     }
 
@@ -106,14 +104,6 @@ public class User {
         this.locationCode = locationCode;
     }
 
-    public int getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(int cityId) {
-        this.cityId = cityId;
-    }
-
     public String getCityName() {
         return cityName;
     }
@@ -136,9 +126,10 @@ public class User {
                 "id='" + id + '\'' +
                 ", code=" + code +
                 ", name='" + name + '\'' +
-                ", roleCode='" + roleCode + '\'' +
+                ", roleCode=" + roleCode +
                 ", roleName='" + roleName + '\'' +
                 ", locationCode=" + locationCode +
+                ", cityName='" + cityName + '\'' +
                 ", versionCode=" + versionCode +
                 '}';
     }

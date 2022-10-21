@@ -130,14 +130,13 @@ public class OISalePointFragment extends Fragment {
 
                 name.setText(s.getName());
                 code.setText(": " + s.getId());
-                entity.setText(": " + s.getOwner());
-                category.setText(": " + getResources().getString(R.string.no_data));
-                salesChannel.setText(": " + getResources().getString(R.string.no_data));
-                type.setText(": " + getResources().getString(R.string.no_data));
-                phone.setText(": " + s.getPhone());
-                comment.setText(getResources().getString(R.string.no_data));
-                address.setText(s.getHouse());
-                Ius.writeSharedPreferences(this.getContext(), Ius.LAST_SALE_POINT_ADDRESS, s.getHouse());
+                entity.setText(": " + s.getLegalEntity());
+                category.setText(": " + s.getCategory());
+                salesChannel.setText(": " + s.getChannel());
+                type.setText(": " + s.getType());
+                phone.setText(": " + s.getContact());
+                comment.setText(": " + s.getNote());
+                address.setText(s.getStreet());
                 if (s.getLongitude()==null || s.getLatitude()==null)
                     distance.setText("? " + getResources().getString(R.string.km_from_you));
                 else
