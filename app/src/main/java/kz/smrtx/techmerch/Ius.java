@@ -252,7 +252,7 @@ public class Ius extends Application {
     }
 
     public static Dialog createDialog(Context context, int layoutId, String title) {
-        Dialog dialog = new Dialog(context);
+        Dialog dialog = new Dialog(context, android.R.style.Theme_Light);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawableResource(R.color.black_transparent);
         dialog.setContentView(layoutId);

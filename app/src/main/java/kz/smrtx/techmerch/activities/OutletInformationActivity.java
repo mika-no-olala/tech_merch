@@ -34,6 +34,7 @@ import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
+import kz.smrtx.techmerch.utils.Aen;
 import kz.smrtx.techmerch.utils.GPSTracker;
 import kz.smrtx.techmerch.utils.LocaleHelper;
 
@@ -203,7 +204,7 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
 
         @Override
         protected void onPostExecute(Void unused) {
-            request.setREQ_STA_ID(3);
+            request.setREQ_STA_ID(Aen.STATUS_WAITING_TMR);
             setGeneralData();
         }
 
@@ -243,10 +244,10 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
 
         public void setStatusByRole() {
             int userRole = userViewModel.getUserRole(request.getREQ_USE_CODE());
-            if (userRole==5)
-                request.setREQ_STA_ID(8);
-            if (userRole==6)
-                request.setREQ_STA_ID(7);
+            if (userRole== Aen.ROLE_TMR)
+                request.setREQ_STA_ID(Aen.STATUS_TECHNIC_CANCELED_TO_TMR);
+            if (userRole==Aen.ROLE_MANAGER)
+                request.setREQ_STA_ID(Aen.STATUS_TECHNIC_CANCELED_TO_MANAGER);
         }
     }
 

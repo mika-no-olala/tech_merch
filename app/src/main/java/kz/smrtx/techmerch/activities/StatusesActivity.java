@@ -1,7 +1,6 @@
 package kz.smrtx.techmerch.activities;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,13 +11,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,15 +33,21 @@ import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.adapters.CardAdapterHistory;
 import kz.smrtx.techmerch.adapters.CardAdapterImages;
 import kz.smrtx.techmerch.adapters.CardAdapterRequests;
+import kz.smrtx.techmerch.adapters.CardAdapterString;
+import kz.smrtx.techmerch.items.dao.ChoosePointsDao;
 import kz.smrtx.techmerch.items.entities.History;
 import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
 
+import kz.smrtx.techmerch.items.entities.User;
+import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
+import kz.smrtx.techmerch.items.viewmodels.SalePointViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.utils.LocaleHelper;
+import kz.smrtx.techmerch.utils.Aen;
 
 public class StatusesActivity extends AppCompatActivity {
 
@@ -107,6 +112,10 @@ public class StatusesActivity extends AppCompatActivity {
     private RecyclerView recyclerViewTMR;
     private RecyclerView recyclerViewTech;
     private PhotoViewModel photoViewModel;
+    private UserViewModel userViewModel;
+    private ChoosePointsViewModel choosePointsViewModel;
+    private List<User> executors = new ArrayList<>();
+    private EditText executor;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -128,6 +137,8 @@ public class StatusesActivity extends AppCompatActivity {
         requestViewModel = new ViewModelProvider(this).get(RequestViewModel.class);
         historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
         photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        choosePointsViewModel = new ViewModelProvider(this).get(ChoosePointsViewModel.class);
 
         userCode = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_CODE));
 
@@ -396,6 +407,25 @@ public class StatusesActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void findNecessaryRole(int roleToSearch) {
+        Log.i("findNecessaryRole", "starting to find with role " + roleToSearch);
+        choosePointsViewModel.getSalePointByCode(String.valueOf(request.getREQ_SAL_CODE())).observe(this, sp -> {
+            if (sp!=null) {
+                Log.i("findNecessaryRole", "for creating executor list found salePoint " + sp.getName());
+                if (roleToSearch==Aen.ROLE_TECHNIC)
+                    getExecutorList(Integer.parseInt(sp.getLocationCode()), roleToSearch);
+                else
+                    new WhatRoleToGet(userViewModel, Integer.parseInt(sp.getLocationCode()), roleToSearch).execute();
+            }
+        });
+    }
+
+    private void getExecutorList(int locationCode, int roleCode) {
+        userViewModel.getUserList(locationCode, roleCode).observe(this, u -> {
+            executors = u;
+        });
+    }
+
     private void getRequest(String code) {
         Log.i("getRequest code", code);
         requestViewModel.getRequestByCode(code).observe(this, r -> {
@@ -412,6 +442,16 @@ public class StatusesActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void setRequest() {
+        int userRole = Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_ROLE_CODE));
+        if (userRole==Aen.ROLE_TMR && request.getREQ_STA_ID()==Aen.STATUS_MANAGER_CANCELED)
+            findNecessaryRole(Aen.ROLE_MANAGER);
+
+        else if (userRole==Aen.ROLE_MANAGER)
+            findNecessaryRole(Aen.ROLE_COORDINATOR);
+
+        else if (userRole==Aen.ROLE_COORDINATOR)
+            findNecessaryRole(Aen.ROLE_TECHNIC);
+
         photoViewModel.getPhotosByTMR(request.getREQ_CODE()).observe(this, tmr -> {
             photoListTMR = tmr;
             setAdapter(recyclerViewTMR, photoListTMR);
@@ -512,23 +552,34 @@ public class StatusesActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void openDialogCommentAcception() {
         Dialog dialog = Ius.createDialog(this, R.layout.dialog_window_request_acception, "");
 
         int userRole = Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_ROLE_CODE));
         boolean needComment = isCommentNeeded(userRole);
+        boolean needExecutor = isExecutorNeeded(userRole);
 
         EditText comment = dialog.findViewById(R.id.comment);
+        executor = dialog.findViewById(R.id.executor);
         Button positive = dialog.findViewById(R.id.positive);
+
+        Log.e("sss", request.getREQ_STATUS());
+        if (request.getREQ_STATUS().contains("Отклонено"))
+            executor.setText(request.getREQ_USE_CODE() + " - " + request.getREQ_USE_NAME());
 
         if (!needComment) {
             comment.setVisibility(View.GONE);
+        }
+        if (needExecutor) {
+            executor.setVisibility(View.VISIBLE);
         }
 
         dialog.show();
 
         positive.setOnClickListener(view -> {
             String commentStr = "";
+            int executorCode = 0;
 
             if (needComment) {
                 commentStr = comment.getText().toString().trim();
@@ -537,22 +588,40 @@ public class StatusesActivity extends AppCompatActivity {
                     return;
                 }
             }
+            if (needExecutor) {
+                String executorStr = executor.getText().toString();
+                if (executorStr.length()==0) {
+                    createToast(getResources().getString(R.string.fill_field), false);
+                    return;
+                }
 
-            if (userRole==6 && !positiveButtonPressed) { // sss SET POSITIVE BUTTON FOR MANAGER
-                request.setREQ_STA_ID(6);
+                int indexOfDivider = executorStr.indexOf("-");
+                executorCode = Integer.parseInt(executorStr.substring(0, indexOfDivider - 1));
+            }
+
+            if (userRole == Aen.ROLE_MANAGER && !positiveButtonPressed) { // sss SET POSITIVE BUTTON FOR MANAGER
+                request.setREQ_STA_ID(Aen.STATUS_MANAGER_CANCELED);
                 request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
             }
 
-            if (userRole==5 && !positiveButtonPressed) {
-                request.setREQ_STA_ID(4);
+            else if (userRole == Aen.ROLE_MANAGER && positiveButtonPressed) {
+                request.setREQ_STA_ID(Aen.STATUS_WAITING_TECHNIC);
+                request.setREQ_USE_CODE_APPOINTED(executorCode);
+            }
+
+            else if (userRole== Aen.ROLE_TMR && !positiveButtonPressed) {
+                request.setREQ_STA_ID(Aen.STATUS_TMR_CANCELED);
                 request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
             }
-            if (userRole==5 && positiveButtonPressed) {
-                request.setREQ_STA_ID(5);
+
+            else if (userRole==Aen.ROLE_TMR && positiveButtonPressed) {
+                request.setREQ_STA_ID(Aen.STATUS_FINISHED);
                 request.setREQ_USE_CODE_APPOINTED(8); // 8 is superadmin - means request is finished
             }
 
-            request.setREQ_COMMENT(commentStr);
+            if (needComment)
+                request.setREQ_COMMENT(commentStr);
+
             request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_CODE)));
             request.setREQ_UPDATED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
             request.setNES_TO_UPDATE("yes");
@@ -563,12 +632,27 @@ public class StatusesActivity extends AppCompatActivity {
             dialog.cancel();
             closeSummary();
         });
+
+        executor.setOnClickListener(executorView -> {
+            if (!executors.isEmpty()) {
+                openDialogUsers();
+                return;
+            }
+
+            createToast(getString(R.string.no_executor_error), false);
+        });
     }
 
     private boolean isCommentNeeded(int userRole) {
-        return (userRole == 6 && !positiveButtonPressed)
-        || userRole == 4
-        || (userRole == 5 && !positiveButtonPressed);
+        return (userRole == Aen.ROLE_MANAGER && !positiveButtonPressed)
+        || userRole == Aen.ROLE_TECHNIC
+        || (userRole == Aen.ROLE_TMR && !positiveButtonPressed);
+    }
+
+    private boolean isExecutorNeeded(int userRole) {
+        return ((userRole == Aen.ROLE_MANAGER
+                || userRole == Aen.ROLE_COORDINATOR) && positiveButtonPressed)
+                || (userRole == Aen.ROLE_TMR && !positiveButtonPressed);
     }
 
     private void closeList(boolean isTechnic, boolean isWaitingList) {
@@ -625,27 +709,28 @@ public class StatusesActivity extends AppCompatActivity {
         return text.length() == 0;
     }
 
+    @SuppressWarnings("deprecation")
     @SuppressLint("StaticFieldLeak")
     class WhatRoleToGet extends AsyncTask<Void, Void, Void> {
         UserViewModel userViewModel;
-        int salePointId;
         int roleCode;
         int locationCode;
 
-        public WhatRoleToGet(UserViewModel userViewModel, int salePointId, int roleCode) {
+        public WhatRoleToGet(UserViewModel userViewModel, int locationCode, int roleCode) {
             this.userViewModel = userViewModel;
-            this.salePointId = salePointId;
+            this.locationCode = locationCode;
             this.roleCode = roleCode;
         }
 
         @Override
         protected void onPostExecute(Void unused) {
-
+            Log.i("WhatRoleToGet", "process ended, getting list of role " + roleCode);
+            getExecutorList(locationCode, roleCode);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-
+            Log.i("WhatRoleToGet", "search between roles " + roleCode + " in city " + locationCode);
 
             if (roleCode==6) {
                 searchInManagers();
@@ -659,15 +744,35 @@ public class StatusesActivity extends AppCompatActivity {
 
         private void searchInManagers() {
             if (userViewModel.getNumberOfUsers(locationCode, roleCode)==0) {
+                Log.w("WhatRoleToGet", "0 managers");
                 searchInCoordinators();
                 roleCode = 7;
             }
         }
 
         private void searchInCoordinators() {
-            if (userViewModel.getNumberOfUsers(locationCode, roleCode)==0)
+            if (userViewModel.getNumberOfUsers(locationCode, roleCode)==0) {
+                Log.w("WhatRoleToGet", "0 coordinators");
                 roleCode = 4;
+            }
         }
+    }
+
+    private void openDialogUsers() {
+        CardAdapterString adapter = new CardAdapterString();
+        adapter.setAdapterUser(executors);
+        Dialog dialog = Ius.createDialogList(this, adapter);
+        SearchView search = dialog.findViewById(R.id.search);
+
+        search.setVisibility(View.GONE);
+
+        dialog.show();
+
+        adapter.setOnItemClickListener(position -> {
+            String userInfo = executors.get(position).getCode() + " - " + executors.get(position).getName();
+            executor.setText(userInfo);
+            dialog.cancel();
+        });
     }
 
     private void createToast(String text, boolean success) {

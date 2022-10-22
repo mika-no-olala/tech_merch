@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
                     if (response.body().getDataList()==null) {
                         Log.e("MainActivity - getUser", "dataList is null");
+                        createToast(getResources().getString(R.string.error)  + ": " + response.code());
                         return;
                     }
 
