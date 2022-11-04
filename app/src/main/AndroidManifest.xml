@@ -47,45 +47,37 @@
         <activity
             android:name=".activities.OutletInformationActivity"
             android:configChanges="orientation"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".activities.StatusesActivity"
             android:configChanges="orientation"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".activities.CreateRequestActivity"
             android:configChanges="orientation"
-            android:exported="false"
-            android:screenOrientation="portrait">
+            android:exported="false">
 
         </activity>
         <activity
             android:name=".activities.SessionActivity"
             android:configChanges="orientation"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="orientation"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
         <activity
             android:name=".activities.StartActivity"
             android:configChanges="orientation"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".activities.SyncActivity"
             android:configChanges="orientation"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".activities.MainActivity"
             android:configChanges="orientation"
-            android:exported="true"
-            android:screenOrientation="portrait">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

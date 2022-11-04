@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,7 @@ import java.util.List;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.CreateRequestActivity;
+import kz.smrtx.techmerch.adapters.CardAdapterImagePager;
 import kz.smrtx.techmerch.adapters.CardAdapterString;
 import kz.smrtx.techmerch.items.entities.User;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
@@ -288,9 +290,11 @@ public class RCEndingFragment extends Fragment {
 
     private void createDialog(ImageView imageClicked) {
         Dialog dialog = Ius.createDialog(this.getContext(), R.layout.dialog_window_image, "");
-        ImageView image = dialog.findViewById(R.id.image);
+        ViewPager viewPager = dialog.findViewById(R.id.imagePager);
+        CardAdapterImagePager adapter = new CardAdapterImagePager();
 
-        image.setImageDrawable(imageClicked.getDrawable());
+        adapter.setAdapter(this.getContext(), filterPhotoNames());
+        viewPager.setAdapter(adapter);
 
         dialog.show();
     }
@@ -311,6 +315,15 @@ public class RCEndingFragment extends Fragment {
             ((CreateRequestActivity) requireActivity()).setExecutor(userInfo, executorRole);
             dialog.cancel();
         });
+    }
+
+    private List<String> filterPhotoNames() {
+        List<String> filtered = new ArrayList<>();
+        for (String s : photoNames) {
+            if (s!=null)
+                filtered.add(s);
+        }
+        return filtered;
     }
 
     @SuppressLint("StaticFieldLeak")

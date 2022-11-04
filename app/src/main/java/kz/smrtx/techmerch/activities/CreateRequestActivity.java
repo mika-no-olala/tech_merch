@@ -68,7 +68,7 @@ public class CreateRequestActivity extends AppCompatActivity {
     private List<Photo> photoList = new ArrayList<>();
 
     private TextView percentage;
-    private Button next;
+    private View next;
     private View cloud;
     private View containerForFragment;
 

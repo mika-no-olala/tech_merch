@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.RCWorkFragment"
+    android:background="@color/transparent"
+    android:orientation="vertical"
+    android:paddingHorizontal="100sp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_work_types"
+        android:fontFamily="@font/bandera_pro_bold"
+        android:textSize="20sp"
+        android:layout_marginBottom="20sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20sp">
+
+        <CheckBox
+            android:id="@+id/repair"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/repair"
+            android:fontFamily="@font/bandera_pro_medium"
+            android:textSize="20sp"
+            android:buttonTint="@color/old_linen"
+            android:button="@drawable/button_checkbox"
+            android:paddingHorizontal="10sp"
+            android:layout_marginRight="20sp"
+            tools:targetApi="lollipop" />
+
+        <CheckBox
+            android:id="@+id/replace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/replace"
+            android:fontFamily="@font/bandera_pro_medium"
+            android:textSize="20sp"
+            android:buttonTint="@color/old_linen"
+            android:button="@drawable/button_checkbox"
+            android:paddingHorizontal="10sp"
+            tools:targetApi="lollipop" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/additional_work"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/additionalWork"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/choose_from"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:focusable="false"
+        android:cursorVisible="false"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+</LinearLayout>

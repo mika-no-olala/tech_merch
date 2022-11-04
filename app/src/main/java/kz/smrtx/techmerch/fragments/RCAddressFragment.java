@@ -25,9 +25,11 @@ import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 
 public class RCAddressFragment extends Fragment {
 
+    private View view;
     private List<SalePointItem> salePoints = new ArrayList<>();
     private List<SalePointItem> array;
     private EditText toOutlet;
+    private EditText fromOutlet;
     private ChoosePointsViewModel choosePointsViewModel;
 
     public static RCAddressFragment getInstance() {
@@ -38,12 +40,12 @@ public class RCAddressFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_rc_address, container, false);
+        view = inflater.inflate(R.layout.fragment_rc_address, container, false);
 
         choosePointsViewModel = new ViewModelProvider(this).get(ChoosePointsViewModel.class);
         getList();
 
-        EditText fromOutlet = view.findViewById(R.id.fromOutlet);
+        fromOutlet = view.findViewById(R.id.fromOutlet);
         toOutlet = view.findViewById(R.id.toOutlet);
 
         fromOutlet.setText(Ius.readSharedPreferences(this.getContext(), Ius.LAST_SALE_POINT_ADDRESS));
@@ -63,6 +65,10 @@ public class RCAddressFragment extends Fragment {
         dialog.show();
 
         adapter.setOnItemClickListener(position -> {
+            if (array.get(position).getStreet().equals(fromOutlet.getText().toString())) {
+                createToast(getString(R.string.error_destination), false);
+                return;
+            }
             String address = array.get(position).getName() + " - " + array.get(position).getStreet();
             toOutlet.setText(address);
             ((CreateRequestActivity) requireActivity()).setAddress(address);
@@ -103,7 +109,11 @@ public class RCAddressFragment extends Fragment {
                 return;
             }
             salePoints = salePointItems;
-
         });
+    }
+
+    private void createToast(String text, boolean success) {
+        View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) view.findViewById(R.id.toast));
+        Ius.showToast(layout, view.getContext(), text, success);
     }
 }

@@ -18,6 +18,7 @@
     <string name="report_send">Отчет отправлен</string>
     <string name="wrong_data_log_in">Неправильный логин или пароль</string>
     <string name="error">Ошибка</string>
+    <string name="error_destination">Нельзя выбрать тот же адрес, на котором вы находитесь</string>
     <string name="error_certification">Ошибка: проверьте работоспособность Play Market и перезапустите приложение</string>
     <string name="request_is_loading">Загружаем заявку…</string>
     <string name="server_error">Ошибка подключения к серверу</string>
@@ -64,6 +65,7 @@
     <string name="reset">Сбросить</string>
     <string name="reject">Отклонить</string>
     <string name="approve">Одобрить</string>
+    <string name="pass">Передать</string>
     <string name="perform">Выполнить</string>
     <string name="delete">Удалить</string>
     <string name="reshoot">Переснять</string>
@@ -190,6 +192,7 @@
     <string name="send">Отправить</string>
     <string name="add">Добавить</string>
     <string name="accept_send">Принять и отправить</string>
+    <string name="send_back">Отправить завявку обратно</string>
     <string name="enter_manually">Ввести наименование вручную</string>
     <string name="consumable">Расходный материал</string>
     <string name="cost_and_quantity">Стоимость и количество материала</string>

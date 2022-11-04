@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.RCAddressFragment"
+    android:background="@color/transparent"
+    android:orientation="vertical"
+    android:paddingHorizontal="100sp"
+    android:gravity="center_vertical"
+    android:layout_marginTop="46sp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_address"
+        android:fontFamily="@font/bandera_pro_bold"
+        android:textSize="20sp"
+        android:layout_marginBottom="20sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/from_outlet"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/fromOutlet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:enabled="false"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/choose_from"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:focusable="false"
+        android:cursorVisible="false"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/to_outlet"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/toOutlet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/choose_from"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:focusable="false"
+        android:cursorVisible="false"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+</LinearLayout>

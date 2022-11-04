@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".activities.StartActivity"
+    android:background="@color/lavender_background">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="22sp">
+            <RelativeLayout
+                android:id="@+id/topBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="2sp"
+                android:layout_marginHorizontal="9sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="92sp"
+                    android:layout_height="92sp"
+                    android:src="@drawable/logo"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="end"
+                    android:orientation="vertical"
+                    tools:ignore="RelativeOverlap">
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/short_example"
+                        android:fontFamily="@font/bandera_pro_medium"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="6sp"/>
+                    <TextView
+                        android:id="@+id/role"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/short_example"
+                        android:fontFamily="@font/bandera_pro_medium"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/cards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="29sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/topBlock">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/startWork"
+                    style="@style/card"
+                    app:cardBackgroundColor="@color/old_linen"
+                    tools:targetApi="lollipop">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingHorizontal="72sp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/start_work"
+                            android:fontFamily="@font/bandera_pro_bold"
+                            android:textSize="20sp"
+                            android:layout_marginBottom="9sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/start_work_description"
+                            android:fontFamily="@font/bandera_pro_medium"
+                            android:textSize="12sp"
+                            android:textAlignment="center"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/synchronization"
+                    style="@style/card"
+                    tools:targetApi="lollipop">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="50sp"
+                            android:layout_height="50sp"
+                            android:src="@drawable/ic_sync"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginHorizontal="22sp"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="22sp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/synchronization"
+                                android:fontFamily="@font/bandera_pro_bold"
+                                android:textSize="20sp"
+                                android:layout_marginBottom="7sp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/synchronization_description"
+                                android:fontFamily="@font/bandera_pro_medium"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/settings"
+                    style="@style/card"
+                    tools:targetApi="lollipop">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="50sp"
+                            android:layout_height="50sp"
+                            android:src="@drawable/ic_settings"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginHorizontal="22sp"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="22sp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings"
+                                android:fontFamily="@font/bandera_pro_bold"
+                                android:textSize="20sp"
+                                android:layout_marginBottom="7sp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_description"
+                                android:fontFamily="@font/bandera_pro_medium"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/signOut"
+                    style="@style/buttonMini"
+                    android:text="@string/sign_out"
+                    android:layout_marginBottom="40sp"
+                    android:layout_marginTop="10sp"/>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <include layout="@layout/bottom_bar" />
+</RelativeLayout>

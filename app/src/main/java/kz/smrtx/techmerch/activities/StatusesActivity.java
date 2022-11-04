@@ -116,6 +116,7 @@ public class StatusesActivity extends AppCompatActivity {
     private ChoosePointsViewModel choosePointsViewModel;
     private List<User> executors = new ArrayList<>();
     private EditText executor;
+    private int executorRoleFound;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -560,11 +561,14 @@ public class StatusesActivity extends AppCompatActivity {
         boolean needComment = isCommentNeeded(userRole);
         boolean needExecutor = isExecutorNeeded(userRole);
 
+        TextView title = dialog.findViewById(R.id.title);
         EditText comment = dialog.findViewById(R.id.comment);
         executor = dialog.findViewById(R.id.executor);
         Button positive = dialog.findViewById(R.id.positive);
 
-        Log.e("sss", request.getREQ_STATUS());
+        if (!positiveButtonPressed)
+            title.setText(getString(R.string.send_back));
+
         if (request.getREQ_STATUS().contains("Отклонено"))
             executor.setText(request.getREQ_USE_CODE() + " - " + request.getREQ_USE_NAME());
 
@@ -604,19 +608,33 @@ public class StatusesActivity extends AppCompatActivity {
                 request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
             }
 
-            else if (userRole == Aen.ROLE_MANAGER && positiveButtonPressed) {
+            else if (userRole == Aen.ROLE_MANAGER) {
                 request.setREQ_STA_ID(Aen.STATUS_WAITING_TECHNIC);
                 request.setREQ_USE_CODE_APPOINTED(executorCode);
             }
 
-            else if (userRole== Aen.ROLE_TMR && !positiveButtonPressed) {
+            else if (userRole == Aen.ROLE_TMR && !positiveButtonPressed) {
                 request.setREQ_STA_ID(Aen.STATUS_TMR_CANCELED);
                 request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
             }
 
-            else if (userRole==Aen.ROLE_TMR && positiveButtonPressed) {
+            else if (userRole == Aen.ROLE_TMR && request.getREQ_STA_ID() == Aen.STATUS_WAITING_TMR) {
                 request.setREQ_STA_ID(Aen.STATUS_FINISHED);
                 request.setREQ_USE_CODE_APPOINTED(8); // 8 is superadmin - means request is finished
+            }
+
+            else if (userRole == Aen.ROLE_TMR) {
+                switch (executorRoleFound) {
+                    case 6:
+                        request.setREQ_STA_ID(Aen.STATUS_WAITING_MANAGER);
+                        break;
+                    case 7:
+                        request.setREQ_STA_ID(Aen.STATUS_WAITING_COORDINATOR);
+                        break;
+                    case 4:
+                        request.setREQ_STA_ID(Aen.STATUS_WAITING_TECHNIC);
+                }
+                request.setREQ_USE_CODE_APPOINTED(executorCode);
             }
 
             if (needComment)
@@ -646,13 +664,13 @@ public class StatusesActivity extends AppCompatActivity {
     private boolean isCommentNeeded(int userRole) {
         return (userRole == Aen.ROLE_MANAGER && !positiveButtonPressed)
         || userRole == Aen.ROLE_TECHNIC
-        || (userRole == Aen.ROLE_TMR && !positiveButtonPressed);
+        || (userRole == Aen.ROLE_TMR && !(positiveButtonPressed && request.getREQ_STA_ID() == Aen.STATUS_WAITING_TMR));
     }
 
     private boolean isExecutorNeeded(int userRole) {
         return ((userRole == Aen.ROLE_MANAGER
-                || userRole == Aen.ROLE_COORDINATOR) && positiveButtonPressed)
-                || (userRole == Aen.ROLE_TMR && !positiveButtonPressed);
+                || userRole == Aen.ROLE_COORDINATOR
+                || userRole == Aen.ROLE_TMR) && positiveButtonPressed);
     }
 
     private void closeList(boolean isTechnic, boolean isWaitingList) {
@@ -724,6 +742,7 @@ public class StatusesActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void unused) {
+            executorRoleFound = roleCode;
             Log.i("WhatRoleToGet", "process ended, getting list of role " + roleCode);
             getExecutorList(locationCode, roleCode);
         }
