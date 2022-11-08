@@ -24,6 +24,7 @@
     <string name="server_error">Ошибка подключения к серверу</string>
     <string name="uploading_data_error">Ошибка при отправке данных</string>
     <string name="downloading_images_data_error">Ошибка при скачивании фото</string>
+    <string name="actual_data_search_error">Ошибка при поиске актуальных данных</string>
     <string name="no_write_permission_error">Ошибка: приложению нужен доступ к файловой системе</string>
     <string name="not_all_photos_error">Синхронизация завершена. Но не все фото были получены</string>
     <string name="sync_ended_errors">Синхронизация завершена. Но с некоторыми ошибками</string>
@@ -123,6 +124,7 @@
     <string name="search_outlet_hint">Код, название, адрес, владелец</string>
     <string name="search">Поиск</string>
     <string name="address">Адрес</string>
+    <string name="destination">Местоназначение</string>
     <string name="request_quantity">Заявок</string>
     <string name="request">Заявка</string>
     <string name="code">Код</string>

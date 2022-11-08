@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -447,6 +448,32 @@ public class Ius extends Application {
         }
 
         file.delete();
+    }
+
+    public static void deleteFiles(List<String> fileNames, String path){
+        File myDir = new File(path);
+        try {
+            File[] files = myDir.listFiles();
+            if(files != null) {
+                for (File file : files) {
+                    boolean fileExist = false;
+                    for (String str : fileNames) {
+                        if (file.getName().equals(str)) {
+                            fileExist = true;
+                            break;
+                        }
+                    }
+                    if (fileExist) {
+                        if(file.delete())
+                            Log.i("deleteImages", "delete file " + file.getName());
+                        else
+                            Log.w("deleteImages", "can't delete " + file.getName());
+                    }
+                }
+            }
+        }catch (NullPointerException e){
+            Log.e("deleteImages", e.getLocalizedMessage());
+        }
     }
 
 }

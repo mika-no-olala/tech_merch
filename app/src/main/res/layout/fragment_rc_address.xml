@@ -50,7 +50,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/to_outlet"
+        android:text="@string/destination"
         android:textSize="16sp"
         android:fontFamily="@font/bandera_pro_medium"
         android:layout_marginBottom="9sp"/>

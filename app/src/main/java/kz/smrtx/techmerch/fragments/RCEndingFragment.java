@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
@@ -127,7 +128,7 @@ public class RCEndingFragment extends Fragment {
         chooseImageByNumber(photoNumber);
         String tag = String.valueOf(chosenImageView.getTag());
         if(tag.equals("changed")) {
-            createDialog(chosenImageView);
+            createDialog(photoNumber);
             return;
         }
 
@@ -139,8 +140,6 @@ public class RCEndingFragment extends Fragment {
             users = u;
         });
     }
-
-
 
     @SuppressWarnings("deprecation")
     private void captureImage(int photoNumber) {
@@ -179,7 +178,7 @@ public class RCEndingFragment extends Fragment {
             return;
         }
 
-            parseImage();
+        parseImage();
     }
 
     private File getImageFile(int photoNumber) {
@@ -288,13 +287,14 @@ public class RCEndingFragment extends Fragment {
         }
     }
 
-    private void createDialog(ImageView imageClicked) {
+    private void createDialog(int photoNumber) {
         Dialog dialog = Ius.createDialog(this.getContext(), R.layout.dialog_window_image, "");
         ViewPager viewPager = dialog.findViewById(R.id.imagePager);
         CardAdapterImagePager adapter = new CardAdapterImagePager();
 
         adapter.setAdapter(this.getContext(), filterPhotoNames());
         viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(photoNumber - 1);
 
         dialog.show();
     }
@@ -309,7 +309,7 @@ public class RCEndingFragment extends Fragment {
 
         dialog.show();
 
-        adapter.setOnItemClickListener((CardAdapterString.onItemClickListener) position -> {
+        adapter.setOnItemClickListener(position -> {
             String userInfo = users.get(position).getCode() + " - " + users.get(position).getName();
             executor.setText(userInfo);
             ((CreateRequestActivity) requireActivity()).setExecutor(userInfo, executorRole);
@@ -378,5 +378,12 @@ public class RCEndingFragment extends Fragment {
     private void createToast(String text, boolean success) {
         View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) view.findViewById(R.id.toast));
         Ius.showToast(layout, this.getContext(), text, success);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        ((CreateRequestActivity)requireActivity()).deletePhotos();
     }
 }

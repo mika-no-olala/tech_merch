@@ -55,6 +55,7 @@
         <activity
             android:name=".activities.CreateRequestActivity"
             android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:exported="false">
 
         </activity>

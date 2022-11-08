@@ -61,6 +61,8 @@ public class RCWorkFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Log.i("onChecked repair", String.valueOf(b));
 
+                if (!compoundButton.isPressed()) // when u rotate phone, listener calls. What kind of bread is dis?
+                    return;
                 ((CreateRequestActivity)requireActivity()).setRepair(b);
             }
         });
@@ -70,6 +72,8 @@ public class RCWorkFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Log.i("onChecked replace", String.valueOf(b));
 
+                if (!compoundButton.isPressed())
+                    return;
                 ((CreateRequestActivity)requireActivity()).setReplace(b);
             }
         });

@@ -15,6 +15,7 @@ import kz.smrtx.techmerch.items.dao.PhotoDao;
 import kz.smrtx.techmerch.items.dao.RequestDao;
 import kz.smrtx.techmerch.items.dao.SalePointDao;
 import kz.smrtx.techmerch.items.dao.SessionDao;
+import kz.smrtx.techmerch.items.dao.TablesUpdatedDao;
 import kz.smrtx.techmerch.items.dao.UserDao;
 import kz.smrtx.techmerch.items.dao.VisitDao;
 
@@ -29,7 +30,8 @@ import kz.smrtx.techmerch.items.dao.VisitDao;
         History.class,
         Note.class,
         Photo.class,
-        Consumable.class}, version = 40)
+        Consumable.class,
+        TableUpdated.class}, version = 41)
 public abstract class TechDatabase extends RoomDatabase {
 
     private static TechDatabase instance;
@@ -45,6 +47,7 @@ public abstract class TechDatabase extends RoomDatabase {
     public abstract NoteDao noteDao();
     public abstract PhotoDao photoDao();
     public abstract ConsumableDao consumableDao();
+    public abstract TablesUpdatedDao tablesUpdatedDao();
 
     public static synchronized TechDatabase getInstance(Context context) {
         if (instance == null) {

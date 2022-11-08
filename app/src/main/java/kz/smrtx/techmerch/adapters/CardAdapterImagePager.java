@@ -1,5 +1,6 @@
 package kz.smrtx.techmerch.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +14,8 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import java.io.File;
 import java.util.List;
+
+import kz.smrtx.techmerch.R;
 
 public class CardAdapterImagePager extends PagerAdapter {
 
@@ -41,6 +44,7 @@ public class CardAdapterImagePager extends PagerAdapter {
         container.removeView((ImageView)object);
     }
 
+    @SuppressLint("ResourceType")
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
@@ -57,4 +61,6 @@ public class CardAdapterImagePager extends PagerAdapter {
 
         return imageView;
     }
+
+
 }

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
@@ -233,6 +234,8 @@ public class CreateRequestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 requestViewModel.insert(request);
+                if (photoList.size()>0)
+                    photoViewModel.insertPhotos(photoList);
                 createToast(getResources().getString(R.string.request_success), true);
                 finish();
             }
@@ -505,7 +508,7 @@ public class CreateRequestActivity extends AppCompatActivity {
         else
             work.remove(REPAIR);
 
-        pages.get(2).setYouCanGoNext(work.size()>0); // let it be 2, not 0, don't want to test anything
+        pages.get(2).setYouCanGoNext(work.size()>0);
         request.setREQ_WORK(workToString());
     }
 
@@ -593,9 +596,14 @@ public class CreateRequestActivity extends AppCompatActivity {
                 photoList.add(new Photo(s, request.getREQ_CODE(), s + ".jpg", userCode, roleCode, "yes"));
             }
         }
+    }
 
-        if (photoList.size()>0)
-            photoViewModel.insertPhotos(photoList);
+    public void deletePhotos() {
+        String path = Objects.requireNonNull(getExternalFilesDir(Environment.DIRECTORY_PICTURES)).toString();
+        List<String> imagesToDelete = new ArrayList<>();
+        for (Photo p : photoList)
+            imagesToDelete.add(p.getREP_PHOTO());
+        Ius.deleteFiles(imagesToDelete, path);
     }
 
     public boolean checkPermissions() {

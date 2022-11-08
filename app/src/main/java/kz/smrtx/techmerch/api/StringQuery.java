@@ -42,4 +42,8 @@ public class StringQuery {
                 " where USE_CODE=" + userCode +
                 " select @@ROWCOUNT as 'rows'";
     }
+
+    public static String getTablesUpdated() {
+        return "select TAU_TABLE_NAME, TAU_LAST_UPDATE from WT_TABLES_UPDATED";
+    }
 }

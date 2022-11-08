@@ -151,9 +151,7 @@ public class MainActivity extends AppCompatActivity {
                                     cities.append("-").append(id);
                             }
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
+                        } catch (JSONException | IOException e) {
                             e.printStackTrace();
                         }
                         Log.i("User's cities", String.valueOf(cities));

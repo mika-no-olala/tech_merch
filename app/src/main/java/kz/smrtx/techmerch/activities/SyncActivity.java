@@ -22,6 +22,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,6 +46,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.api.StringQuery;
 import kz.smrtx.techmerch.items.entities.Consumable;
 import kz.smrtx.techmerch.items.entities.Element;
 import kz.smrtx.techmerch.items.entities.History;
@@ -52,6 +54,7 @@ import kz.smrtx.techmerch.items.entities.Note;
 import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.entities.SalePoint;
+import kz.smrtx.techmerch.items.entities.TableUpdated;
 import kz.smrtx.techmerch.items.entities.User;
 import kz.smrtx.techmerch.items.reqres.synctables.SyncTables;
 import kz.smrtx.techmerch.items.reqres.synctables.Table;
@@ -63,6 +66,7 @@ import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SalePointViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
+import kz.smrtx.techmerch.items.viewmodels.TableUpdatedViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
 import kz.smrtx.techmerch.utils.LocaleHelper;
@@ -92,6 +96,7 @@ public class SyncActivity extends AppCompatActivity {
     private final ArrayList<String> imagesUrlForDownload = new ArrayList<>();
     private final ArrayList<String> allImagesUrl = new ArrayList<>();
     private final List<String> allImagesToUpload = new ArrayList<>();
+    private SyncTables syncTablesToUpdate;
 
     private RequestViewModel requestViewModel;
     private SessionViewModel sessionViewModel;
@@ -103,6 +108,7 @@ public class SyncActivity extends AppCompatActivity {
     private NoteViewModel noteViewModel;
     private PhotoViewModel photoViewModel;
     private ConsumableViewModel consumableViewModel;
+    private TableUpdatedViewModel tableUpdatedViewModel;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -139,13 +145,12 @@ public class SyncActivity extends AppCompatActivity {
         noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
         photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
         consumableViewModel = new ViewModelProvider(this).get(ConsumableViewModel.class);
+        tableUpdatedViewModel = new ViewModelProvider(this).get(TableUpdatedViewModel.class);
 
         startSync();
 
         startWork.setOnClickListener(view -> openActivitySession());
-
         repeat.setOnClickListener(view -> startSync());
-
         back.setOnClickListener(view -> finish());
     }
 
@@ -279,7 +284,9 @@ public class SyncActivity extends AppCompatActivity {
                 }
                 for (Table table : response.body().getData())
                     Log.i("Get Tables", table.getMVLTABLENAME());
-                getSyncData(response.body());
+
+                new GetTableInfo(tableUpdatedViewModel, response.body()).execute();
+
             }
 
             @Override
@@ -293,12 +300,12 @@ public class SyncActivity extends AppCompatActivity {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint({"CheckResult", "SetTextI18n"})
-    private void getSyncData(final SyncTables syncTables) {
+    private void getSyncData() {
         stepCounter = 0;
         ArrayList<String> tableNames = new ArrayList<>();
         final List<Observable<?>> requests = new ArrayList<>();
 
-        for (Table table : syncTables.getData()) {
+        for (Table table : syncTablesToUpdate.getData()) {
             tableNames.add(table.getMVLTABLENAME());
             requests.add(Ius.getApiService().getSyncData(table.getMVLVIEWNAME(), table.getUSECODE().toString(), table.getMVLREFERENCE().toString()));
         }
@@ -678,6 +685,121 @@ public class SyncActivity extends AppCompatActivity {
         return sb.toString().toUpperCase();
     }
 
+    @SuppressLint("StaticFieldLeak")
+    private class GetTableInfo extends AsyncTask<Void, Void, Void> {
+        private TableUpdatedViewModel tableUpdatedViewModel;
+        private SyncTables syncTables;
+        public List<TableUpdated> tablesInfo = new ArrayList<>();
+        private List<TableUpdated> tablesInfoFromDB = new ArrayList<>();
+        private List<String> tableNamesNoUpdates = new ArrayList<>();
+
+        public GetTableInfo(TableUpdatedViewModel tableUpdatedViewModel, SyncTables syncTables){
+            this.tableUpdatedViewModel = tableUpdatedViewModel;
+            this.syncTables = syncTables;
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            tablesInfo = tableUpdatedViewModel.getTablesInfo();
+
+            queryToDB();
+
+            return null;
+        }
+
+        private void listManipulations() {
+            if (tablesInfoFromDB.isEmpty()) {
+                Log.e("tablesInfoFromDB", "no data");
+                onCancelled();
+                return;
+            }
+
+            if (tablesInfo.isEmpty()) {
+                Log.w("tablesInfo", "no data from local");
+                syncTablesToUpdate = syncTables;
+                tableUpdatedViewModel.insert(tablesInfoFromDB);
+                return;
+            }
+
+            for (TableUpdated t : tablesInfo) {
+                for (TableUpdated tDB : tablesInfoFromDB) {
+                    if (t.getName().equals(tDB.getName())) {
+                        if (t.getUpdated().equals(tDB.getUpdated())) {
+                            tableNamesNoUpdates.add(t.getName());
+                            break;
+                        }
+                    }
+                }
+            }
+            Log.i("No need to update", "for " + tableNamesNoUpdates.size() + " elements");
+
+            syncTablesToUpdate = syncTables;
+
+            for (String s : tableNamesNoUpdates) {
+                for (Table t : syncTables.getData()) {
+                    if (s.equals(t.getMVLTABLENAME())) {
+                        syncTablesToUpdate.getData().remove(t);
+                        break;
+                    }
+                }
+
+                clearRenewableTables(s);
+            }
+
+            getSyncData();
+            if (tableNamesNoUpdates.size() != tablesInfoFromDB.size()) {
+                tableUpdatedViewModel.deleteAll();
+                tableUpdatedViewModel.insert(tablesInfoFromDB);
+            }
+        }
+
+        private void queryToDB() {
+            Ius.getApiService().getQuery(Ius.readSharedPreferences(SyncActivity.this, Ius.TOKEN), StringQuery.getTablesUpdated())
+                    .enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (!response.isSuccessful()) {
+                                Log.e("SyncActivity - tables", String.valueOf(response.code()));
+                                onCancelled();
+                                return;
+                            }
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(response.body().string());
+                                JSONArray array = jsonObject.getJSONArray("data");
+                                Log.i("queryToDB", "got an array with size " + array.length());
+                                for (int i = 0; i < array.length(); i++) {
+                                    JSONObject object = array.getJSONObject(i);
+                                    String tableName = object.getString("TAU_TABLE_NAME");
+                                    String lastUpdate = object.getString("TAU_LAST_UPDATE");
+
+                                    tablesInfoFromDB.add(new TableUpdated(tableName, lastUpdate));
+                                }
+
+                            } catch (JSONException | IOException e) {
+                                e.printStackTrace();
+                            }
+                            listManipulations();
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Log.e("SyncActivity - tables", "onFailure " + t.getMessage());
+                            onCancelled();
+                        }
+                    });
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            syncInfo.setText(getResources().getString(R.string.actual_data_search_error));
+            Log.e("GetTableInfo", "onCancelled");
+            unlockButtons();
+        }
+
+    }
+
     public void updateSessionWithSyncCode() {
         SimpleSQLiteQuery query = new SimpleSQLiteQuery("UPDATE ST_SESSION SET SES_SYNC_ID='" + syncCode + "'", null);
         Cursor cursor = sessionViewModel.getCursor(query);
@@ -699,14 +821,24 @@ public class SyncActivity extends AppCompatActivity {
         visitViewModel.deleteAllVisits();
         sessionViewModel.deleteAllSessions();
         requestViewModel.deleteAllRequests();
+        photoViewModel.deleteAllPhotos();
 
-        userViewModel.deleteUsers();
-        salePointViewModel.deleteSalePoints();
         elementViewModel.deleteElements();
         historyViewModel.deleteHistory();
-        noteViewModel.deleteAllNotes();
-        photoViewModel.deleteAllPhotos();
         consumableViewModel.deleteReport();
+    }
+
+    private void clearRenewableTables(String tableName) {
+        switch (tableName) {
+            case "ST_USER":
+                userViewModel.deleteUsers();
+            case "ST_SALEPOINT":
+                salePointViewModel.deleteSalePoints();
+            case "ST_WAREHOUSE":
+                // warehouse sss
+            case "ST_NOTES":
+                noteViewModel.deleteAllNotes();
+        }
     }
 
     private void unlockButtons() {
