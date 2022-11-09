@@ -292,7 +292,7 @@ public class RCEndingFragment extends Fragment {
         ViewPager viewPager = dialog.findViewById(R.id.imagePager);
         CardAdapterImagePager adapter = new CardAdapterImagePager();
 
-        adapter.setAdapter(this.getContext(), filterPhotoNames());
+        adapter.setAdapterWithString(this.getContext(), filterPhotoNames());
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(photoNumber - 1);
 
@@ -378,12 +378,5 @@ public class RCEndingFragment extends Fragment {
     private void createToast(String text, boolean success) {
         View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) view.findViewById(R.id.toast));
         Ius.showToast(layout, this.getContext(), text, success);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        ((CreateRequestActivity)requireActivity()).deletePhotos();
     }
 }

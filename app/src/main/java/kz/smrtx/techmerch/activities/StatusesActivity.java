@@ -22,6 +22,7 @@ import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.List;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.adapters.CardAdapterHistory;
+import kz.smrtx.techmerch.adapters.CardAdapterImagePager;
 import kz.smrtx.techmerch.adapters.CardAdapterImages;
 import kz.smrtx.techmerch.adapters.CardAdapterRequests;
 import kz.smrtx.techmerch.adapters.CardAdapterString;
@@ -391,19 +393,17 @@ public class StatusesActivity extends AppCompatActivity {
 
         CardAdapterImages cardAdapter = new CardAdapterImages(photoList, this);
         recyclerView.setAdapter(cardAdapter);
-        cardAdapter.setOnItemClickListener(position -> createDialog(photoList.get(position).getREP_PHOTO()));
+        cardAdapter.setOnItemClickListener(position -> createDialog(position, photoList));
     }
 
-    private void createDialog(String photoName) {
+    private void createDialog(int photoNumber, List<Photo> photoList) {
         Dialog dialog = Ius.createDialog(this, R.layout.dialog_window_image, "");
-        ImageView image = dialog.findViewById(R.id.image);
+        ViewPager viewPager = dialog.findViewById(R.id.imagePager);
+        CardAdapterImagePager adapter = new CardAdapterImagePager();
 
-        File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + photoName);
-
-        if (file.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            image.setImageBitmap(bitmap);
-        }
+        adapter.setAdapterWithPhoto(this, photoList);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(photoNumber);
 
         dialog.show();
     }
@@ -637,8 +637,10 @@ public class StatusesActivity extends AppCompatActivity {
                 request.setREQ_USE_CODE_APPOINTED(executorCode);
             }
 
-            if (needComment)
+            if (needComment) {
+
                 request.setREQ_COMMENT(commentStr);
+            }
 
             request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_CODE)));
             request.setREQ_UPDATED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));

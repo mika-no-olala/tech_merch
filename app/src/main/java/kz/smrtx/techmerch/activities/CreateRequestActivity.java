@@ -446,6 +446,7 @@ public class CreateRequestActivity extends AppCompatActivity {
                 request.setREQ_USE_NAME_APPOINTED(null);
                 request.setREQ_USE_CODE_APPOINTED(0);
                 photoViewModel.deleteRequestPhotos(request.getREQ_CODE());
+                deletePhotos();
                 break;
         }
     }

@@ -685,13 +685,14 @@ public class SyncActivity extends AppCompatActivity {
         return sb.toString().toUpperCase();
     }
 
+    @SuppressWarnings("deprecation")
     @SuppressLint("StaticFieldLeak")
     private class GetTableInfo extends AsyncTask<Void, Void, Void> {
-        private TableUpdatedViewModel tableUpdatedViewModel;
-        private SyncTables syncTables;
+        private final TableUpdatedViewModel tableUpdatedViewModel;
+        private final SyncTables syncTables;
         public List<TableUpdated> tablesInfo = new ArrayList<>();
-        private List<TableUpdated> tablesInfoFromDB = new ArrayList<>();
-        private List<String> tableNamesNoUpdates = new ArrayList<>();
+        private final List<TableUpdated> tablesInfoFromDB = new ArrayList<>();
+        private final List<String> tableNamesNoUpdates = new ArrayList<>();
 
         public GetTableInfo(TableUpdatedViewModel tableUpdatedViewModel, SyncTables syncTables){
             this.tableUpdatedViewModel = tableUpdatedViewModel;
@@ -728,6 +729,8 @@ public class SyncActivity extends AppCompatActivity {
                             tableNamesNoUpdates.add(t.getName());
                             break;
                         }
+                        else
+                            clearRenewableTables(t.getName());
                     }
                 }
             }
@@ -742,8 +745,6 @@ public class SyncActivity extends AppCompatActivity {
                         break;
                     }
                 }
-
-                clearRenewableTables(s);
             }
 
             getSyncData();
@@ -757,7 +758,7 @@ public class SyncActivity extends AppCompatActivity {
             Ius.getApiService().getQuery(Ius.readSharedPreferences(SyncActivity.this, Ius.TOKEN), StringQuery.getTablesUpdated())
                     .enqueue(new Callback<ResponseBody>() {
                         @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                             if (!response.isSuccessful()) {
                                 Log.e("SyncActivity - tables", String.valueOf(response.code()));
                                 onCancelled();
@@ -783,7 +784,7 @@ public class SyncActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                             Log.e("SyncActivity - tables", "onFailure " + t.getMessage());
                             onCancelled();
                         }

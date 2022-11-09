@@ -9,9 +9,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -36,7 +34,6 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 
-import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.utils.CustomTypefaceSpan;
 import kz.smrtx.techmerch.utils.ZipManager;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -357,6 +354,47 @@ public class Ius extends Application {
         int result = random.nextInt(high-low) + low;
         String currentDate = getDateByFormat(new Date(), "ddMMyyyyHHmmss");
         return type + result + "u" + readSharedPreferences(context, USER_CODE) + "t" + currentDate;
+    }
+
+    public static String saveApostrophe(String str) {
+        if (!str.contains("'"))
+            return str;
+
+        int interruptedAt = 0;
+        while (interruptedAt < str.length() - 1) {
+            boolean combo = false;
+            int comboCount = 0;
+            for (int i = interruptedAt; i < str.length(); i++) {
+                if (str.charAt(i) == '\'' && !combo)
+                    combo = true;
+
+                if (str.charAt(i) != '\'' && combo)
+                    combo = false;
+
+                if (combo)
+                    comboCount++;
+
+                if (!combo && comboCount != 0) {
+                    if (comboCount % 2 == 1) {
+                        str = str.substring(0, i) + "'" + str.substring(i);
+                        interruptedAt = i + 2;
+                    }
+                    else
+                        interruptedAt = i + 1;
+
+                    break;
+                }
+
+                if (str.charAt(i) == '\'' && i == str.length() - 1 && combo) {
+                    if (comboCount % 2 != 0)
+                        str = str + "'";
+
+                    return str;
+                }
+            }
+        }
+
+        return str;
     }
 
     public static void requestPermission(Activity activity) {
