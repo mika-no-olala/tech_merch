@@ -41,11 +41,17 @@ public class Request {
     @SerializedName("REQ_REPLACE")
     private String REQ_REPLACE;
     @Expose
+    @SerializedName("REQ_REPLACE_ID")
+    private int REQ_REPLACE_ID;
+    @Expose
     @SerializedName("REQ_ADDITIONAL")
     private String REQ_ADDITIONAL;
     @Expose
-    @SerializedName("REQ_ADDRESS_SALEPOINT")
-    private String REQ_ADDRESS_SALEPOINT;
+    @SerializedName("REQ_SECONDARY_ADDRESS_ID")
+    private int REQ_SECONDARY_ADDRESS_ID;
+    @Expose
+    @SerializedName("REQ_SECONDARY_ADDRESS")
+    private String REQ_SECONDARY_ADDRESS;
     @Expose
     @SerializedName("REQ_WORK_SUBTYPE")
     private String REQ_WORK_SUBTYPE;
@@ -178,12 +184,28 @@ public class Request {
         this.REQ_ADDITIONAL = REQ_ADDITIONAL;
     }
 
-    public String getREQ_ADDRESS_SALEPOINT() {
-        return REQ_ADDRESS_SALEPOINT;
+    public int getREQ_REPLACE_ID() {
+        return REQ_REPLACE_ID;
     }
 
-    public void setREQ_ADDRESS_SALEPOINT(String REQ_ADDRESS_SALEPOINT) {
-        this.REQ_ADDRESS_SALEPOINT = REQ_ADDRESS_SALEPOINT;
+    public void setREQ_REPLACE_ID(int REQ_REPLACE_ID) {
+        this.REQ_REPLACE_ID = REQ_REPLACE_ID;
+    }
+
+    public int getREQ_SECONDARY_ADDRESS_ID() {
+        return REQ_SECONDARY_ADDRESS_ID;
+    }
+
+    public void setREQ_SECONDARY_ADDRESS_ID(int REQ_SECONDARY_ADDRESS_ID) {
+        this.REQ_SECONDARY_ADDRESS_ID = REQ_SECONDARY_ADDRESS_ID;
+    }
+
+    public String getREQ_SECONDARY_ADDRESS() {
+        return REQ_SECONDARY_ADDRESS;
+    }
+
+    public void setREQ_SECONDARY_ADDRESS(String REQ_SECONDARY_ADDRESS) {
+        this.REQ_SECONDARY_ADDRESS = REQ_SECONDARY_ADDRESS;
     }
 
     public String getREQ_WORK_SUBTYPE() {

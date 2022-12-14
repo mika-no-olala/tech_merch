@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.OutletsFragment"
+    android:orientation="vertical"
+    android:background="@color/lavender_background">
+
+<!--    -->
+
+    <androidx.appcompat.widget.SearchView
+        android:theme="@style/searchViewStyle"
+        android:id="@+id/search"
+        android:layout_height="33sp"
+        android:layout_width="match_parent"
+        android:inputType="text"
+        app:queryHint="@string/search_warehouse_hint"
+        app:iconifiedByDefault="false"
+        app:queryBackground="@color/transparent"
+        app:searchIcon="@drawable/ic_search"
+        android:imeOptions="actionDone"
+        android:background="@drawable/background_edit_text"
+        android:elevation="3sp"
+        android:layout_marginHorizontal="4sp"
+        android:layout_marginBottom="14sp"
+        tools:targetApi="lollipop" />
+
+    <androidx.cardview.widget.CardView
+        style="@style/card"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16sp"
+            android:paddingHorizontal="13sp"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/card_outlet"/>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

@@ -28,12 +28,14 @@ import kz.smrtx.techmerch.fragments.OperationsFragment;
 import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.entities.Visit;
+import kz.smrtx.techmerch.items.entities.Warehouse;
 import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
+import kz.smrtx.techmerch.items.viewmodels.WarehouseViewModel;
 import kz.smrtx.techmerch.utils.Aen;
 import kz.smrtx.techmerch.utils.GPSTracker;
 import kz.smrtx.techmerch.utils.LocaleHelper;
@@ -44,12 +46,14 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
     private String salePointCode;
     private Visit visit;
     private Request request;
+    private Warehouse warehouse;
     private RequestViewModel requestViewModel;
     private HistoryViewModel historyViewModel;
     private ChoosePointsViewModel choosePointsViewModel;
     private VisitViewModel visitViewModel;
     private UserViewModel userViewModel;
     private PhotoViewModel photoViewModel;
+    private WarehouseViewModel warehouseViewModel;
     private ArrayList<String> pageNames = new ArrayList<>();
 
     private ScrollView scrollView;
@@ -71,6 +75,7 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
             choosePointsViewModel = new ViewModelProvider(this).get(ChoosePointsViewModel.class);
             userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
             photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
+            warehouseViewModel = new ViewModelProvider(this).get(WarehouseViewModel.class);
             getRequest(arguments.get("requestCode").toString());
         }
         else if(scenario.equals("detail")) {
@@ -79,6 +84,8 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
         pageName = findViewById(R.id.pageName);
         scrollView = findViewById(R.id.scrollView);
         View back = findViewById(R.id.back);
+        TextView bottomBarText = findViewById(R.id.bottomBarText);
+        bottomBarText.setText(Ius.readSharedPreferences(this, Ius.BOTTOM_BAR_TEXT));
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +148,7 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
     }
 
     private void finishVisit() {
-        if (scenario.equals("technic")) {
+        if (scenario.equals("technic") && visit!=null) {
             String finished = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
             visit.setVIS_FINISH_DATE(finished);
             visitViewModel.update(visit);
@@ -152,8 +159,22 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
         requestViewModel.getRequestByCode(requestCode).observe(this, r -> {
             if (r!=null) {
                 request = r;
+                if (isReplaceCase())
+                    getWarehouse();
                 openSalePoint(request.getREQ_CODE());
             }
+        });
+    }
+
+    private void getWarehouse() {
+        warehouseViewModel.getWarehouseByIdAndEquipment(request.getREQ_EQU_SUBTYPE(), request.getREQ_SECONDARY_ADDRESS_ID()).observe(this, w -> {
+            if (w.size()==0) {
+                createToast(getString(R.string.no_warehouse_error), false);
+                Log.e("getWarehouse", "no warehouse!");
+                return;
+            }
+            warehouse = w.get(0);
+            Log.i("getWarehouse", "got an object " + warehouse.getWAC_WAR_NAME());
         });
     }
 
@@ -173,12 +194,13 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
         if (photoList.size()>0)
             photoViewModel.insertPhotos(photoList);
 
-        request.setREQ_COMMENT(comment);
+        request.setREQ_COMMENT(Ius.saveApostrophe(comment));
+        Log.i("Convert comment", comment + " -> " + request.getREQ_COMMENT());
 
         if (accept)
-            new GetData(this, historyViewModel).execute();
+            new GetDataIfAccept(this, historyViewModel).execute();
         else
-            new GetDataUser(this, userViewModel).execute();
+            new GetDataIfNoAccept(this, userViewModel).execute();
     }
 
     private void setGeneralData() {
@@ -192,12 +214,13 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
         finish();
     }
 
+    @SuppressWarnings("deprecation")
     @SuppressLint("StaticFieldLeak")
-    private class GetData extends AsyncTask<Void, Void, Void> {
+    private class GetDataIfAccept extends AsyncTask<Void, Void, Void> {
         HistoryViewModel historyViewModel;
         Activity context;
 
-        public GetData(Activity context, HistoryViewModel historyViewModel) {
+        public GetDataIfAccept(Activity context, HistoryViewModel historyViewModel) {
             this.context = context;
             this.historyViewModel = historyViewModel;
         }
@@ -205,49 +228,52 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
         @Override
         protected void onPostExecute(Void unused) {
             request.setREQ_STA_ID(Aen.STATUS_WAITING_TMR);
+            if (isReplaceCase())
+                replaceCase();
+
             setGeneralData();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            check();
+            int tmrCode = historyViewModel.getTMRCodeByRequest(request.getREQ_CODE());
+            request.setREQ_USE_CODE_APPOINTED(tmrCode);
             return null;
         }
 
-        @SuppressLint("Range")
-        public void check() {
-            int tmrCode = historyViewModel.getTMRCodeByRequest(request.getREQ_CODE());
-            request.setREQ_USE_CODE_APPOINTED(tmrCode);
+        private void replaceCase() {
+            if (request.getREQ_REPLACE_ID()==Aen.REPLACE_VALUE_FROM_STORAGE)
+                warehouse.setWAC_CHANGES(-1);
+            else if(request.getREQ_REPLACE_ID()==Aen.REPLACE_VALUE_TO_STORAGE)
+                warehouse.setWAC_CHANGES(1);
+            warehouse.setNES_TO_UPDATE("yes");
+            warehouseViewModel.update(warehouse);
         }
     }
 
+    private boolean isReplaceCase() {
+        return request.getREQ_REPLACE_ID()==Aen.REPLACE_VALUE_TO_STORAGE ||
+                request.getREQ_REPLACE_ID()==Aen.REPLACE_VALUE_FROM_STORAGE;
+    }
+
+    @SuppressWarnings("deprecation")
     @SuppressLint("StaticFieldLeak")
-    private class GetDataUser extends AsyncTask<Void, Void, Void> {
+    private class GetDataIfNoAccept extends AsyncTask<Void, Void, Void> {
         UserViewModel userViewModel;
         Activity context;
 
-        public GetDataUser(Activity context, UserViewModel userViewModel) {
+        public GetDataIfNoAccept(Activity context, UserViewModel userViewModel) {
             this.context = context;
             this.userViewModel = userViewModel;
         }
 
         @Override
-        protected void onPostExecute(Void unused) {
-            request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
-        }
-
-        @Override
         protected Void doInBackground(Void... voids) {
-            setStatusByRole();
-            return null;
-        }
-
-        public void setStatusByRole() {
             int userRole = userViewModel.getUserRole(request.getREQ_USE_CODE());
-            if (userRole== Aen.ROLE_TMR)
-                request.setREQ_STA_ID(Aen.STATUS_TECHNIC_CANCELED_TO_TMR);
-            if (userRole==Aen.ROLE_MANAGER)
-                request.setREQ_STA_ID(Aen.STATUS_TECHNIC_CANCELED_TO_MANAGER);
+            request.setREQ_STA_ID(Aen.getCancelStatusAfterTechnic(userRole));
+            request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
+            setGeneralData();
+            return null;
         }
     }
 

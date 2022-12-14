@@ -56,6 +56,7 @@ import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.entities.SalePoint;
 import kz.smrtx.techmerch.items.entities.TableUpdated;
 import kz.smrtx.techmerch.items.entities.User;
+import kz.smrtx.techmerch.items.entities.Warehouse;
 import kz.smrtx.techmerch.items.reqres.synctables.SyncTables;
 import kz.smrtx.techmerch.items.reqres.synctables.Table;
 import kz.smrtx.techmerch.items.viewmodels.ConsumableViewModel;
@@ -69,6 +70,7 @@ import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 import kz.smrtx.techmerch.items.viewmodels.TableUpdatedViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
+import kz.smrtx.techmerch.items.viewmodels.WarehouseViewModel;
 import kz.smrtx.techmerch.utils.LocaleHelper;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -96,7 +98,7 @@ public class SyncActivity extends AppCompatActivity {
     private final ArrayList<String> imagesUrlForDownload = new ArrayList<>();
     private final ArrayList<String> allImagesUrl = new ArrayList<>();
     private final List<String> allImagesToUpload = new ArrayList<>();
-    private SyncTables syncTablesToUpdate;
+    private SyncTables syncTablesToUpdate = new SyncTables();
 
     private RequestViewModel requestViewModel;
     private SessionViewModel sessionViewModel;
@@ -109,6 +111,7 @@ public class SyncActivity extends AppCompatActivity {
     private PhotoViewModel photoViewModel;
     private ConsumableViewModel consumableViewModel;
     private TableUpdatedViewModel tableUpdatedViewModel;
+    private WarehouseViewModel warehouseViewModel;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -146,6 +149,7 @@ public class SyncActivity extends AppCompatActivity {
         photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
         consumableViewModel = new ViewModelProvider(this).get(ConsumableViewModel.class);
         tableUpdatedViewModel = new ViewModelProvider(this).get(TableUpdatedViewModel.class);
+        warehouseViewModel = new ViewModelProvider(this).get(WarehouseViewModel.class);
 
         startSync();
 
@@ -230,8 +234,8 @@ public class SyncActivity extends AppCompatActivity {
 
         @SuppressLint("Range")
         public void getAll(){
-            String[] tables = {"ST_SESSION", "ST_VISIT", "ST_REQUEST", "ST_NOTES", "ST_REQUEST_PHOTO", "ST_TECHNIC_REPORT"};
-            String[] tablesOnServer = {"sync.WT_SYNC_A_ST_SESSION", "sync.WT_SYNC_A_ST_VISIT", "sync.WT_SYNC_ST_REQUEST", "sync.WT_SYNC_ST_NOTES", "sync.WT_SYNC_ST_REQUEST_PHOTO", "sync.WT_SYNC_ST_TECHNIC_REPORT"};
+            String[] tables = {"ST_SESSION", "ST_VISIT", "ST_REQUEST", "ST_NOTES", "ST_REQUEST_PHOTO", "ST_TECHNIC_REPORT", "ST_WAREHOUSE_CONTENT"};
+            String[] tablesOnServer = {"sync.WT_SYNC_A_ST_SESSION", "sync.WT_SYNC_A_ST_VISIT", "sync.WT_SYNC_ST_REQUEST", "sync.WT_SYNC_ST_NOTES", "sync.WT_SYNC_ST_REQUEST_PHOTO", "sync.WT_SYNC_ST_TECHNIC_REPORT", "sync.WT_SYNC_ST_WAREHOUSE_CONTENT"};
 
             for(int i = 0; i < tables.length; i++){
                 SimpleSQLiteQuery query = new SimpleSQLiteQuery("SELECT * FROM "+tables[i], null);
@@ -258,7 +262,7 @@ public class SyncActivity extends AppCompatActivity {
                                     values.substring(0, values.length()-1)+
                                     ")";
 
-                            if (!statement1.contains(",N'no'")) {
+                            if (!statement1.contains(",N'no')")) {
                                 statement1 = statement1.replace("N'null'", "null");
                                 result.add(statement1);
                             }
@@ -285,6 +289,7 @@ public class SyncActivity extends AppCompatActivity {
                 for (Table table : response.body().getData())
                     Log.i("Get Tables", table.getMVLTABLENAME());
 
+//                getSyncData();
                 new GetTableInfo(tableUpdatedViewModel, response.body()).execute();
 
             }
@@ -319,7 +324,8 @@ public class SyncActivity extends AppCompatActivity {
                 stepCounter++;
                 syncInfo.setText("Получение данных " + (stepCounter*100/requests.size()) + "/ 100%");
             }, throwable ->{
-                Log.e("getSyncData", throwable.getLocalizedMessage());
+                Log.e("getSyncData-" + stepCounter + "-step", throwable.getLocalizedMessage());
+                Log.e("getSyncData-" + stepCounter + "-step", throwable.toString());
                 if(Objects.equals(throwable.getLocalizedMessage(), "timeout"))
                     lastSync.setText(getResources().getString(R.string.server_timeout));
                 else
@@ -397,6 +403,14 @@ public class SyncActivity extends AppCompatActivity {
                         List<Consumable> report = new Gson().fromJson(obj.getJSONArray("data").toString(), reportType);
                         if (report.size() > 0) {
                             consumableViewModel.insertReport(report);
+                        }
+                        break;
+                    case "ST_WAREHOUSE_CONTENT":
+                        Type type = new TypeToken<List<Warehouse>>() {
+                        }.getType();
+                        List<Warehouse> warehouseList = new Gson().fromJson(obj.getJSONArray("data").toString(), type);
+                        if (warehouseList.size() > 0) {
+                            warehouseViewModel.insert(warehouseList);
                         }
                         break;
                 }
@@ -719,6 +733,8 @@ public class SyncActivity extends AppCompatActivity {
                 Log.w("tablesInfo", "no data from local");
                 syncTablesToUpdate = syncTables;
                 tableUpdatedViewModel.insert(tablesInfoFromDB);
+                //the process can stuck on this step
+                getSyncData();
                 return;
             }
 
@@ -727,10 +743,12 @@ public class SyncActivity extends AppCompatActivity {
                     if (t.getName().equals(tDB.getName())) {
                         if (t.getUpdated().equals(tDB.getUpdated())) {
                             tableNamesNoUpdates.add(t.getName());
-                            break;
                         }
-                        else
+                        else {
                             clearRenewableTables(t.getName());
+                            Log.e("sss", t.getName() + " deleted");
+                        }
+                        break;
                     }
                 }
             }
@@ -824,7 +842,6 @@ public class SyncActivity extends AppCompatActivity {
         requestViewModel.deleteAllRequests();
         photoViewModel.deleteAllPhotos();
 
-        elementViewModel.deleteElements();
         historyViewModel.deleteHistory();
         consumableViewModel.deleteReport();
     }
@@ -835,10 +852,12 @@ public class SyncActivity extends AppCompatActivity {
                 userViewModel.deleteUsers();
             case "ST_SALEPOINT":
                 salePointViewModel.deleteSalePoints();
-            case "ST_WAREHOUSE":
-                // warehouse sss
+            case "ST_WAREHOUSE_CONTENT":
+                warehouseViewModel.deleteAllWarehouses();
             case "ST_NOTES":
                 noteViewModel.deleteAllNotes();
+            case "ST_REQ_LIST_ELEMENTS":
+                elementViewModel.deleteElements();
         }
     }
 

@@ -59,20 +59,22 @@ public class OperationsFragment extends Fragment {
         CardView statuses = view.findViewById(R.id.statuses);
         CardView report = view.findViewById(R.id.report);
         CardView allReports = view.findViewById(R.id.reportList);
+        CardView warehouses = view.findViewById(R.id.warehouses);
         CardView newDeliveries = view.findViewById(R.id.newDeliveries);
         listener.getPageName(getResources().getString(R.string.operations));
         startWork.setText(getResources().getString(R.string.start_work_check_point) + ": " + dateStarted);
 
-        if (roleCode!=5)
+        if (roleCode!=Aen.ROLE_TMR)
             outlet.setVisibility(View.GONE);
 
-        if (roleCode!=4) {
+        if (roleCode!=Aen.ROLE_TECHNIC) {
             report.setVisibility(View.GONE);
             allReports.setVisibility(View.GONE);
         }
 
-        if (roleCode!=6) {
+        if (roleCode!=Aen.ROLE_MANAGER) {
             newDeliveries.setVisibility(View.GONE);
+            warehouses.setVisibility(View.GONE);
         }
 
         outlet.setOnClickListener(outletView -> ((SessionActivity)requireActivity()).openFragment(OutletsFragment.getInstance("tmr"), false));
@@ -85,6 +87,7 @@ public class OperationsFragment extends Fragment {
             ((SessionActivity)requireActivity()).openActivityStatuses();
         });
         report.setOnClickListener(reportView -> ((SessionActivity)requireActivity()).openFragment(TechnicReportFragment.getInstance(), true));
+        warehouses.setOnClickListener(wareView -> ((SessionActivity)requireActivity()).openFragment(WarehousesFragment.getInstance(), true));
         allReports.setOnClickListener(allReportsView -> ((SessionActivity)requireActivity()).openFragment(AllReportsFragment.getInstance(), true));
         workIsOver.setOnClickListener(workIsOverView -> ((SessionActivity)requireActivity()).openDialog());
         return view;

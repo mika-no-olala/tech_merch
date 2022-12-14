@@ -47,6 +47,9 @@ public class HistoryRepository {
     public LiveData<List<History>> getHistoryListWhichAreRelatedToAndFinished(int userCode, int salePointCode) {
         return historyDao.getHistoryListWhichAreRelatedToAndFinished(userCode, salePointCode);
     }
+    public LiveData<List<String>> getAllComments(String requestCode) {
+        return historyDao.getAllComments(requestCode);
+    }
 
     private static class insertHistoryAsyncTask extends AsyncTask<List<History>, Void, Void>{
         private HistoryDao historyDao;

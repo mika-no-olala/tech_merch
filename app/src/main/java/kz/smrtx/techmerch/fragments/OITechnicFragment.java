@@ -44,8 +44,10 @@ import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 
 public class OITechnicFragment extends Fragment {
 
-    private List<Photo> photoList = new ArrayList<>();
-    private RecyclerView recyclerView;
+    private List<Photo> photoListTMR = new ArrayList<>();
+    private List<Photo> photoListTech = new ArrayList<>();
+    private RecyclerView recyclerViewTMR;
+    private RecyclerView recyclerViewTech;
     private TextView codeSummary;
     private TextView createdSummary;
     private TextView deadlineSummary;
@@ -128,7 +130,8 @@ public class OITechnicFragment extends Fragment {
     }
 
     private void initializeSummaryStuff(View view) {
-        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerViewTMR = view.findViewById(R.id.recyclerViewTMR);
+        recyclerViewTech = view.findViewById(R.id.recyclerViewTech);
         codeSummary = view.findViewById(R.id.code);
         createdSummary = view.findViewById(R.id.created);
         deadlineSummary = view.findViewById(R.id.deadline);
@@ -166,40 +169,16 @@ public class OITechnicFragment extends Fragment {
         });
         photoViewModel.getPhotosByTMR(requestCode).observe(getViewLifecycleOwner(), ph -> {
             if (ph!=null) {
-                photoList = ph;
-                setAdapter();
+                photoListTMR = ph;
+                Ius.setAdapterImagesList(this.getContext(), recyclerViewTMR, photoListTMR);
             }
         });
-    }
-
-    private void setAdapter() {
-        RecyclerView.LayoutManager layoutManager;
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-
-        if (photoList.isEmpty()) {
-            recyclerView.setVisibility(View.GONE);
-            return;
-        }
-
-        CardAdapterImages cardAdapter = new CardAdapterImages(photoList, this.getContext());
-        recyclerView.setAdapter(cardAdapter);
-        cardAdapter.setOnItemClickListener(position -> createDialog(photoList.get(position).getREP_PHOTO()));
-    }
-
-    private void createDialog(String photoName) {
-        Dialog dialog = Ius.createDialog(this.getContext(), R.layout.dialog_window_image, "");
-        ImageView image = dialog.findViewById(R.id.image);
-
-        File file = new File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + photoName);
-
-        if (file.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            image.setImageBitmap(bitmap);
-        }
-
-        dialog.show();
+        photoViewModel.getPhotosByTech(requestCode).observe(getViewLifecycleOwner(), ph -> {
+            if (ph!=null) {
+                photoListTech = ph;
+                Ius.setAdapterImagesList(this.getContext(), recyclerViewTech, photoListTech);
+            }
+        });
     }
 
     private void createDialog(ImageView imageClicked) {
@@ -258,10 +237,10 @@ public class OITechnicFragment extends Fragment {
             replaceSummary.setVisibility(View.VISIBLE);
         }
 
-        if (isNull(request.getREQ_ADDRESS_SALEPOINT()))
+        if (isNull(request.getREQ_SECONDARY_ADDRESS()))
             addressSummary.setVisibility(View.GONE);
         else {
-            addressSummary.setText(Ius.makeTextBold(this.getContext(), getResources().getString(R.string.address) + ": " + request.getREQ_ADDRESS_SALEPOINT()));
+            addressSummary.setText(Ius.makeTextBold(this.getContext(), getResources().getString(R.string.address) + ": " + request.getREQ_SECONDARY_ADDRESS()));
             addressSummary.setVisibility(View.VISIBLE);
         }
 
@@ -294,6 +273,10 @@ public class OITechnicFragment extends Fragment {
     }
 
     private void redirectClick(int photoNumber) {
+        if (photoListTech.size() + photoNumber > 5) {
+            createToast(getString(R.string.photo_limit_error), false);
+            return;
+        }
         chooseImageByNumber(photoNumber);
         String tag = String.valueOf(chosenImageView.getTag());
         if(tag.equals("changed")) {

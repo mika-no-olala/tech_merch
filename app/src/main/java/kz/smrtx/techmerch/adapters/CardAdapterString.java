@@ -16,12 +16,14 @@ import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.items.entities.Element;
 import kz.smrtx.techmerch.items.entities.SalePointItem;
 import kz.smrtx.techmerch.items.entities.User;
+import kz.smrtx.techmerch.items.entities.Warehouse;
 
 public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.CardViewHolder> {
 
     private List<Element> elements;
     private List<User> users;
     private List<SalePointItem> salePointItems;
+    private List<Warehouse> warehouseList;
     private String listType;
     private onItemClickListener listener;
 
@@ -59,21 +61,31 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
     public CardAdapterString() {
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setAdapterElement(List<Element> elements) {
         this.elements = elements;
         listType = "e";
         notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setAdapterUser(List<User> users) {
         this.users = users;
         listType = "u";
         notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setAdapterAddress(List<SalePointItem> salePointItems) {
         this.salePointItems = salePointItems;
         listType = "a";
+        notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setAdapterWarehouseAddress(List<Warehouse> warehouseList) {
+        this.warehouseList = warehouseList;
+        listType = "w";
         notifyDataSetChanged();
     }
 
@@ -89,9 +101,10 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         switch (listType) {
             case "a":
+                SalePointItem s = salePointItems.get(position);
                 holder.text.setText(
-                        "[" + salePointItems.get(position).getId() + "]" + " \n" +
-                                salePointItems.get(position).getName() + " - " + salePointItems.get(position).getStreet());
+                        "[" + s.getId() + "]" + " \n" +
+                                s.getName() + " - " + s.getStreet());
                 break;
 
             case "e":
@@ -100,9 +113,17 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
                 break;
 
             case "u":
+                User u = users.get(position);
                 holder.text.setText(
-                        "[" + users.get(position).getCode() + "] - " + users.get(position).getRoleName()  + "\n" +
-                                users.get(position).getName());
+                        "[" + u.getCode() + "] - " + u.getRoleName()  + "\n" +
+                                u.getName());
+                break;
+            case "w":
+                Warehouse w = warehouseList.get(position);
+                holder.text.setText(
+                        "[" + w.getWAC_WAR_ID() + "] - " + w.getWAC_WAR_NAME() + ", " + w.getWAC_WAR_ADDRESS() + "\n" +
+                                w.getWAC_LOC_NAME()
+                );
                 break;
         }
 
@@ -112,12 +133,17 @@ public class CardAdapterString extends RecyclerView.Adapter<CardAdapterString.Ca
 
     @Override
     public int getItemCount() {
-        if (listType.equals("a"))
-            return salePointItems.size();
-        else if (listType.equals("e"))
-            return elements.size();
-        else
-            return users.size();
+        switch (listType) {
+            case "a":
+                return salePointItems.size();
+            case "e":
+                return elements.size();
+            case "w":
+                return warehouseList.size();
+            case "u":
+                return users.size();
+        }
+        return 0;
     }
 
 }

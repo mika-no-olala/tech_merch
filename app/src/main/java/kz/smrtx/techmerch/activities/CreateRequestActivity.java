@@ -46,6 +46,7 @@ import kz.smrtx.techmerch.items.entities.Visit;
 import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
+import kz.smrtx.techmerch.utils.Aen;
 import kz.smrtx.techmerch.utils.LocaleHelper;
 
 public class CreateRequestActivity extends AppCompatActivity {
@@ -293,10 +294,10 @@ public class CreateRequestActivity extends AppCompatActivity {
             replaceSummary.setVisibility(View.VISIBLE);
         }
 
-        if (isNull(request.getREQ_ADDRESS_SALEPOINT()))
+        if (isNull(request.getREQ_SECONDARY_ADDRESS()))
             addressSummary.setVisibility(View.GONE);
         else {
-            addressSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.address) + ": " + request.getREQ_ADDRESS_SALEPOINT()));
+            addressSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.address) + ": " + request.getREQ_SECONDARY_ADDRESS()));
             addressSummary.setVisibility(View.VISIBLE);
         }
 
@@ -395,10 +396,11 @@ public class CreateRequestActivity extends AppCompatActivity {
                 break;
 
             case 3:
-                if (fromOutToOut)
-                    openFragment(RCAddressFragment.getInstance(), 4);
-                else
-                    openFragment(RCWorkSubtypeFragment.getInstance(), 5);
+//                if (fromOutToOut)
+//                    openFragment(RCAddressFragment.getInstance(), 4);
+//                else
+//                    openFragment(RCWorkSubtypeFragment.getInstance(), 5);
+                openFragment(RCAddressFragment.getInstance(request.getREQ_REPLACE()), 4);
                 break;
 
             case 4:
@@ -434,7 +436,7 @@ public class CreateRequestActivity extends AppCompatActivity {
                 break;
 
             case 4:
-                request.setREQ_ADDRESS_SALEPOINT(null);
+                request.setREQ_SECONDARY_ADDRESS(null);
                 break;
 
             case 5:
@@ -539,11 +541,18 @@ public class CreateRequestActivity extends AppCompatActivity {
     public void setReplacePoint(String replaceChoice) {
         pages.get(3).setYouCanGoNext(replaceChoice.length()>1);
         request.setREQ_REPLACE(replaceChoice);
+        if (replaceChoice.equals(getString(R.string.to_storage)))
+            request.setREQ_REPLACE_ID(Aen.REPLACE_VALUE_TO_STORAGE);
+        else if(replaceChoice.equals(getString(R.string.from_storage)))
+            request.setREQ_REPLACE_ID(Aen.REPLACE_VALUE_FROM_STORAGE);
+        else
+            request.setREQ_REPLACE_ID(Aen.REPLACE_VALUE_FROM_OUT_TO_OUT);
     }
 
-    public void setAddress(String address) {
+    public void setAddress(String address, int secondaryId) {
         pages.get(4).setYouCanGoNext(address.length()>1);
-        request.setREQ_ADDRESS_SALEPOINT(address);
+        request.setREQ_SECONDARY_ADDRESS(address);
+        request.setREQ_SECONDARY_ADDRESS_ID(secondaryId);
     }
 
     public void setWorkSubtype(String workSubtype, boolean gloChosen) {
@@ -579,7 +588,8 @@ public class CreateRequestActivity extends AppCompatActivity {
 
     public void setComment(String comment) {
         pages.get(6).setYouCanGoNext(comment.length()>1);
-        request.setREQ_COMMENT(comment);
+        request.setREQ_COMMENT(Ius.saveApostrophe(comment));
+        Log.i("Convert comment", comment + " -> " + request.getREQ_COMMENT());
     }
 
     public void setPhotos(String[] photos) {

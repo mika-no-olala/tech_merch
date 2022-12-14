@@ -4,11 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +32,6 @@ import kz.smrtx.techmerch.adapters.CardAdapterImagePager;
 import kz.smrtx.techmerch.adapters.CardAdapterImages;
 import kz.smrtx.techmerch.adapters.CardAdapterRequests;
 import kz.smrtx.techmerch.adapters.CardAdapterString;
-import kz.smrtx.techmerch.items.dao.ChoosePointsDao;
 import kz.smrtx.techmerch.items.entities.History;
 import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
@@ -46,7 +41,6 @@ import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
 import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
-import kz.smrtx.techmerch.items.viewmodels.SalePointViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.utils.LocaleHelper;
 import kz.smrtx.techmerch.utils.Aen;
@@ -341,6 +335,7 @@ public class StatusesActivity extends AppCompatActivity {
             cardAdapterRequests.setOnItemClickListener(position -> {
                 request = waitingList.get(position);
                 myRequestOpened = true;
+                getRequestComments(waitingList.get(position).getREQ_CODE());
                 setRequest();
                 requestLoading.setVisibility(View.GONE);
                 closeList(isTechnic, true);
@@ -362,7 +357,9 @@ public class StatusesActivity extends AppCompatActivity {
 
             recyclerView.setAdapter(cardAdapterHistory);
             cardAdapterHistory.setOnItemClickListener(position -> {
-                getRequest(list.get(position).getRequestCode());
+                String requestCode = list.get(position).getRequestCode();
+                getRequest(requestCode);
+                getRequestComments(requestCode);
                 myRequestOpened = false;
                 closeList(isTechnic, false);
             });
@@ -378,34 +375,6 @@ public class StatusesActivity extends AppCompatActivity {
             noRequests.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         }
-    }
-
-    private void setAdapter(RecyclerView recyclerView, List<Photo> photoList) {
-        RecyclerView.LayoutManager layoutManager;
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-
-        if (photoList.isEmpty()) {
-            recyclerView.setVisibility(View.GONE);
-            return;
-        }
-
-        CardAdapterImages cardAdapter = new CardAdapterImages(photoList, this);
-        recyclerView.setAdapter(cardAdapter);
-        cardAdapter.setOnItemClickListener(position -> createDialog(position, photoList));
-    }
-
-    private void createDialog(int photoNumber, List<Photo> photoList) {
-        Dialog dialog = Ius.createDialog(this, R.layout.dialog_window_image, "");
-        ViewPager viewPager = dialog.findViewById(R.id.imagePager);
-        CardAdapterImagePager adapter = new CardAdapterImagePager();
-
-        adapter.setAdapterWithPhoto(this, photoList);
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(photoNumber);
-
-        dialog.show();
     }
 
     private void findNecessaryRole(int roleToSearch) {
@@ -428,16 +397,33 @@ public class StatusesActivity extends AppCompatActivity {
     }
 
     private void getRequest(String code) {
-        Log.i("getRequest code", code);
+        Log.i("getRequest, code", code);
         requestViewModel.getRequestByCode(code).observe(this, r -> {
-            if (r!=null) {
-                requestLoading.setVisibility(View.GONE);
-                request = r;
-                setRequest();
-            }
-            else {
+            if (r==null) {
                 Log.e("getRequest", "there is no request in db...");
+                return;
             }
+            requestLoading.setVisibility(View.GONE);
+            request = r;
+            setRequest();
+        });
+    }
+
+    private void getRequestComments(String code) {
+        historyViewModel.getAllComments(code).observe(this, c -> {
+            if (c==null) {
+                Log.e("getRequestComments", "there is no comments in db...");
+                commentSummary.setVisibility(View.GONE);
+                return;
+            }
+
+            StringBuilder comment = new StringBuilder();
+            for (String part : c) {
+                comment.append("\n\n").append("- ").append(part);
+            }
+            commentSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.comments) + ": " + comment));
+            commentSummary.setVisibility(View.VISIBLE);
+            Log.i("getRequestComments", String.valueOf(c.size()));
         });
     }
 
@@ -455,11 +441,11 @@ public class StatusesActivity extends AppCompatActivity {
 
         photoViewModel.getPhotosByTMR(request.getREQ_CODE()).observe(this, tmr -> {
             photoListTMR = tmr;
-            setAdapter(recyclerViewTMR, photoListTMR);
+            Ius.setAdapterImagesList(this, recyclerViewTMR, photoListTMR);
         });
         photoViewModel.getPhotosByTech(request.getREQ_CODE()).observe(this, tech -> {
             photoListTech = tech;
-            setAdapter(recyclerViewTech, photoListTech);
+            Ius.setAdapterImagesList(this, recyclerViewTech, photoListTech);
         });
 
         String dateCreated = Ius.getDateByFormat(
@@ -524,10 +510,10 @@ public class StatusesActivity extends AppCompatActivity {
             replaceSummary.setVisibility(View.VISIBLE);
         }
 
-        if (isNull(request.getREQ_ADDRESS_SALEPOINT()))
+        if (isNull(request.getREQ_SECONDARY_ADDRESS()))
             addressSummary.setVisibility(View.GONE);
         else {
-            addressSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.address) + ": " + request.getREQ_ADDRESS_SALEPOINT()));
+            addressSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.address) + ": " + request.getREQ_SECONDARY_ADDRESS()));
             addressSummary.setVisibility(View.VISIBLE);
         }
 
@@ -543,13 +529,6 @@ public class StatusesActivity extends AppCompatActivity {
         else {
             specialSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.glo_equipment) + ": " + request.getREQ_WORK_SPECIAL()));
             specialSummary.setVisibility(View.VISIBLE);
-        }
-
-        if (isNull(request.getREQ_COMMENT()))
-            commentSummary.setVisibility(View.GONE);
-        else {
-            commentSummary.setText(Ius.makeTextBold(this, getResources().getString(R.string.comment) + ": " + request.getREQ_COMMENT()));
-            commentSummary.setVisibility(View.VISIBLE);
         }
     }
 
@@ -569,8 +548,8 @@ public class StatusesActivity extends AppCompatActivity {
         if (!positiveButtonPressed)
             title.setText(getString(R.string.send_back));
 
-        if (request.getREQ_STATUS().contains("Отклонено"))
-            executor.setText(request.getREQ_USE_CODE() + " - " + request.getREQ_USE_NAME());
+        else if (request.getREQ_STA_ID() == Aen.STATUS_WAITING_TMR)
+            title.setText(getString(R.string.end_request));
 
         if (!needComment) {
             comment.setVisibility(View.GONE);
@@ -609,6 +588,16 @@ public class StatusesActivity extends AppCompatActivity {
             }
 
             else if (userRole == Aen.ROLE_MANAGER) {
+                request.setREQ_STA_ID(Aen.getStatusByExecutorAfterManager(executorRoleFound));
+                request.setREQ_USE_CODE_APPOINTED(executorCode);
+            }
+
+            else if (userRole == Aen.ROLE_COORDINATOR && !positiveButtonPressed) {
+                request.setREQ_STA_ID(Aen.STATUS_COORDINATOR_CANCELED);
+                request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
+            }
+
+            else if (userRole == Aen.ROLE_COORDINATOR) {
                 request.setREQ_STA_ID(Aen.STATUS_WAITING_TECHNIC);
                 request.setREQ_USE_CODE_APPOINTED(executorCode);
             }
@@ -624,22 +613,13 @@ public class StatusesActivity extends AppCompatActivity {
             }
 
             else if (userRole == Aen.ROLE_TMR) {
-                switch (executorRoleFound) {
-                    case 6:
-                        request.setREQ_STA_ID(Aen.STATUS_WAITING_MANAGER);
-                        break;
-                    case 7:
-                        request.setREQ_STA_ID(Aen.STATUS_WAITING_COORDINATOR);
-                        break;
-                    case 4:
-                        request.setREQ_STA_ID(Aen.STATUS_WAITING_TECHNIC);
-                }
+                request.setREQ_STA_ID(Aen.getStatusByExecutorAfterTMR(executorRoleFound));
                 request.setREQ_USE_CODE_APPOINTED(executorCode);
             }
 
             if (needComment) {
-
-                request.setREQ_COMMENT(commentStr);
+                request.setREQ_COMMENT(Ius.saveApostrophe(commentStr));
+                Log.i("Convert comment", commentStr + " -> " + request.getREQ_COMMENT());
             }
 
             request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_CODE)));
@@ -665,6 +645,7 @@ public class StatusesActivity extends AppCompatActivity {
 
     private boolean isCommentNeeded(int userRole) {
         return (userRole == Aen.ROLE_MANAGER && !positiveButtonPressed)
+        || (userRole == Aen.ROLE_COORDINATOR && !positiveButtonPressed)
         || userRole == Aen.ROLE_TECHNIC
         || (userRole == Aen.ROLE_TMR && !(positiveButtonPressed && request.getREQ_STA_ID() == Aen.STATUS_WAITING_TMR));
     }
@@ -672,7 +653,8 @@ public class StatusesActivity extends AppCompatActivity {
     private boolean isExecutorNeeded(int userRole) {
         return ((userRole == Aen.ROLE_MANAGER
                 || userRole == Aen.ROLE_COORDINATOR
-                || userRole == Aen.ROLE_TMR) && positiveButtonPressed);
+                || (userRole == Aen.ROLE_TMR
+                && request.getREQ_STA_ID() != Aen.STATUS_WAITING_TMR)) && positiveButtonPressed);
     }
 
     private void closeList(boolean isTechnic, boolean isWaitingList) {

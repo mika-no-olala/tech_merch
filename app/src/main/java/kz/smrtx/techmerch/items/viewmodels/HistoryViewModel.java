@@ -56,4 +56,8 @@ public class HistoryViewModel extends AndroidViewModel {
     public LiveData<List<History>> getHistoryListWhichAreRelatedToAndFinished(int userCode, int salePoint) {
         return historyRepository.getHistoryListWhichAreRelatedToAndFinished(userCode, salePoint);
     }
+
+    public LiveData<List<String>> getAllComments(String requestCode) {
+        return historyRepository.getAllComments(requestCode);
+    }
 }

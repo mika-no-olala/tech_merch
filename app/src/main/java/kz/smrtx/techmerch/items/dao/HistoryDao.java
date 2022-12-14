@@ -22,40 +22,60 @@ public interface HistoryDao {
     @Query("select * from ST_REQUEST_HISTORY where salePointCode=:salePointCode")
     LiveData<List<History>> getHistoryListBySalCode(int salePointCode);
 
+//    @Query("SELECT * FROM ST_REQUEST_HISTORY srh " +
+//            "WHERE srh.userCode = :userCode AND srh.userCodeAppointed != :userCode " +
+//            "  AND srh.userCodeAppointed != 8 " +
+//            "  AND srh.created = " +
+//            "    (" +
+//            "      SELECT MAX(created) " +
+//            "      FROM ST_REQUEST_HISTORY srhd " +
+//            "      WHERE srh.requestCode = srhd.requestCode " +
+//            "      GROUP BY srhd.requestCode " +
+//            "    )")
+//    LiveData<List<History>> getHistoryListWhichAreRelatedTo(int userCode);
+
     @Query("SELECT * FROM ST_REQUEST_HISTORY srh " +
-            "WHERE srh.userCode = :userCode AND srh.userCodeAppointed != :userCode " +
-            "  AND srh.userCodeAppointed != 8 " +
-            "  AND srh.created = " +
-            "    (" +
-            "      SELECT MAX(created) " +
-            "      FROM ST_REQUEST_HISTORY srhd " +
-            "      WHERE srh.requestCode = srhd.requestCode " +
-            "      GROUP BY srhd.requestCode " +
-            "    )")
+            "            WHERE srh.created IN " +
+            "            (" +
+            "              SELECT MAX(srhd.created) " +
+            "              FROM ST_REQUEST_HISTORY srhd " +
+            "              GROUP BY srhd.requestCode " +
+            "            ) AND srh.requestCode IN " +
+            "            (" +
+            "              SELECT DISTINCT(srhd.requestCode) " +
+            "              FROM ST_REQUEST_HISTORY srhd " +
+            "              WHERE srhd.userCode = :userCode AND srhd.userCodeAppointed != :userCode " +
+        "                 ) and userCodeAppointed != :userCode and userCodeAppointed != 8")
     LiveData<List<History>> getHistoryListWhichAreRelatedTo(int userCode);
 
     @Query("SELECT * FROM ST_REQUEST_HISTORY srh " +
-            "WHERE srh.userCode = :userCode AND srh.userCodeAppointed != :userCode " +
-            "  AND srh.userCodeAppointed != 8 " +
-            "  AND srh.salePointCode=:salePointCode AND srh.created = " +
-            "    (" +
-            "      SELECT MAX(created) " +
-            "      FROM ST_REQUEST_HISTORY srhd " +
-            "      WHERE srh.requestCode = srhd.requestCode " +
-            "      GROUP BY srhd.requestCode " +
-            "    )")
+            "            WHERE srh.created IN " +
+            "            (" +
+            "              SELECT MAX(srhd.created) " +
+            "              FROM ST_REQUEST_HISTORY srhd " +
+            "              GROUP BY srhd.requestCode " +
+            "            ) AND srh.requestCode IN " +
+            "            (" +
+            "              SELECT DISTINCT(srhd.requestCode) " +
+            "              FROM ST_REQUEST_HISTORY srhd " +
+            "              WHERE srhd.userCode = :userCode AND srhd.userCodeAppointed != :userCode " +
+            "                AND srhd.salePointCode = :salePointCode" +
+            ") and userCodeAppointed != :userCode and userCodeAppointed != 8")
     LiveData<List<History>> getHistoryListWhichAreRelatedTo(int userCode, int salePointCode);
 
     @Query("SELECT count(*) FROM ST_REQUEST_HISTORY srh " +
-            "WHERE srh.userCode = :userCode AND srh.userCodeAppointed != :userCode " +
-            "  AND srh.salePointCode = :salePointCode " +
-            "  AND srh.created = " +
-            "    (" +
-            "      SELECT MAX(created) " +
-            "      FROM ST_REQUEST_HISTORY srhd " +
-            "      WHERE srh.requestCode = srhd.requestCode " +
-            "      GROUP BY srhd.requestCode " +
-            "    )")
+            "            WHERE srh.created IN " +
+            "            (" +
+            "              SELECT MAX(srhd.created) " +
+            "              FROM ST_REQUEST_HISTORY srhd " +
+            "              GROUP BY srhd.requestCode " +
+            "            ) AND srh.requestCode IN " +
+            "            (" +
+            "              SELECT DISTINCT(srhd.requestCode) " +
+            "              FROM ST_REQUEST_HISTORY srhd " +
+            "              WHERE srhd.userCode = :userCode AND srhd.userCodeAppointed != :userCode " +
+            "                AND srhd.salePointCode = :salePointCode" +
+            ")")
     int getRequestsNumberOnSalePointByUser(int userCode, int salePointCode);
 
     @Query("SELECT userCode FROM ST_REQUEST_HISTORY WHERE requestCode=:requestCode AND userRole=5")
@@ -79,7 +99,11 @@ public interface HistoryDao {
             "           WHERE srhd.userCode = :userCode " +
             "       )")
     LiveData<List<History>> getHistoryListWhichAreRelatedToAndFinished(int userCode, int salePointCode);
+
+    @Query("select distinct(comment) from ST_REQUEST_HISTORY where requestCode=:requestCode order by created")
+    LiveData<List<String>> getAllComments(String requestCode);
 }
+
 /*
 
 @Query("SELECT * FROM ST_REQUEST_HISTORY srh " +

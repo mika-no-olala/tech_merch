@@ -1,5 +1,6 @@
 package kz.smrtx.techmerch.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Objects;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private final Context context = this;
     private EditText login;
     private EditText password;
+    private Button signIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,24 +49,14 @@ public class MainActivity extends AppCompatActivity {
 
         login = findViewById(R.id.login);
         password = findViewById(R.id.password);
-        Button signIn = findViewById(R.id.signIn);
+        signIn = findViewById(R.id.signIn);
         TextView forgotPassword = findViewById(R.id.forgotPassword);
 
         Ius.refreshToken(context);
 
-        signIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                doSignIn();
-            }
-        });
+        signIn.setOnClickListener(view -> doSignIn());
 
-        forgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDialog();
-            }
-        });
+        forgotPassword.setOnClickListener(view -> openDialog());
     }
 
     private void doSignIn() {
@@ -76,25 +69,30 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        Ius.disableButton(signIn, this);
+
         Ius.getApiService().getUser(Ius.readSharedPreferences(context, Ius.TOKEN), StringQuery.getUser(login.getText().toString().trim(), password.getText().toString().trim()))
             .enqueue(new Callback<JsonResponse>() {
                 @SuppressLint("HardwareIds")
                 @Override
-                public void onResponse(Call<JsonResponse> call, Response<JsonResponse> response) {
+                public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
                     if (!response.isSuccessful()) {
                         Log.e("MainActivity - auth", String.valueOf(response.code()));
                         createToast(getResources().getString(R.string.error)  + ": " + response.code());
+                        Ius.enableButton(signIn, MainActivity.this);
                         return;
                     }
 
-                    if (response.body().getDataList()==null) {
+                    if (Objects.requireNonNull(response.body()).getDataList()==null) {
                         Log.e("MainActivity - getUser", "dataList is null");
                         createToast(getResources().getString(R.string.error)  + ": " + response.code());
+                        Ius.enableButton(signIn, MainActivity.this);
                         return;
                     }
 
                     if (response.body().getDataList().isEmpty()) {
                         createToast(getResources().getString(R.string.wrong_data_log_in));
+                        Ius.enableButton(signIn, MainActivity.this);
                         return;
                     }
 
@@ -109,17 +107,19 @@ public class MainActivity extends AppCompatActivity {
 
                     getUserCity(user.getCode());
 
+                    Ius.enableButton(signIn, MainActivity.this);
                     openActivityStart(true);
                 }
 
                 @Override
-                public void onFailure(Call<JsonResponse> call, Throwable t) {
+                public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
                     Log.e("MainActivity - auth", t.getMessage());
-                    if(t.getMessage().contains("certification")) {
+                    if(Objects.requireNonNull(t.getMessage()).contains("certification")) {
                         createToast(getResources().getString(R.string.error_certification));
                         return;
                     }
                     createToast(getResources().getString(R.string.error)  + ": " + t.getMessage());
+                    Ius.enableButton(signIn, MainActivity.this);
                 }
             });
     }
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         Ius.getApiService().getQuery(Ius.readSharedPreferences(context, Ius.TOKEN), StringQuery.getUserCity(userCode))
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                         if (!response.isSuccessful()) {
                             Log.e("MainActivity - userCity", String.valueOf(response.code()));
                             return;
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                         StringBuilder cities = new StringBuilder();
 
                         try {
-                            JSONObject jsonObj = new JSONObject(response.body().string());
+                            JSONObject jsonObj = new JSONObject(Objects.requireNonNull(response.body()).string());
                             JSONArray array = jsonObj.getJSONArray("data");
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject object = array.getJSONObject(i);
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                         Log.e("MainActivity - userCity", "onFailure " + t.getMessage());
                     }
                 });

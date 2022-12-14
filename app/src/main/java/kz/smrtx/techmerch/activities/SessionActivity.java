@@ -28,13 +28,14 @@ import kz.smrtx.techmerch.fragments.OperationsOnOutletFragment;
 import kz.smrtx.techmerch.fragments.OutletInformationFragment;
 import kz.smrtx.techmerch.fragments.OutletsFragment;
 import kz.smrtx.techmerch.fragments.TechnicReportFragment;
+import kz.smrtx.techmerch.fragments.WarehousesFragment;
 import kz.smrtx.techmerch.items.entities.Session;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 import kz.smrtx.techmerch.utils.LocaleHelper;
 
 public class SessionActivity extends AppCompatActivity implements OperationsFragment.FragmentListener, OutletsFragment.FragmentListener,
         OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener, NotesFragment.FragmentListener,
-        MapsFragment.FragmentListener, TechnicReportFragment.FragmentListener, AllReportsFragment.FragmentListener {
+        MapsFragment.FragmentListener, TechnicReportFragment.FragmentListener, AllReportsFragment.FragmentListener, WarehousesFragment.FragmentListener {
 
     private TextView pageName;
     private ScrollView scrollView;

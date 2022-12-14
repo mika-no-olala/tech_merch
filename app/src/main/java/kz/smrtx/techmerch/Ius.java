@@ -29,11 +29,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 
+import kz.smrtx.techmerch.adapters.CardAdapterImagePager;
+import kz.smrtx.techmerch.adapters.CardAdapterImages;
+import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.utils.CustomTypefaceSpan;
 import kz.smrtx.techmerch.utils.ZipManager;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -268,6 +272,34 @@ public class Ius extends Application {
         return dialog;
     }
 
+    public static void createDialogPhoto(Context context, int photoNumber, List<Photo> photoList) {
+        Dialog dialog = Ius.createDialog(context, R.layout.dialog_window_image, "");
+        ViewPager viewPager = dialog.findViewById(R.id.imagePager);
+        CardAdapterImagePager adapter = new CardAdapterImagePager();
+
+        adapter.setAdapterWithPhoto(context, photoList);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(photoNumber);
+
+        dialog.show();
+    }
+
+    public static void setAdapterImagesList(Context context, RecyclerView recyclerView, List<Photo> photoList) {
+        RecyclerView.LayoutManager layoutManager;
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+
+        if (photoList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            return;
+        }
+
+        CardAdapterImages cardAdapter = new CardAdapterImages(photoList, context);
+        recyclerView.setAdapter(cardAdapter);
+        cardAdapter.setOnItemClickListener(position -> createDialogPhoto(context, position, photoList));
+    }
+
     public static SpannableString makeTextUnderlined(String text) {
         SpannableString content = new SpannableString(text);
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
@@ -391,10 +423,53 @@ public class Ius extends Application {
 
                     return str;
                 }
+
+                if(i == str.length() - 1) {
+                    return str;
+                }
             }
         }
 
         return str;
+    }
+
+    public static int[] getCityArray(Context context) {
+        String cities = readSharedPreferences(context, USER_CITIES);
+        int arraySize = 1;
+        for (int i = 0; i < cities.length(); i++) {
+            if (cities.charAt(i) == '-')
+                arraySize++;
+        }
+
+        int indexOfLine = 0;
+        int[] array = new int[arraySize];
+        if (arraySize==1)
+            array[0] = Integer.parseInt(cities);
+        else {
+            indexOfLine = cities.indexOf('-');
+            array[0] = Integer.parseInt(cities.substring(0, indexOfLine));
+        }
+
+        if (arraySize==2)
+            array[1] = Integer.parseInt(cities.substring(indexOfLine+1));
+
+        else if (arraySize==3) {
+            int indexOfSecondLine = cities.indexOf('-', cities.indexOf('-') + 1);
+            array[1] = Integer.parseInt(cities.substring(indexOfLine + 1), indexOfSecondLine);
+            array[2] = Integer.parseInt(cities.substring(indexOfSecondLine + 1));
+        }
+
+        return array;
+    }
+
+    public static void disableButton(Button button, Context context) {
+        button.setEnabled(false);
+        button.setTextColor(context.getResources().getColor(R.color.light_purple));
+    }
+
+    public static void enableButton(Button button, Context context) {
+        button.setEnabled(true);
+        button.setTextColor(context.getResources().getColor(R.color.main_deep_purple));
     }
 
     public static void requestPermission(Activity activity) {

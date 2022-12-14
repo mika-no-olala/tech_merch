@@ -25,6 +25,8 @@
     <string name="uploading_data_error">Ошибка при отправке данных</string>
     <string name="downloading_images_data_error">Ошибка при скачивании фото</string>
     <string name="actual_data_search_error">Ошибка при поиске актуальных данных</string>
+    <string name="no_warehouse_error">Ошибка: склад из заявки не найден</string>
+    <string name="photo_limit_error">Максимальное количество фото: 5</string>
     <string name="no_write_permission_error">Ошибка: приложению нужен доступ к файловой системе</string>
     <string name="not_all_photos_error">Синхронизация завершена. Но не все фото были получены</string>
     <string name="sync_ended_errors">Синхронизация завершена. Но с некоторыми ошибками</string>
@@ -122,6 +124,7 @@
     <string name="finishing_work">Завершение работы</string>
     <string name="finishing_work_question">Вы хотите завершить работу на текущий день?</string>
     <string name="search_outlet_hint">Код, название, адрес, владелец</string>
+    <string name="search_warehouse_hint">Оборудование, имя склада, улица</string>
     <string name="search">Поиск</string>
     <string name="address">Адрес</string>
     <string name="destination">Местоназначение</string>
@@ -182,6 +185,7 @@
     <string name="choose_address">Выберите адрес пункта назначения</string>
     <string name="from_outlet">Из торговой точки</string>
     <string name="to_outlet">В торговую точку</string>
+    <string name="from_warehouse">Из склада</string>
     <string name="choose_work_subtype">Выберите подтип работы</string>
     <string name="work_subtype">Подтип работы</string>
     <string name="variant_spec_equipment">Вариант для спец. оборудования</string>
@@ -190,11 +194,13 @@
     <string name="executor">Исполнитель</string>
     <string name="add_comment">Добавить комментарий</string>
     <string name="comment">Комментарий</string>
+    <string name="comments">Комментарии</string>
     <string name="add_photos">Добавить фотографии</string>
     <string name="send">Отправить</string>
     <string name="add">Добавить</string>
     <string name="accept_send">Принять и отправить</string>
     <string name="send_back">Отправить завявку обратно</string>
+    <string name="end_request">Завершить заявку</string>
     <string name="enter_manually">Ввести наименование вручную</string>
     <string name="consumable">Расходный материал</string>
     <string name="cost_and_quantity">Стоимость и количество материала</string>
@@ -211,4 +217,6 @@
     <string name="report_for">Отчет за</string>
     <string name="new_delivery">Новые поставки</string>
     <string name="new_delivery_description">Поставки оборудования со склада DSD</string>
+    <string name="warehouses">Склады</string>
+    <string name="warehouses_description">Просмотр складов и количество оборудования в них</string>
 </resources>

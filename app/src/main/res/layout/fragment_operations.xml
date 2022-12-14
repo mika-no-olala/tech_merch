@@ -219,6 +219,46 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/warehouses"
+            style="@style/card"
+            tools:targetApi="lollipop"
+            android:backgroundTint="@color/white">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50sp"
+                    android:layout_height="50sp"
+                    android:src="@drawable/ic_box"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="22sp"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="22sp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/warehouses"
+                        android:fontFamily="@font/bandera_pro_bold"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="7sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/warehouses_description"
+                        android:fontFamily="@font/bandera_pro_medium"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:id="@+id/newDeliveries"
             style="@style/card"
             tools:targetApi="lollipop"
