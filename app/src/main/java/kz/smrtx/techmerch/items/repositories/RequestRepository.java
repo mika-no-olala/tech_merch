@@ -31,6 +31,7 @@ public class RequestRepository {
     public void update(Request request) {
         new UpdateRequestAsyncTask(requestDao).execute(request);
     }
+    public void updateAfterPartialSync(){ new UpdateAllRequestsAsyncTask(requestDao).execute(); }
     public void delete(Request request) {
         new DeleteRequestAsyncTask(requestDao).execute(request);
     }
@@ -81,6 +82,20 @@ public class RequestRepository {
         @Override
         protected Void doInBackground(Request... requests) {
             requestDao.update(requests[0]);
+            return null;
+        }
+    }
+
+    private static class UpdateAllRequestsAsyncTask extends AsyncTask<Void, Void, Void> {
+        private final RequestDao requestDao;
+
+        private UpdateAllRequestsAsyncTask(RequestDao requestDao) {
+            this.requestDao = requestDao;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            requestDao.updateAfterPartialSync();
             return null;
         }
     }

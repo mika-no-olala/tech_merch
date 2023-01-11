@@ -31,6 +31,7 @@ public class RequestViewModel extends AndroidViewModel {
     public void update(Request request) {
         requestRepository.update(request);
     }
+    public void updateAfterPartialSync() { requestRepository.updateAfterPartialSync();}
     public void delete(Request request) {
         requestRepository.delete(request);
     }

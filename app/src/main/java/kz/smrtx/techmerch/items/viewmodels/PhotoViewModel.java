@@ -26,6 +26,7 @@ public class PhotoViewModel extends AndroidViewModel {
         photoRepository.insert(photo);
     }
     public void insertPhotos(List<Photo> photos) { photoRepository.insertPhotos(photos); }
+    public void updateAfterPartialSync(String photoName) { photoRepository.updateAfterPartialSync(photoName); }
     public void delete(Photo photo) {
         photoRepository.delete(photo);
     }
@@ -43,5 +44,8 @@ public class PhotoViewModel extends AndroidViewModel {
     }
     public LiveData<List<Photo>> getPhotosForUpload() {
         return photoRepository.getPhotosForUpload();
+    }
+    public List<String> getPhotosForUploadNoAsync() {
+        return photoRepository.getPhotosForUploadNoAsync();
     }
 }

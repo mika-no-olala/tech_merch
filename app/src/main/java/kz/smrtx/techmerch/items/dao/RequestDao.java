@@ -24,6 +24,9 @@ public interface RequestDao {
     @Update
     void update(Request request);
 
+    @Query("update ST_REQUEST set NES_TO_UPDATE='no' where NES_TO_UPDATE='yes'")
+    void updateAfterPartialSync();
+
     @Delete
     void delete(Request request);
 

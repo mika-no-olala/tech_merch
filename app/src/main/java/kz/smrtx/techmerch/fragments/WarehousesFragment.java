@@ -111,11 +111,6 @@ public class WarehousesFragment extends Fragment {
         });
     }
 
-    private void createToast(View view, String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, view.findViewById(R.id.toast));
-        Ius.showToast(layout, this.getContext(), text, success);
-    }
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);

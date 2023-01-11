@@ -33,7 +33,7 @@ import kz.smrtx.techmerch.items.dao.WarehouseDao;
         Photo.class,
         Consumable.class,
         TableUpdated.class,
-        Warehouse.class}, version = 44)
+        Warehouse.class}, version = 46)
 public abstract class TechDatabase extends RoomDatabase {
 
     private static TechDatabase instance;

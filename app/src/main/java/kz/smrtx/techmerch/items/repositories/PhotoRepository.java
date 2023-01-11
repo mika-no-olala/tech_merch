@@ -24,6 +24,7 @@ public class PhotoRepository {
         new InsertPhotoAsyncTask(photoDao).execute(photo);
     }
     public void insertPhotos(List<Photo> photos) { new InsertPhotosAsyncTask(photoDao).execute(photos); }
+    public void updateAfterPartialSync(String photoName) { new UpdatePhotosAsyncTask(photoDao).execute(photoName); }
     public void delete(Photo photo) {
         new DeletePhotoAsyncTask(photoDao).execute(photo);
     }
@@ -36,6 +37,9 @@ public class PhotoRepository {
     public LiveData<List<Photo>> getPhotosByTech(String requestCode) { return photoDao.getPhotosByTech(requestCode); }
     public LiveData<List<Photo>> getPhotosByTMR(String requestCode) { return photoDao.getPhotosByTMR(requestCode); }
     public LiveData<List<Photo>> getPhotosForUpload() { return photoDao.getPhotosForUpload(); }
+    public List<String> getPhotosForUploadNoAsync() {
+        return photoDao.getPhotosForUploadNoAsync();
+    }
 
     private static class InsertPhotoAsyncTask extends AsyncTask<Photo, Void, Void> {
         private final PhotoDao photoDao;
@@ -59,6 +63,18 @@ public class PhotoRepository {
         @Override
         protected Void doInBackground(List<Photo>[] notes) {
             photoDao.insertPhotos(notes[0]);
+            return null;
+        }
+    }
+
+    private static class UpdatePhotosAsyncTask extends AsyncTask<String, Void, Void> {
+        private final PhotoDao photoDao;
+
+        private UpdatePhotosAsyncTask(PhotoDao photoDao) { this.photoDao = photoDao; }
+
+        @Override
+        protected Void doInBackground(String... photoName) {
+            photoDao.updateAfterPartialSync(photoName[0]);
             return null;
         }
     }

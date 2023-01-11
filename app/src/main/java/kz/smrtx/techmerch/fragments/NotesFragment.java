@@ -25,6 +25,7 @@ import java.util.List;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.adapters.CardAdapterNotes;
 import kz.smrtx.techmerch.items.entities.Note;
 import kz.smrtx.techmerch.items.viewmodels.NoteViewModel;
@@ -107,7 +108,7 @@ public class NotesFragment extends Fragment {
         cardAdapter.setOnItemClickListener(position -> {
             Note note = notes.get(position);
             if (note.getNOT_USE_CODE()!=userCode) {
-                createToast(getResources().getString(R.string.note_delete_warning), false);
+                SessionActivity.getInstance().createToast(getString(R.string.note_delete_warning), false);
                 return;
             }
 
@@ -127,7 +128,7 @@ public class NotesFragment extends Fragment {
         positive.setOnClickListener(view -> {
             String commentStr = comment.getText().toString().trim();
             if (commentStr.length()==0) {
-                createToast(getResources().getString(R.string.fill_field), false);
+                SessionActivity.getInstance().createToast(getString(R.string.fill_field), false);
                 return;
             }
 
@@ -138,8 +139,9 @@ public class NotesFragment extends Fragment {
             Note note = new Note(date, salePointCode, userCode, name, commentStr, visitNumber,"yes");
             noteViewModel.insert(note);
 
-            createToast(getResources().getString(R.string.note_success), true);
+            SessionActivity.getInstance().createToast(getString(R.string.note_success), true);
             dialog.cancel();
+            OperationsOnOutletFragment.getInstance().cancelVisitClear();
         });
     }
 
@@ -167,7 +169,9 @@ public class NotesFragment extends Fragment {
                 note.setNOT_CREATED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss")); //need for deleting unnec visit data
                 noteViewModel.update(note);
             }
+
             dialog.cancel();
+            OperationsOnOutletFragment.getInstance().cancelVisitClear();
         });
     }
 
@@ -180,10 +184,5 @@ public class NotesFragment extends Fragment {
             throw new ClassCastException(context
                     + " must implement onFragmentListener");
         }
-    }
-
-    private void createToast(String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, view.findViewById(R.id.toast));
-        Ius.showToast(layout, this.getContext(), text, success);
     }
 }

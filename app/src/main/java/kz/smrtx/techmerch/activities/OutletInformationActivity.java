@@ -140,7 +140,7 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
                 visit.setVIS_DEVICE_ID(Ius.readSharedPreferences(this, Ius.DEVICE_ID));
                 visit.setVIS_LATITUDE(lat);
                 visit.setVIS_LONGITUDE(lon);
-                visit.setVIS_SES_CODE(Ius.readSharedPreferences(this, Ius.LAST_SESSION_CODE));
+                visit.setVIS_SESSION_CODE(Ius.readSharedPreferences(this, Ius.LAST_SESSION_CODE));
 
                 visitViewModel.insert(visit);
             }
@@ -169,7 +169,7 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
     private void getWarehouse() {
         warehouseViewModel.getWarehouseByIdAndEquipment(request.getREQ_EQU_SUBTYPE(), request.getREQ_SECONDARY_ADDRESS_ID()).observe(this, w -> {
             if (w.size()==0) {
-                createToast(getString(R.string.no_warehouse_error), false);
+                SessionActivity.getInstance().createToast(getString(R.string.no_warehouse_error), false);
                 Log.e("getWarehouse", "no warehouse!");
                 return;
             }
@@ -210,7 +210,9 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
         request.setNES_TO_UPDATE("yes");
 
         requestViewModel.update(request);
-        createToast(getResources().getString(R.string.request_saved), true);
+
+        SessionActivity.getInstance().startRequestSending();
+        SessionActivity.getInstance().cancelSessionClear();
         finish();
     }
 
@@ -296,11 +298,6 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
     protected void onDestroy() {
         super.onDestroy();
         finishVisit();
-    }
-
-    private void createToast(String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, findViewById(R.id.toast));
-        Ius.showToast(layout, this, text, success);
     }
 
     @Override

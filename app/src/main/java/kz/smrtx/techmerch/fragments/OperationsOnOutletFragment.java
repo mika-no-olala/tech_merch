@@ -40,6 +40,7 @@ import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
 
 public class OperationsOnOutletFragment extends Fragment {
 
+    private static OperationsOnOutletFragment instance;
     private ChoosePointsViewModel choosePointsViewModel;
     private VisitViewModel visitViewModel;
     private NoteViewModel noteViewModel;
@@ -51,6 +52,7 @@ public class OperationsOnOutletFragment extends Fragment {
     private TextView notesTitle;
     private String salePointCode;
     private Date dateStarted;
+    private boolean deleteVisit;
 
     private FragmentListener listener;
     public interface FragmentListener {
@@ -70,6 +72,8 @@ public class OperationsOnOutletFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_operations_on_outlet, container, false);
+
+        deleteVisit = true;
 
         listener.getPageName(getResources().getString(R.string.operations_on_outlet));
         name = view.findViewById(R.id.name);
@@ -93,15 +97,23 @@ public class OperationsOnOutletFragment extends Fragment {
             getOutlet(salePointCode);
         }
 
-        createRequest.setOnClickListener(view14 -> ((SessionActivity)requireActivity()).openActivityCreateRequest());
+        createRequest.setOnClickListener(redirect -> ((SessionActivity)requireActivity()).openActivityCreateRequest());
 
-        requests.setOnClickListener(view13 -> openActivityStatuses());
+        requests.setOnClickListener(redirect -> openActivityStatuses());
 
-        notes.setOnClickListener(view12 -> ((SessionActivity)requireActivity()).openFragment(NotesFragment.getInstance(salePointCode), false));
+        notes.setOnClickListener(redirect -> ((SessionActivity)requireActivity()).openFragment(NotesFragment.getInstance(salePointCode), false));
 
-        detailInformation.setOnClickListener(view1 -> openActivityOutletInformation());
+        detailInformation.setOnClickListener(redirect -> openActivityOutletInformation());
 
         return view;
+    }
+
+    public OperationsOnOutletFragment() {
+        instance = this;
+    }
+
+    public static OperationsOnOutletFragment getInstance() {
+        return instance;
     }
 
     @SuppressLint("SetTextI18n")
@@ -134,7 +146,7 @@ public class OperationsOnOutletFragment extends Fragment {
                 visit.setVIS_DEVICE_ID(Ius.readSharedPreferences(this.getContext(), Ius.DEVICE_ID));
                 visit.setVIS_LATITUDE(lat);
                 visit.setVIS_LONGITUDE(lon);
-                visit.setVIS_SES_CODE(Ius.readSharedPreferences(this.getContext(), Ius.LAST_SESSION_CODE));
+                visit.setVIS_SESSION_CODE(Ius.readSharedPreferences(this.getContext(), Ius.LAST_SESSION_CODE));
 
                 visitViewModel.insert(visit);
             }
@@ -171,54 +183,6 @@ public class OperationsOnOutletFragment extends Fragment {
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class DoIDelete extends AsyncTask<Void, Void, Void> {
-        NoteViewModel noteViewModel;
-        RequestViewModel requestViewModel;
-        Activity context;
-        boolean deleteVisit = true;
-        Date dateFinished;
-
-        public DoIDelete(Activity context, NoteViewModel noteViewModel, RequestViewModel requestViewModel) {
-            this.context = context;
-            this.noteViewModel = noteViewModel;
-            this.requestViewModel = requestViewModel;
-        }
-
-        @SuppressLint("SetTextI18n")
-        @Override
-        protected void onPostExecute(Void unused) {
-            if (deleteVisit) {
-                visitViewModel.delete(visit);
-                Log.w("OnPostExecute", "visit deleted");
-            }
-            else {
-                visit.setVIS_FINISH_DATE(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
-                visitViewModel.update(visit);
-            }
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            dateFinished = new Date();
-            checkList(requestViewModel.getCurrentSessionRequests(visit.getVIS_NUMBER()));
-            if (deleteVisit)
-                checkList(noteViewModel.getCurrentSessionRequests(visit.getVIS_NUMBER()));
-            return null;
-        }
-
-        private void checkList(List<String> list) {
-            for(String dateStr : list) {
-                Date date = Ius.getDateFromString(dateStr, "dd.MM.yyyy HH:mm:ss");
-                Log.e("sss", String.valueOf(Ius.getDifferenceBetweenDates(date, dateFinished, "s")));
-                if (Ius.getDifferenceBetweenDates(date, dateFinished, "s") > 0) {
-                    deleteVisit = false;
-                    break;
-                }
-            }
-        }
-    }
-
     private void openActivityOutletInformation() {
         Intent intent = new Intent(this.getContext(), OutletInformationActivity.class);
         intent.putExtra("scenario", "detail");
@@ -230,6 +194,11 @@ public class OperationsOnOutletFragment extends Fragment {
         Intent intent = new Intent(this.getContext(), StatusesActivity.class);
         intent.putExtra("salePointCode", salePointCode);
         startActivity(intent);
+    }
+
+    public void cancelVisitClear() {
+        deleteVisit = false;
+        SessionActivity.getInstance().cancelSessionClear();
     }
 
     @Override
@@ -249,11 +218,16 @@ public class OperationsOnOutletFragment extends Fragment {
         if (getArguments()!=null) {
             new GetDataNotes(this.getActivity(), noteViewModel,historyViewModel).execute();
         }
+        if (!deleteVisit)
+            Log.w("OperationsOnOutlet", "Action was registered, visit will not be deleted");
+        else
+            Log.w("OperationsOnOutlet", "No action, visit will be deleted");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        new DoIDelete(this.getActivity(), noteViewModel, requestViewModel).execute();
+        if (deleteVisit)
+            visitViewModel.delete(visit);
     }
 }

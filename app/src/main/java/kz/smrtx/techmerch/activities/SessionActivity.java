@@ -6,9 +6,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Dialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,6 +23,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Date;
 
+import kz.smrtx.techmerch.BuildConfig;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.fragments.AllReportsFragment;
@@ -32,11 +38,13 @@ import kz.smrtx.techmerch.fragments.WarehousesFragment;
 import kz.smrtx.techmerch.items.entities.Session;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
 import kz.smrtx.techmerch.utils.LocaleHelper;
+import kz.smrtx.techmerch.utils.RequestSender;
 
 public class SessionActivity extends AppCompatActivity implements OperationsFragment.FragmentListener, OutletsFragment.FragmentListener,
         OutletInformationFragment.FragmentListener, OperationsOnOutletFragment.FragmentListener, NotesFragment.FragmentListener,
         MapsFragment.FragmentListener, TechnicReportFragment.FragmentListener, AllReportsFragment.FragmentListener, WarehousesFragment.FragmentListener {
 
+    private static SessionActivity instance;
     private TextView pageName;
     private ScrollView scrollView;
     private ArrayList<String> pageNames = new ArrayList<>();
@@ -44,6 +52,7 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
     private SessionViewModel sessionViewModel;
     private Session session;
     private int fragmentIndex = 0;
+    private static boolean deleteSession;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +60,7 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         setContentView(R.layout.activity_session);
 
         dateStarted = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
+        deleteSession = true;
 
         openOperations();
 
@@ -63,12 +73,15 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
 
         generateSession();
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                    onBackPressed();
-            }
-        });
+        back.setOnClickListener(view -> onBackPressed());
+    }
+
+    public SessionActivity() {
+        instance = this;
+    }
+
+    public static SessionActivity getInstance() {
+        return instance;
     }
 
     @Override
@@ -84,6 +97,7 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         session.setSES_CODE(code);
         session.setSES_STARTED(dateStarted);
         session.setSES_USE_ID(Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_ID)));
+        session.setSES_APP_VERSION(BuildConfig.VERSION_NAME);
         sessionViewModel.insert(session);
     }
 
@@ -122,6 +136,10 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         super.onBackPressed();
         fragmentIndex = getSupportFragmentManager().getBackStackEntryCount();
         if (fragmentIndex<1) {
+            if (deleteSession) {
+                finish();
+                return;
+            }
             openDialog();
             openOperations();
         }
@@ -143,21 +161,13 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
 
         dialog.show();
 
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.cancel();
-            }
-        });
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                session.setSES_FINISHED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
-                sessionViewModel.update(session);
-                dialog.cancel();
-                finish();
-                openActivitySync();
-            }
+        no.setOnClickListener(view -> dialog.cancel());
+        yes.setOnClickListener(view -> {
+            session.setSES_FINISHED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
+            sessionViewModel.update(session);
+            dialog.cancel();
+            finish();
+            openActivitySync();
         });
     }
 
@@ -165,8 +175,55 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         return Ius.checkPermissionsCamera(this);
     }
 
+    public void cancelSessionClear() {
+        deleteSession = false;
+    }
+
+    public void startRequestSending() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ComponentName componentName = new ComponentName(this, RequestSender.class);
+            JobInfo jobInfo = new JobInfo.Builder(55, componentName)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                    .build();
+
+            JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+            int resultCode = scheduler.schedule(jobInfo);
+            if (resultCode == JobScheduler.RESULT_SUCCESS) {
+                Log.i("startRequestSending", "Job success");
+                createToast(getResources().getString(R.string.request_has_send), true);
+            }
+            else {
+                Log.e("startRequestSending", "Job failed");
+                createToast(getResources().getString(R.string.request_created_not_sended), true);
+            }
+        }
+        else
+            createToast(getResources().getString(R.string.request_success), true);
+    }
+
+    public void createToast(String text, boolean success) {
+        View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) findViewById(R.id.toast));
+        Ius.showToast(layout, this, text, success);
+    }
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(LocaleHelper.onAttach(newBase));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!deleteSession)
+            Log.w("SessionActivity", "Action was registered, session will not be deleted");
+        else
+            Log.w("SessionActivity", "No action, session will be deleted");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (deleteSession)
+            sessionViewModel.delete(session);
     }
 }

@@ -5,18 +5,25 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.UnderlineSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,13 +45,16 @@ import com.google.android.gms.security.ProviderInstaller;
 import kz.smrtx.techmerch.adapters.CardAdapterImagePager;
 import kz.smrtx.techmerch.adapters.CardAdapterImages;
 import kz.smrtx.techmerch.items.entities.Photo;
+import kz.smrtx.techmerch.utils.Aen;
 import kz.smrtx.techmerch.utils.CustomTypefaceSpan;
+import kz.smrtx.techmerch.utils.RequestSender;
 import kz.smrtx.techmerch.utils.ZipManager;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.security.KeyManagementException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -346,7 +356,8 @@ public class Ius extends Application {
         return Ius.getDateByFormat(date, patternTo);
     }
 
-    public static Date plusDaysToDate(Date date, int days) {
+    public static Date plusDaysToDate(Date date) {
+        int days = Aen.DAYS_TO_DEADLINE;
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
@@ -356,10 +367,9 @@ public class Ius extends Application {
             case Calendar.THURSDAY:
                 days = days + 2;
                 break;
-            case Calendar.SUNDAY:
+            case Calendar.SATURDAY:
                 days = days + 1;
         }
-
         cal.add(Calendar.DATE, days);
         return cal.getTime();
     }

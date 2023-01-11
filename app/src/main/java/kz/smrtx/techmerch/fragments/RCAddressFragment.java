@@ -21,6 +21,7 @@ import java.util.List;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.CreateRequestActivity;
+import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.adapters.CardAdapterString;
 import kz.smrtx.techmerch.items.entities.SalePointItem;
 import kz.smrtx.techmerch.items.entities.Warehouse;
@@ -84,7 +85,7 @@ public class RCAddressFragment extends Fragment {
         adapter.setOnItemClickListener(position -> {
             SalePointItem sp = salePointsCopy.get(position);
             if (sp.getStreet().equals(fromOutlet.getText().toString())) {
-                createToast(getString(R.string.error_destination), false);
+                SessionActivity.getInstance().createToast(getString(R.string.error_destination), false);
                 return;
             }
             String address = sp.getName() + " - " + sp.getStreet();
@@ -213,10 +214,5 @@ public class RCAddressFragment extends Fragment {
         fromTitle.setText(getString(R.string.from_warehouse));
         toOutlet.setText(Ius.readSharedPreferences(this.getContext(), Ius.LAST_SALE_POINT_ADDRESS));
         fromOutlet.setOnClickListener(toOutletView -> openDialogWarehouse(false));
-    }
-
-    private void createToast(String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) view.findViewById(R.id.toast));
-        Ius.showToast(layout, view.getContext(), text, success);
     }
 }

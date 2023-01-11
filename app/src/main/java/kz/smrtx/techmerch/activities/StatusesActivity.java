@@ -2,6 +2,7 @@ package kz.smrtx.techmerch.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -32,6 +33,7 @@ import kz.smrtx.techmerch.adapters.CardAdapterImagePager;
 import kz.smrtx.techmerch.adapters.CardAdapterImages;
 import kz.smrtx.techmerch.adapters.CardAdapterRequests;
 import kz.smrtx.techmerch.adapters.CardAdapterString;
+import kz.smrtx.techmerch.fragments.OperationsOnOutletFragment;
 import kz.smrtx.techmerch.items.entities.History;
 import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
@@ -44,6 +46,7 @@ import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.utils.LocaleHelper;
 import kz.smrtx.techmerch.utils.Aen;
+import kz.smrtx.techmerch.utils.RequestSender;
 
 public class StatusesActivity extends AppCompatActivity {
 
@@ -567,14 +570,14 @@ public class StatusesActivity extends AppCompatActivity {
             if (needComment) {
                 commentStr = comment.getText().toString().trim();
                 if (commentStr.length()==0) {
-                    createToast(getResources().getString(R.string.fill_field), false);
+                    SessionActivity.getInstance().createToast(getString(R.string.fill_field), false);
                     return;
                 }
             }
             if (needExecutor) {
                 String executorStr = executor.getText().toString();
                 if (executorStr.length()==0) {
-                    createToast(getResources().getString(R.string.fill_field), false);
+                    SessionActivity.getInstance().createToast(getString(R.string.fill_field), false);
                     return;
                 }
 
@@ -625,12 +628,16 @@ public class StatusesActivity extends AppCompatActivity {
             request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(context, Ius.USER_CODE)));
             request.setREQ_UPDATED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
             request.setNES_TO_UPDATE("yes");
-
             requestViewModel.update(request);
 
-            createToast(getResources().getString(R.string.request_saved), true);
+            SessionActivity.getInstance().startRequestSending();
+
             dialog.cancel();
             closeSummary();
+            if (salePointCode!=-1)
+                OperationsOnOutletFragment.getInstance().cancelVisitClear();
+            else
+                SessionActivity.getInstance().cancelSessionClear();
         });
 
         executor.setOnClickListener(executorView -> {
@@ -639,7 +646,7 @@ public class StatusesActivity extends AppCompatActivity {
                 return;
             }
 
-            createToast(getString(R.string.no_executor_error), false);
+            SessionActivity.getInstance().createToast(getString(R.string.no_executor_error), false);
         });
     }
 
@@ -735,10 +742,10 @@ public class StatusesActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             Log.i("WhatRoleToGet", "search between roles " + roleCode + " in city " + locationCode);
 
-            if (roleCode==6) {
+            if (roleCode==Aen.ROLE_MANAGER) {
                 searchInManagers();
             }
-            else if (roleCode==7) {
+            else if (roleCode==Aen.ROLE_COORDINATOR) {
                 searchInCoordinators();
             }
 
@@ -749,14 +756,14 @@ public class StatusesActivity extends AppCompatActivity {
             if (userViewModel.getNumberOfUsers(locationCode, roleCode)==0) {
                 Log.w("WhatRoleToGet", "0 managers");
                 searchInCoordinators();
-                roleCode = 7;
+                roleCode = Aen.ROLE_COORDINATOR;
             }
         }
 
         private void searchInCoordinators() {
             if (userViewModel.getNumberOfUsers(locationCode, roleCode)==0) {
                 Log.w("WhatRoleToGet", "0 coordinators");
-                roleCode = 4;
+                roleCode = Aen.ROLE_TECHNIC;
             }
         }
     }
@@ -776,11 +783,6 @@ public class StatusesActivity extends AppCompatActivity {
             executor.setText(userInfo);
             dialog.cancel();
         });
-    }
-
-    private void createToast(String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, findViewById(R.id.toast));
-        Ius.showToast(layout, this, text, success);
     }
 
     @Override

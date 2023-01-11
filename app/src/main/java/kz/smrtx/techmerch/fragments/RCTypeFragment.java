@@ -40,7 +40,7 @@ public class RCTypeFragment extends Fragment {
         );
         deadline.setText(
                 deadline.getText().toString() + ": "
-                        + Ius.getDateByFormat(Ius.plusDaysToDate(new Date(), 3), "dd.MM.yyyy, EEEE")
+                        + Ius.getDateByFormat(Ius.plusDaysToDate(new Date()), "dd.MM.yyyy, EEEE")
         );
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

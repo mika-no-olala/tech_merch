@@ -21,6 +21,9 @@ public interface PhotoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPhotos(List<Photo> photos);
 
+    @Query("update ST_REQUEST_PHOTO set NES_TO_UPDATE='no' where REP_PHOTO=:photoName")
+    void updateAfterPartialSync(String photoName);
+
     @Delete
     void delete(Photo photo);
 
@@ -38,4 +41,7 @@ public interface PhotoDao {
 
     @Query("select * from ST_REQUEST_PHOTO where NES_TO_UPDATE='yes'")
     LiveData<List<Photo>> getPhotosForUpload();
+
+    @Query("select REP_PHOTO from ST_REQUEST_PHOTO where NES_TO_UPDATE='yes'")
+    List<String> getPhotosForUploadNoAsync();
 }

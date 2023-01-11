@@ -62,6 +62,10 @@
             tools:targetApi="lollipop" />
     </LinearLayout>
 
+    <View
+        style="@style/line"
+        android:layout_marginVertical="15sp"/>
+
     <CheckBox
         android:id="@+id/iDoItMyself"
         android:layout_width="wrap_content"

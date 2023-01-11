@@ -36,6 +36,7 @@ import java.util.List;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.OutletInformationActivity;
+import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.adapters.CardAdapterImages;
 import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
@@ -112,7 +113,7 @@ public class OITechnicFragment extends Fragment {
 
         negative.setOnClickListener(view -> {
             if (Ius.isEmpty(myComment)) {
-                createToast(getResources().getString(R.string.fill_field), false);
+                SessionActivity.getInstance().createToast(getString(R.string.fill_field), false);
                 return;
             }
             ((OutletInformationActivity)requireActivity()).sendRequest(myComment.getText().toString(), photoNames, false);
@@ -120,7 +121,7 @@ public class OITechnicFragment extends Fragment {
 
         send.setOnClickListener(view -> {
             if (Ius.isEmpty(myComment)) {
-                createToast(getResources().getString(R.string.fill_field), false);
+                SessionActivity.getInstance().createToast(getResources().getString(R.string.fill_field), false);
                 return;
             }
             ((OutletInformationActivity)requireActivity()).sendRequest(myComment.getText().toString(), photoNames, true);
@@ -274,7 +275,7 @@ public class OITechnicFragment extends Fragment {
 
     private void redirectClick(int photoNumber) {
         if (photoListTech.size() + photoNumber > 5) {
-            createToast(getString(R.string.photo_limit_error), false);
+            SessionActivity.getInstance().createToast(getString(R.string.photo_limit_error), false);
             return;
         }
         chooseImageByNumber(photoNumber);
@@ -295,7 +296,7 @@ public class OITechnicFragment extends Fragment {
 
             imageFile = getImageFile(photoNumber);
             if (imageFile==null) {
-                createToast(getResources().getString(R.string.error), false);
+                SessionActivity.getInstance().createToast(getResources().getString(R.string.error), false);
                 return;
             }
 
@@ -358,7 +359,7 @@ public class OITechnicFragment extends Fragment {
 
         } catch (IOException e) {
             e.printStackTrace();
-            createToast(getResources().getString(R.string.error), false);
+            SessionActivity.getInstance().createToast(getResources().getString(R.string.error), false);
         }
 
         return imageFile;
@@ -434,10 +435,5 @@ public class OITechnicFragment extends Fragment {
             throw new ClassCastException(context
                     + " must implement onFragmentListener");
         }
-    }
-
-    private void createToast(String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, view.findViewById(R.id.toast));
-        Ius.showToast(layout, this.getContext(), text, success);
     }
 }

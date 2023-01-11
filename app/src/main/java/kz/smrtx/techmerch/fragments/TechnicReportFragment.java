@@ -35,6 +35,7 @@ import java.util.List;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.adapters.CardAdapterConsumable;
 import kz.smrtx.techmerch.adapters.CardAdapterString;
 import kz.smrtx.techmerch.items.entities.Consumable;
@@ -112,12 +113,12 @@ public class TechnicReportFragment extends Fragment {
 
         add.setOnClickListener(view12 -> {
             if (consumable.getText()==null || consumable.getText().length()==0) {
-                createToast(view, getResources().getString(R.string.fill_field), false);
+                SessionActivity.getInstance().createToast(getString(R.string.fill_field), false);
                 return;
             }
 
             if (cost.getText()==null || cost.getText().length()==0) {
-                createToast(view, getResources().getString(R.string.fill_field), false);
+                SessionActivity.getInstance().createToast(getString(R.string.fill_field), false);
                 return;
             }
 
@@ -196,7 +197,7 @@ public class TechnicReportFragment extends Fragment {
 
     private void makeReport(View view) {
         if (consumables.isEmpty()) {
-            createToast(view, getResources().getString(R.string.report_empty), false);
+            SessionActivity.getInstance().createToast(getString(R.string.report_empty), false);
             return;
         }
 
@@ -221,18 +222,19 @@ public class TechnicReportFragment extends Fragment {
         }
 
         consumableViewModel.insertReport(consumables);
-        createToast(view, getResources().getString(R.string.report_send), true);
+        SessionActivity.getInstance().createToast(getString(R.string.report_send), false);
+        SessionActivity.getInstance().cancelSessionClear();
         requireActivity().onBackPressed();
     }
 
     private boolean isIntervalCorrect(View view) {
         if (Ius.isEmpty(from)) {
-            createToast(view, getString(R.string.fill_time_interval), false);
+            SessionActivity.getInstance().createToast(getString(R.string.fill_time_interval), false);
             return false;
         }
 
         if (Ius.isEmpty(to)) {
-            createToast(view, getString(R.string.fill_time_interval), false);
+            SessionActivity.getInstance().createToast(getString(R.string.fill_time_interval), false);
             return false;
         }
 
@@ -241,19 +243,19 @@ public class TechnicReportFragment extends Fragment {
         long difference = Ius.getDifferenceBetweenDates(dateFrom, dateTo, "d");
 
         if (difference<0) {
-            createToast(view, getString(R.string.time_interval_negative), false);
+            SessionActivity.getInstance().createToast(getString(R.string.time_interval_negative), false);
             return false;
         }
 
         if (difference>31) {
-            createToast(view, getString(R.string.time_interval_too_big), false);
+            SessionActivity.getInstance().createToast(getString(R.string.time_interval_too_big), false);
             return false;
         }
 
         difference = Ius.getDifferenceBetweenDates(now, dateTo, "d");
 
         if (difference>0) {
-            createToast(view, getString(R.string.time_interval_time_walker), false);
+            SessionActivity.getInstance().createToast(getString(R.string.time_interval_time_walker), false);
             return false;
         }
 
@@ -261,7 +263,7 @@ public class TechnicReportFragment extends Fragment {
             difference = difference * -1;
 
         if (difference > 90) {
-            createToast(view, getString(R.string.time_interval_non_actual), false);
+            SessionActivity.getInstance().createToast(getString(R.string.time_interval_non_actual), false);
             return false;
         }
 
@@ -351,11 +353,6 @@ public class TechnicReportFragment extends Fragment {
                 elementsStr.add(e.getName());
             return null;
         }
-    }
-
-    private void createToast(View view, String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, view.findViewById(R.id.toast));
-        Ius.showToast(layout, this.getContext(), text, success);
     }
 
     private void initializeItems(View view) {

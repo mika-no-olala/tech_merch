@@ -2,7 +2,6 @@ package kz.smrtx.techmerch.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -27,19 +25,17 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.CreateRequestActivity;
+import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.adapters.CardAdapterImagePager;
 import kz.smrtx.techmerch.adapters.CardAdapterString;
 import kz.smrtx.techmerch.items.entities.User;
@@ -63,7 +59,7 @@ public class RCEndingFragment extends Fragment {
     private ImageView photo_3;
     private ImageView photo_4;
     private ImageView photo_5;
-    private String[] photoNames = new String[5];
+    private final String[] photoNames = new String[5];
 
     public static RCEndingFragment getInstance() {
         return new RCEndingFragment();
@@ -96,8 +92,7 @@ public class RCEndingFragment extends Fragment {
                 openDialogUsers();
                 return;
             }
-
-            createToast(getString(R.string.no_executor_error), false);
+            SessionActivity.getInstance().createToast(getString(R.string.no_executor_error), false);
         });
 
         comment.addTextChangedListener(new TextWatcher() {
@@ -149,12 +144,12 @@ public class RCEndingFragment extends Fragment {
         }
 
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (cameraIntent.resolveActivity(this.getActivity().getPackageManager())!=null) {
+        if (cameraIntent.resolveActivity(this.requireActivity().getPackageManager())!=null) {
             File imageFile;
 
             imageFile = getImageFile(photoNumber);
             if (imageFile==null) {
-                createToast(getResources().getString(R.string.error), false);
+                SessionActivity.getInstance().createToast(getString(R.string.error), false);
                 return;
             }
 
@@ -219,7 +214,7 @@ public class RCEndingFragment extends Fragment {
 
         } catch (IOException e) {
             e.printStackTrace();
-            createToast(getResources().getString(R.string.error), false);
+            SessionActivity.getInstance().createToast(getString(R.string.error), false);
         }
 
         return imageFile;
@@ -326,6 +321,7 @@ public class RCEndingFragment extends Fragment {
         return filtered;
     }
 
+    @SuppressWarnings("deprecation")
     @SuppressLint("StaticFieldLeak")
     class WhatRoleToGet extends AsyncTask<Void, Void, Void> {
         UserViewModel userViewModel;
@@ -373,10 +369,5 @@ public class RCEndingFragment extends Fragment {
                 roleCode = 4;
             }
         }
-    }
-
-    private void createToast(String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) view.findViewById(R.id.toast));
-        Ius.showToast(layout, this.getContext(), text, success);
     }
 }

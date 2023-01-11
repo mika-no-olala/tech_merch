@@ -35,17 +35,13 @@ public class User {
     @SerializedName("USE_LOC_NAME")
     private String cityName;
 
-    @SerializedName("USE_VERSION_CODE")
-    private int versionCode;
-
-    public User(int code, String name, int roleCode, String roleName, int locationCode, String cityName, int versionCode) {
+    public User(int code, String name, int roleCode, String roleName, int locationCode, String cityName) {
         this.code = code;
         this.name = name;
         this.roleCode = roleCode;
         this.roleName = roleName;
         this.locationCode = locationCode;
         this.cityName = cityName;
-        this.versionCode = versionCode;
     }
 
     public int getIdid() {
@@ -112,14 +108,6 @@ public class User {
         this.cityName = cityName;
     }
 
-    public int getVersionCode() {
-        return versionCode;
-    }
-
-    public void setVersionCode(int versionCode) {
-        this.versionCode = versionCode;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -129,8 +117,7 @@ public class User {
                 ", roleCode=" + roleCode +
                 ", roleName='" + roleName + '\'' +
                 ", locationCode=" + locationCode +
-                ", cityName='" + cityName + '\'' +
-                ", versionCode=" + versionCode +
+                ", cityName='" + cityName +
                 '}';
     }
 }

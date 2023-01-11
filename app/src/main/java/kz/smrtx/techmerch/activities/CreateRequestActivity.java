@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,6 +33,7 @@ import java.util.Objects;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.adapters.CardAdapterImages;
+import kz.smrtx.techmerch.fragments.OperationsOnOutletFragment;
 import kz.smrtx.techmerch.fragments.RCAddressFragment;
 import kz.smrtx.techmerch.fragments.RCEndingFragment;
 import kz.smrtx.techmerch.fragments.RCEquipmentFragment;
@@ -48,6 +52,7 @@ import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
 import kz.smrtx.techmerch.utils.Aen;
 import kz.smrtx.techmerch.utils.LocaleHelper;
+import kz.smrtx.techmerch.utils.RequestSender;
 
 public class CreateRequestActivity extends AppCompatActivity {
 
@@ -127,12 +132,12 @@ public class CreateRequestActivity extends AppCompatActivity {
 
         next.setOnClickListener(view -> {
             if (!pages.get(pageIndex).isYouCanGoNext()) {
-                createToast(getResources().getString(R.string.fill_field), false);
+                SessionActivity.getInstance().createToast(getString(R.string.fill_field), false);
                 return;
             }
 
             if (pageIndex==6 && !responsibleChosen) {
-                createToast(getResources().getString(R.string.executor_error), false);
+                SessionActivity.getInstance().createToast(getString(R.string.executor_error), false);
                 return;
             }
 
@@ -166,7 +171,7 @@ public class CreateRequestActivity extends AppCompatActivity {
     private void createRequest(Visit visit) {
         request = new Request();
         String created = Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss");
-        String deadline = Ius.getDateByFormat(Ius.plusDaysToDate(new Date(), 3), "dd.MM.yyyy HH:mm:ss");
+        String deadline = Ius.getDateByFormat(Ius.plusDaysToDate(new Date()), "dd.MM.yyyy HH:mm:ss");
         String code = Ius.generateUniqueCode(this, "r");
 
         request.setREQ_CODE(code);
@@ -231,15 +236,14 @@ public class CreateRequestActivity extends AppCompatActivity {
         sendSummary = findViewById(R.id.send);
         summaryView = findViewById(R.id.summary);
 
-        sendSummary.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                requestViewModel.insert(request);
-                if (photoList.size()>0)
-                    photoViewModel.insertPhotos(photoList);
-                createToast(getResources().getString(R.string.request_success), true);
-                finish();
-            }
+        sendSummary.setOnClickListener(view -> {
+            requestViewModel.insert(request);
+            if (photoList.size()>0)
+                photoViewModel.insertPhotos(photoList);
+
+            SessionActivity.getInstance().startRequestSending();
+            OperationsOnOutletFragment.getInstance().cancelVisitClear();
+            finish();
         });
     }
 
@@ -482,11 +486,6 @@ public class CreateRequestActivity extends AppCompatActivity {
         return workStr;
     }
 
-    private void createToast(String text, boolean success) {
-        View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) findViewById(R.id.toast));
-        Ius.showToast(layout, this, text, success);
-    }
-
     public void setType(boolean guarantee) {
         this.guarantee = guarantee;
         if (guarantee)
@@ -582,7 +581,7 @@ public class CreateRequestActivity extends AppCompatActivity {
 
             responsibleChosen = true;
         } catch (Exception e) {
-            createToast(getResources().getString(R.string.executor_error), false); // change output text!
+            SessionActivity.getInstance().createToast(getString(R.string.executor_error), false); // change output text!
         }
     }
 

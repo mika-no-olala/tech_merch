@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
                     if (Objects.requireNonNull(response.body()).getDataList()==null) {
                         Log.e("MainActivity - getUser", "dataList is null");
-                        createToast(getResources().getString(R.string.error)  + ": " + response.code());
+                        createToast(getResources().getString(R.string.error)  + ": " + response.code() + ", пользователь не найден");
                         Ius.enableButton(signIn, MainActivity.this);
                         return;
                     }

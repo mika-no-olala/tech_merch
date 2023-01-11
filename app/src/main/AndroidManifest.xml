@@ -44,6 +44,10 @@
                 android:resource="@xml/file_path"/>
         </provider>
 
+        <service
+            android:name=".utils.RequestSender"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <activity
             android:name=".activities.OutletInformationActivity"
             android:configChanges="orientation"

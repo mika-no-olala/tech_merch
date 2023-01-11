@@ -35,6 +35,8 @@
     <string name="success">Успех</string>
     <string name="rejected">Отклонено</string>
     <string name="request_success">Заявка создана</string>
+    <string name="request_has_send">Заявка отправлена</string>
+    <string name="request_created_not_sended">Заявка сохранена, но не отправлена</string>
     <string name="note_success">Заметка создана</string>
     <string name="note">Заметка</string>
     <string name="note_delete_warning">Удалить заявку может только автор</string>

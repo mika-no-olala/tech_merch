@@ -33,7 +33,6 @@ import retrofit2.Response;
 public class SettingsActivity extends AppCompatActivity {
 
     private Context context = this;
-    private TextView pageName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +43,10 @@ public class SettingsActivity extends AppCompatActivity {
         LinearLayout password = findViewById(R.id.password);
         LinearLayout language = findViewById(R.id.language);
         TextView deviceIdCard = findViewById(R.id.deviceIdCard);
-        pageName = findViewById(R.id.pageName);
+        TextView bottomBarText = findViewById(R.id.bottomBarText);
+        TextView pageName = findViewById(R.id.pageName);
         pageName.setText(getResources().getText(R.string.settings));
+        bottomBarText.setText(Ius.readSharedPreferences(this, Ius.BOTTOM_BAR_TEXT));
         deviceIdCard.setText(Ius.readSharedPreferences(context, Ius.DEVICE_ID));
 
         password.setOnClickListener(passwordView -> openDialogPassword());

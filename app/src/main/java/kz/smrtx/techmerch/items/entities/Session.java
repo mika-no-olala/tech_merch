@@ -18,6 +18,8 @@ public class Session {
     private String SES_FINISHED;
     @SerializedName("SES_USE_ID")
     private int SES_USE_ID;
+    @SerializedName("SES_APP_VERSION")
+    private String SES_APP_VERSION;
     @SerializedName("SES_SYNC_ID")
     private String SES_SYNC_ID;
 
@@ -52,6 +54,14 @@ public class Session {
 
     public void setSES_USE_ID(int SES_USE_ID) {
         this.SES_USE_ID = SES_USE_ID;
+    }
+
+    public String getSES_APP_VERSION() {
+        return SES_APP_VERSION;
+    }
+
+    public void setSES_APP_VERSION(String SES_APP_VERSION) {
+        this.SES_APP_VERSION = SES_APP_VERSION;
     }
 
     public String getSES_SYNC_ID() {

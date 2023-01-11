@@ -46,14 +46,11 @@ public class Visit implements Serializable {
     @SerializedName("VIS_LATITUDE")
     private String VIS_LATITUDE;
     @Expose
-    @SerializedName("VIS_SYN_ID")
-    private String VIS_SYN_ID;
-    @Expose
     @SerializedName("VIS_DEVICE_ID")
     private String VIS_DEVICE_ID;
     @Expose
-    @SerializedName("VIS_SES_CODE")
-    private String VIS_SES_CODE;
+    @SerializedName("VIS_SESSION_CODE")
+    private String VIS_SESSION_CODE;
 
     public int getVIS_CODE() {
         return VIS_CODE;
@@ -137,14 +134,6 @@ public class Visit implements Serializable {
         this.VIS_LATITUDE = VIS_LATITUDE;
     }
 
-    public String getVIS_SYN_ID() {
-        return VIS_SYN_ID;
-    }
-
-    public void setVIS_SYN_ID(String VIS_SYN_ID) {
-        this.VIS_SYN_ID = VIS_SYN_ID;
-    }
-
     public String getVIS_DEVICE_ID() {
         return VIS_DEVICE_ID;
     }
@@ -153,11 +142,11 @@ public class Visit implements Serializable {
         this.VIS_DEVICE_ID = VIS_DEVICE_ID;
     }
 
-    public String getVIS_SES_CODE() {
-        return VIS_SES_CODE;
+    public String getVIS_SESSION_CODE() {
+        return VIS_SESSION_CODE;
     }
 
-    public void setVIS_SES_CODE(String VIS_SES_CODE) {
-        this.VIS_SES_CODE = VIS_SES_CODE;
+    public void setVIS_SESSION_CODE(String VIS_SESSION_CODE) {
+        this.VIS_SESSION_CODE = VIS_SESSION_CODE;
     }
 }

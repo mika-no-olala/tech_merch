@@ -24,6 +24,8 @@ public class Aen {
     public static final int REPLACE_VALUE_FROM_STORAGE = 2;
     public static final int REPLACE_VALUE_FROM_OUT_TO_OUT = 3;
 
+    public static final int DAYS_TO_DEADLINE = 3;
+
     public static int getStatusByExecutorAfterManager(int executorRoleFound) {
         if (executorRoleFound == 7)
             return STATUS_WAITING_COORDINATOR;
