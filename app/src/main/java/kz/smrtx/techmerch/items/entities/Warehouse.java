@@ -30,6 +30,8 @@ public class Warehouse {
     private String WAC_WAR_ADDRESS;
 
     private int WAC_CHANGES;
+    private String WAC_USE_CODE;
+
     @SerializedName("NES_TO_UPDATE")
     private String NES_TO_UPDATE;
 
@@ -111,6 +113,14 @@ public class Warehouse {
 
     public void setWAC_CHANGES(int WAC_CHANGES) {
         this.WAC_CHANGES = WAC_CHANGES;
+    }
+
+    public String getWAC_USE_CODE() {
+        return WAC_USE_CODE;
+    }
+
+    public void setWAC_USE_CODE(String WAC_USE_CODE) {
+        this.WAC_USE_CODE = WAC_USE_CODE;
     }
 
     public String getNES_TO_UPDATE() {

@@ -21,6 +21,8 @@ public class ChoosePointsRepository {
 
     public LiveData<List<SalePointItem>> getSalePoints(){return choosePointsDao.getSalePoints();}
 
+    public LiveData<List<SalePointItem>> getSalePointsWithRequestsNumber(int userCode) { return choosePointsDao.getSalePointsWithRequestsNumber(userCode);}
+
     public LiveData<List<SalePointItem>> getSalePointsByFilter(String statement){return choosePointsDao.getSalePointsByFilter(statement);}
 
     public LiveData<SalePointItem> getSalePointByCode(String salCode){return choosePointsDao.getSalePointByCode(salCode);}

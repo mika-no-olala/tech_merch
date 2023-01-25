@@ -21,6 +21,8 @@
     <string name="error_destination">Нельзя выбрать тот же адрес, на котором вы находитесь</string>
     <string name="error_certification">Ошибка: проверьте работоспособность Play Market и перезапустите приложение</string>
     <string name="request_is_loading">Загружаем заявку…</string>
+    <string name="supplies_are_loading">Проверяем поставки…</string>
+    <string name="are_supplies_ok">Соответствуют ли поставки действительности?</string>
     <string name="server_error">Ошибка подключения к серверу</string>
     <string name="uploading_data_error">Ошибка при отправке данных</string>
     <string name="downloading_images_data_error">Ошибка при скачивании фото</string>
@@ -62,6 +64,7 @@
     <string name="from">От</string>
     <string name="from_">c</string>
     <string name="to">по</string>
+    <string name="on">на</string>
     <string name="appointed_on">Сейчас назначено на</string>
     <string name="completing">Выполняет</string>
     <string name="cancel">Отмена</string>
@@ -218,7 +221,16 @@
     <string name="time_interval">Временной промежуток</string>
     <string name="report_for">Отчет за</string>
     <string name="new_delivery">Новые поставки</string>
+    <string name="supply_title_1">Поставки были отправлены из</string>
+    <string name="supply_title_2">на склад</string>
+    <string name="supply_title_3">Проверьте количество оборудования</string>
+    <string name="no_new_supplies">Новых поставок нет</string>
     <string name="new_delivery_description">Поставки оборудования со склада DSD</string>
     <string name="warehouses">Склады</string>
+    <string name="warehouse_supply">Просмотр новых поставок</string>
     <string name="warehouses_description">Просмотр складов и количество оборудования в них</string>
+    <string name="acception">Подтверждение</string>
+    <string name="supplies_dialog_text">На склад поступило всё оборудование из списка в нужном количестве?</string>
+    <string name="acception_success">Поставка подтверждена</string>
+    <string name="acception_error">Произошла ошибка</string>
 </resources>

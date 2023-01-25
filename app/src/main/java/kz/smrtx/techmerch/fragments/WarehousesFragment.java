@@ -2,15 +2,13 @@ package kz.smrtx.techmerch.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,16 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
-import kz.smrtx.techmerch.adapters.CardAdapterReport;
 import kz.smrtx.techmerch.adapters.CardAdapterWarehouses;
-import kz.smrtx.techmerch.items.entities.Consumable;
-import kz.smrtx.techmerch.items.entities.Report;
 import kz.smrtx.techmerch.items.entities.Warehouse;
-import kz.smrtx.techmerch.items.viewmodels.ConsumableViewModel;
 import kz.smrtx.techmerch.items.viewmodels.WarehouseViewModel;
 
 public class WarehousesFragment extends Fragment {
@@ -94,7 +87,6 @@ public class WarehousesFragment extends Fragment {
             warehouseList = w;
             setAdapter();
         });
-
     }
 
     private void setAdapter() {

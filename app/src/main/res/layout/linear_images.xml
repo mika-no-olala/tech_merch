@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="77sp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_marginBottom="10sp">
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="0sp"
+        android:layout_weight="1"
+        tools:targetApi="lollipop">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_1"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            style="@style/square_card"
+            tools:targetApi="lollipop">
+            <ImageView
+                android:id="@+id/photo_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_photo"
+                android:padding="22sp"/>
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/delete_1"
+            android:layout_width="15sp"
+            android:layout_height="15sp"
+            android:src="@drawable/ic_cross"
+            android:elevation="10sp"
+            android:layout_alignParentEnd="true"
+            android:onClick="deleteImage"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="0sp"
+        android:layout_weight="1"
+        tools:targetApi="lollipop">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_2"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            style="@style/square_card"
+            tools:targetApi="lollipop"
+            android:visibility="invisible">
+            <ImageView
+                android:id="@+id/photo_2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_photo"
+                android:padding="22sp"/>
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/delete_2"
+            android:layout_width="15sp"
+            android:layout_height="15sp"
+            android:src="@drawable/ic_cross"
+            android:elevation="10sp"
+            android:layout_alignParentEnd="true"
+            android:onClick="deleteImage"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="0sp"
+        android:layout_weight="1"
+        tools:targetApi="lollipop">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_3"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            style="@style/square_card"
+            tools:targetApi="lollipop"
+            android:visibility="invisible">
+            <ImageView
+                android:id="@+id/photo_3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_photo"
+                android:padding="22sp"/>
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/delete_3"
+            android:layout_width="15sp"
+            android:layout_height="15sp"
+            android:src="@drawable/ic_cross"
+            android:elevation="10sp"
+            android:layout_alignParentEnd="true"
+            android:onClick="deleteImage"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="0sp"
+        android:layout_weight="1"
+        tools:targetApi="lollipop">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_4"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            style="@style/square_card"
+            tools:targetApi="lollipop"
+            android:visibility="invisible">
+            <ImageView
+                android:id="@+id/photo_4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_photo"
+                android:padding="22sp"/>
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/delete_4"
+            android:layout_width="15sp"
+            android:layout_height="15sp"
+            android:src="@drawable/ic_cross"
+            android:elevation="10sp"
+            android:layout_alignParentEnd="true"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="0sp"
+        android:layout_weight="1"
+        tools:targetApi="lollipop">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_5"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            style="@style/square_card"
+            tools:targetApi="lollipop"
+            android:visibility="invisible">
+            <ImageView
+                android:id="@+id/photo_5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_photo"
+                android:padding="22sp"/>
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/delete_5"
+            android:layout_width="15sp"
+            android:layout_height="15sp"
+            android:src="@drawable/ic_cross"
+            android:elevation="10sp"
+            android:layout_alignParentEnd="true"
+            android:onClick="deleteImage"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+</LinearLayout>

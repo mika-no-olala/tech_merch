@@ -15,6 +15,7 @@ public class SalePointItem {
     private String channel;
     private String category;
     private String type;
+    private String requestsNumber;
 
     public String getCode() {
         return code;
@@ -118,5 +119,13 @@ public class SalePointItem {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getRequestsNumber() {
+        return requestsNumber;
+    }
+
+    public void setRequestsNumber(String requestsNumber) {
+        this.requestsNumber = requestsNumber;
     }
 }

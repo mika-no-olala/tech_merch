@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -54,11 +55,7 @@ public class RCEndingFragment extends Fragment {
     private ImageView currentImageView;
     private ImageView chosenImageView;
     private CardView chosenCardView;
-    private ImageView photo_1;
-    private ImageView photo_2;
-    private ImageView photo_3;
-    private ImageView photo_4;
-    private ImageView photo_5;
+    private ImageView photo_1, photo_2, photo_3, photo_4, photo_5, delete_1, delete_2, delete_3, delete_4, delete_5;
     private final String[] photoNames = new String[5];
 
     public static RCEndingFragment getInstance() {
@@ -79,6 +76,11 @@ public class RCEndingFragment extends Fragment {
         photo_3 = view.findViewById(R.id.photo_3);
         photo_4 = view.findViewById(R.id.photo_4);
         photo_5 = view.findViewById(R.id.photo_5);
+        delete_1 = view.findViewById(R.id.delete_1);
+        delete_2 = view.findViewById(R.id.delete_2);
+        delete_3 = view.findViewById(R.id.delete_3);
+        delete_4 = view.findViewById(R.id.delete_4);
+        delete_5 = view.findViewById(R.id.delete_5);
 
         String city = Ius.readSharedPreferences(getContext(), Ius.USER_CITIES);
         if (city.contains("-")) { // tmr should not have more than one city, but just in case
@@ -115,6 +117,11 @@ public class RCEndingFragment extends Fragment {
         photo_3.setOnClickListener(photo -> redirectClick(3));
         photo_4.setOnClickListener(photo -> redirectClick(4));
         photo_5.setOnClickListener(photo -> redirectClick(5));
+        delete_1.setOnClickListener(photo -> deleteImage(1));
+        delete_2.setOnClickListener(photo -> deleteImage(2));
+        delete_3.setOnClickListener(photo -> deleteImage(3));
+        delete_4.setOnClickListener(photo -> deleteImage(4));
+        delete_5.setOnClickListener(photo -> deleteImage(5));
 
         return view;
     }
@@ -245,15 +252,24 @@ public class RCEndingFragment extends Fragment {
         if (changing>0) {
             chooseImageByNumber(numberOfActiveImg);
             chosenCardView.setVisibility(View.VISIBLE);
+
+            int id = getResources().getIdentifier("delete_" + (numberOfActiveImg - 1), "id", getContext().getPackageName());
+            ImageView deleteButton = view.findViewById(id);
+            deleteButton.setVisibility(View.VISIBLE);
         }
         else if (changing<0) {
-            chooseImageByNumber(numberOfActiveImg+1);
-            chosenCardView.setVisibility(View.INVISIBLE);
-
-            chooseImageByNumber(numberOfActiveImg);
-            chosenImageView.setPadding(22, 22, 22, 22);
+            chosenImageView.setPadding(66, 66, 66, 66);
             chosenImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_photo));
             chosenImageView.setTag("");
+
+            int id = getResources().getIdentifier("delete_" + numberOfActiveImg, "id", getContext().getPackageName());
+            ImageView deleteButton = view.findViewById(id);
+            deleteButton.setVisibility(View.INVISIBLE);
+            photoNames[numberOfActiveImg - 1] = null;
+            ((CreateRequestActivity)requireActivity()).setPhotos(photoNames);
+
+            chooseImageByNumber(numberOfActiveImg+1);
+            chosenCardView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -280,6 +296,11 @@ public class RCEndingFragment extends Fragment {
                 chosenCardView = view.findViewById(R.id.card_5);
                 break;
         }
+    }
+
+    public void deleteImage(int imgNumber) {
+        chooseImageByNumber(imgNumber);
+        changeNumberOfActiveImg(-1);
     }
 
     private void createDialog(int photoNumber) {

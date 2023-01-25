@@ -3,9 +3,11 @@
     package="kz.smrtx.techmerch">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -48,6 +50,10 @@
             android:name=".utils.RequestSender"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
+        <service
+            android:name=".utils.CheckEquipmentSupply"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <activity
             android:name=".activities.OutletInformationActivity"
             android:configChanges="orientation"
@@ -61,7 +67,6 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:exported="false">
-
         </activity>
         <activity
             android:name=".activities.SessionActivity"

@@ -13,15 +13,18 @@
             android:layout_height="match_parent">
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
+                    android:id="@+id/card_1"
                     android:layout_height="match_parent"
-                    style="@style/square_card">
+                    android:layout_width="match_parent"
+                    style="@style/square_card"
+                    tools:targetApi="lollipop">
                         <ImageView
-                            android:id="@+id/photo"
+                            android:id="@+id/photo_1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
                             android:src="@drawable/ic_photo"
-                            android:scaleType="centerCrop" />
+                            android:padding="22sp"/>
                 </androidx.cardview.widget.CardView>
 
                 <ImageView
@@ -29,9 +32,8 @@
                     android:layout_width="15sp"
                     android:layout_height="15sp"
                     android:src="@drawable/ic_cross"
-                    android:elevation="5sp"
-                    android:layout_alignParentEnd="true"
-                    android:visibility="gone"/>
+                    android:elevation="10sp"
+                    android:layout_alignParentEnd="true"/>
 
         </RelativeLayout>
 

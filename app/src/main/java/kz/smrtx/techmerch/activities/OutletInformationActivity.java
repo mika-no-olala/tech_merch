@@ -248,6 +248,7 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
                 warehouse.setWAC_CHANGES(-1);
             else if(request.getREQ_REPLACE_ID()==Aen.REPLACE_VALUE_TO_STORAGE)
                 warehouse.setWAC_CHANGES(1);
+            warehouse.setWAC_USE_CODE(Ius.readSharedPreferences(context, Ius.USER_CODE));
             warehouse.setNES_TO_UPDATE("yes");
             warehouseViewModel.update(warehouse);
         }

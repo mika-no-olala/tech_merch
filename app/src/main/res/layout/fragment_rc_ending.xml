@@ -17,7 +17,8 @@
         android:fontFamily="@font/bandera_pro_bold"
         android:textSize="20sp"
         android:layout_marginTop="46sp"
-        android:layout_marginBottom="29sp" />
+        android:layout_marginBottom="29sp"
+        tools:ignore="UsingOnClickInXml" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -57,6 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="85sp"
         android:maxHeight="200sp"
+        android:maxLength="500"
         android:fontFamily="@font/bandera_pro"
         android:textSize="16sp"
         android:imeOptions="actionDone"
@@ -70,80 +72,6 @@
         android:padding="10sp"
         tools:targetApi="lollipop" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="77sp"
-        android:orientation="horizontal">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_1"
-            style="@style/square_card"
-            tools:targetApi="lollipop">
-            <ImageView
-                android:id="@+id/photo_1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_photo"
-                android:padding="22sp"/>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_2"
-            android:visibility="invisible"
-            style="@style/square_card"
-            tools:targetApi="lollipop">
-            <ImageView
-                android:id="@+id/photo_2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_photo"
-                android:scaleType="centerCrop"
-                android:padding="22sp"/>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_3"
-            android:visibility="invisible"
-            style="@style/square_card"
-            tools:targetApi="lollipop">
-            <ImageView
-                android:id="@+id/photo_3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_photo"
-                android:scaleType="centerCrop"
-                android:padding="22sp"/>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_4"
-            android:visibility="invisible"
-            style="@style/square_card"
-            tools:targetApi="lollipop">
-            <ImageView
-                android:id="@+id/photo_4"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_photo"
-                android:scaleType="centerCrop"
-                android:padding="22sp"/>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_5"
-            android:visibility="invisible"
-            style="@style/square_card"
-            tools:targetApi="lollipop">
-            <ImageView
-                android:id="@+id/photo_5"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_photo"
-                android:scaleType="centerCrop"
-                android:padding="22sp"/>
-        </androidx.cardview.widget.CardView>
-        
-    </LinearLayout>
+    <include layout="@layout/linear_images"/>
 
 </LinearLayout>

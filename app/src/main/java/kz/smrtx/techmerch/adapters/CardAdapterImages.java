@@ -28,30 +28,44 @@ public class CardAdapterImages extends RecyclerView.Adapter<CardAdapterImages.Ca
     private final Context context;
     private List<Photo> photos;
     private onItemClickListener listener;
+    private onDeleteClickListener deleteListener;
 
     public interface onItemClickListener {
+        void onItemClick(int position);
+    }
+    public interface onDeleteClickListener {
         void onItemClick(int position);
     }
 
     public void setOnItemClickListener(onItemClickListener listener) {
         this.listener = listener;
     }
+    public void setOnDeleteClickListener(onDeleteClickListener deleteListener) {
+        this.deleteListener = deleteListener;
+    }
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
         public ImageView photo;
+        public ImageView delete;
 
-        public CardViewHolder(@NonNull View itemView, onItemClickListener listener) {
+        public CardViewHolder(@NonNull View itemView, onItemClickListener listener, onDeleteClickListener deleteListener) {
             super(itemView);
             photo = itemView.findViewById(R.id.photo);
+            delete = itemView.findViewById(R.id.delete);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(listener != null) {
-                        int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION) {
-                            listener.onItemClick(position);
-                        }
+            itemView.setOnClickListener(view -> {
+                if(listener != null) {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(position);
+                    }
+                }
+            });
+            delete.setOnClickListener(view -> {
+                if(deleteListener != null) {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION) {
+                        deleteListener.onItemClick(position);
                     }
                 }
             });
@@ -67,7 +81,7 @@ public class CardAdapterImages extends RecyclerView.Adapter<CardAdapterImages.Ca
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_image, parent, false);
-        return new CardViewHolder(v, listener);
+        return new CardViewHolder(v, listener, deleteListener);
     }
 
     @SuppressLint({"UseCompatLoadingForDrawables"})

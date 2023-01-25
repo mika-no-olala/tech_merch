@@ -59,6 +59,7 @@ public class SalePoint implements Serializable{
     @Expose
     private int userCode;
 
+
     public int getCode() {
         return code;
     }

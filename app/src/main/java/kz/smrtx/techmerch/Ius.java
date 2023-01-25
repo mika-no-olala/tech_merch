@@ -82,6 +82,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Ius extends Application {
     private static Ius singleton;
     private static ApiService apiService;
+    private static Toast toast;
 
     public static final String LOGIN = "SUPERADMIN";
     public static final String PASSWORD = "c1b4f8de804cb1ac668a0e56b5b67b0a8b7c96d3fb0c7828691b941b0e553583";
@@ -93,6 +94,7 @@ public class Ius extends Application {
     public static final String USER_ROLE_NAME = "USER_ROLE_NAME";
     public static final String USER_LANGUAGE = "USER_LANGUAGE";
     public static final String USER_CITIES = "USER_CITIES";
+    public static final String NEW_SUPPLIES = "NEW_SUPPLIES";
 
     public static final String BOTTOM_BAR_TEXT = "BOTTOM_BAR_TEXT";
     public static final String DEVICE_ID = "DEVICE_ID";
@@ -174,6 +176,8 @@ public class Ius extends Application {
     }
 
     public static void showToast(View layout, Context context, String text, boolean success) {
+        if (toast!=null)
+            toast.cancel();
         if (!success) {
             if (Build.VERSION.SDK_INT >= 21) {
                 CardView toastCard = layout.findViewById(R.id.toastCard);
@@ -187,7 +191,7 @@ public class Ius extends Application {
 
         toastText.setText(text);
 
-        Toast toast = new Toast(context);
+        toast = new Toast(context);
         toast.setGravity(Gravity.BOTTOM, 0, 80);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);

@@ -22,6 +22,10 @@ public class ChoosePointsViewModel extends AndroidViewModel{
 
     public LiveData<List<SalePointItem>> getSalePoints(){return choosePointsRepository.getSalePoints();}
 
+    public LiveData<List<SalePointItem>> getSalePointsWithRequestsNumber(int useCode) {
+        return choosePointsRepository.getSalePointsWithRequestsNumber(useCode);
+    }
+
     public LiveData<List<SalePointItem>> getSalePointsByFilter(String statement){return choosePointsRepository.getSalePointsByFilter(statement);}
 
     public LiveData<SalePointItem> getSalePointByCode(String salCode){return choosePointsRepository.getSalePointByCode(salCode);}

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Objects;
 
 import kz.smrtx.techmerch.Ius;
-import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.activities.SyncActivity;
 import kz.smrtx.techmerch.items.entities.Photo;
@@ -57,12 +56,6 @@ public class RequestSender extends JobService {
         visitViewModel = new ViewModelProvider(SessionActivity.getInstance()).get(VisitViewModel.class);
         requestViewModel = new ViewModelProvider(SessionActivity.getInstance()).get(RequestViewModel.class);
         photoViewModel = new ViewModelProvider(SessionActivity.getInstance()).get(PhotoViewModel.class);
-
-        photoViewModel.getPhotosForUpload().observe(SessionActivity.getInstance(), photos -> {
-            for (Photo p : photos) {
-                allImagesToUpload.add(p.getREP_PHOTO());
-            }
-        });
 
         doDestiny(jobParameters);
         return true;

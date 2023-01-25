@@ -20,6 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.utils.GPSTracker;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.SessionActivity;
@@ -59,12 +60,6 @@ public class OutletsFragment extends Fragment {
         SearchView search = view.findViewById(R.id.search);
         recyclerView = view.findViewById(R.id.recyclerView);
         choosePointsViewModel = new ViewModelProvider(this).get(ChoosePointsViewModel.class);
-
-//        if (getArguments()!=null) {
-//            if (getArguments().get("USER_ROLE").equals("tmr")) {
-//                // do smth
-//            }
-//        }
 
         createList();
 
@@ -106,7 +101,6 @@ public class OutletsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this.getActivity());
 
-
         GPSTracker gps = new GPSTracker(this.getActivity());
         double lat = 0;
         double lon = 0;
@@ -120,16 +114,12 @@ public class OutletsFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(cardAdapter);
 
-        cardAdapter.setOnItemClickListener(new CardAdapterOutlets.onItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                ((SessionActivity)requireActivity()).openFragment(OutletInformationFragment.getInstance("tmr", outletsFiltered.get(position).getCode()), false);
-            }
-        });
+        cardAdapter.setOnItemClickListener(position -> ((SessionActivity)requireActivity()).openFragment(OutletInformationFragment.getInstance("tmr", outletsFiltered.get(position).getCode()), false));
     }
 
     private void createList() {
-        choosePointsViewModel.getSalePoints().observe(getViewLifecycleOwner(), salePointItems -> {
+        choosePointsViewModel.getSalePointsWithRequestsNumber(Integer.parseInt(Ius.readSharedPreferences(this.getContext(), Ius.USER_CODE)))
+                .observe(getViewLifecycleOwner(), salePointItems -> {
             Log.e("sss", String.valueOf(salePointItems.size()));
             if (salePointItems==null) {
                 Log.w("createList", "list == null");

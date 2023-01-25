@@ -15,6 +15,23 @@ public interface ChoosePointsDao {
             "from ST_SALEPOINT")
     LiveData<List<SalePointItem>> getSalePoints();
 
+    @Query("select ss.id, ss.name, ss.street, ss.locationCode, ss.code, ss.longitude," +
+            " ss.latitude, ss.contact, ss.note, ss.legalEntity, ss.channel, ss.category," +
+            " ss.type, count(srh.id) as 'requestsNumber' " +
+            "from ST_SALEPOINT ss inner join ST_REQUEST_HISTORY srh on srh.salePointCode = ss.code " +
+            "WHERE srh.created IN " +
+            "   (" +
+            "   SELECT MAX(srhd.created) " +
+            "   FROM ST_REQUEST_HISTORY srhd " +
+            "   GROUP BY srhd.requestCode " +
+            "   ) AND srh.requestCode IN " +
+            "   (" +
+            "   SELECT DISTINCT(srhd.requestCode) " +
+            "   FROM ST_REQUEST_HISTORY srhd " +
+            "   WHERE srhd.userCode = :userCode AND srhd.userCodeAppointed != :userCode" + ") " +
+            "   group by ss.id")
+    LiveData<List<SalePointItem>> getSalePointsWithRequestsNumber(int userCode);
+
     @Query("select * " +
             "from ST_SALEPOINT_FTS sp " +
             "where ST_SALEPOINT_FTS match :statement")

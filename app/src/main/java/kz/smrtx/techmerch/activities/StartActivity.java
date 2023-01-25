@@ -2,30 +2,31 @@ package kz.smrtx.techmerch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import kz.smrtx.techmerch.BuildConfig;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
-import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.SessionViewModel;
-import kz.smrtx.techmerch.items.viewmodels.VisitViewModel;
+import kz.smrtx.techmerch.utils.Aen;
+import kz.smrtx.techmerch.utils.CheckEquipmentSupply;
 import kz.smrtx.techmerch.utils.LocaleHelper;
 
 public class StartActivity extends AppCompatActivity {
@@ -35,6 +36,7 @@ public class StartActivity extends AppCompatActivity {
     private TextView role;
     private TextView bottomBarText;
     private SessionViewModel sessionViewModel;
+    private static StartActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +52,10 @@ public class StartActivity extends AppCompatActivity {
         Button signOut = findViewById(R.id.signOut);
 
         setUser();
+        if (Integer.parseInt(Ius.readSharedPreferences(this, Ius.USER_ROLE_CODE)) == Aen.ROLE_MANAGER)
+            checkSupply();
 
         sessionViewModel = new ViewModelProvider(this).get(SessionViewModel.class);
-//        sessionViewModel.deleteAllSessions();
-//        VisitViewModel visitViewModel = new ViewModelProvider(this).get(VisitViewModel.class);
-//        visitViewModel.deleteAllVisits();
-//        RequestViewModel requestViewModel = new ViewModelProvider(this).get(RequestViewModel.class);
-//        requestViewModel.deleteAllRequests();
-
-        check();
 
         Ius.checkPermissions(this);
         Ius.checkPermissionsCamera(this);
@@ -80,6 +77,32 @@ public class StartActivity extends AppCompatActivity {
             Ius.writeSharedPreferences(context, Ius.DATE_LOGIN, "");
             onBackPressed();
         });
+    }
+
+    public StartActivity() {
+        instance = this;
+    }
+
+    public static StartActivity getInstance() {
+        return instance;
+    }
+
+    private void checkSupply() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ComponentName componentName = new ComponentName(this, CheckEquipmentSupply.class);
+            JobInfo jobInfo = new JobInfo.Builder(22, componentName)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                    .setPeriodic(1000 * 60 * 15)
+                    .setPersisted(true)
+                    .build();
+
+            JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+            int resultCode = scheduler.schedule(jobInfo);
+            if (resultCode == JobScheduler.RESULT_SUCCESS)
+                Log.e("startCheckingSupply", "Job success");
+            else
+                Log.i("startCheckingSupply", "Job failed");
+        }
     }
 
     private void setUser() {
@@ -140,20 +163,6 @@ public class StartActivity extends AppCompatActivity {
         }
     }
 
-    private void check() {
-//        double lat = 50;
-//        double lon = 50;
-//        double latPoint = 100;
-//        double lonPoint = 100;
-//        int distance = 0;
-//
-//        double latKM = Math.abs((latPoint - lat)*111.32);
-//        double lonKM = Math.abs(lonPoint - lon) * 40075 * Math.cos(Math.abs(latPoint-lat))/360;
-//        distance = (int) Math.pow(Math.pow(latKM, 2) + Math.pow(lonKM, 2), 0.5);
-//
-//        Log.e("sss", String.valueOf(distance));
-    }
-
     private void openActivitySession() {
         Intent intent = new Intent(this, SessionActivity.class);
         startActivity(intent);
@@ -174,6 +183,11 @@ public class StartActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void createToast(String text, boolean success) {
+        View layout = getLayoutInflater().inflate(R.layout.toast_window, (ViewGroup) findViewById(R.id.toast));
+        Ius.showToast(layout, this, text, success);
     }
 
     @Override

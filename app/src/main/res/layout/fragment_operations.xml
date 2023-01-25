@@ -262,7 +262,7 @@
             android:id="@+id/newDeliveries"
             style="@style/card"
             tools:targetApi="lollipop"
-            android:backgroundTint="@color/white">
+            android:backgroundTint="@color/old_linen">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -282,6 +282,7 @@
                     android:layout_marginEnd="22sp"
                     android:orientation="vertical">
                     <TextView
+                        android:id="@+id/suppliesTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/new_delivery"
@@ -292,6 +293,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/new_delivery_description"
+
                         android:fontFamily="@font/bandera_pro_medium"
                         android:textSize="12sp" />
                 </LinearLayout>
