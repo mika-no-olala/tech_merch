@@ -54,6 +54,9 @@ public class RCWorkFragment extends Fragment {
         CheckBox replace = view.findViewById(R.id.replace);
         additionalField = view.findViewById(R.id.additionalWork);
 
+        if (((CreateRequestActivity)requireActivity()).isGuarantee())
+            replace.setEnabled(false);
+
         new GetDataAsync(elementViewModel).execute();
 
         repair.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.utils.LocaleHelper;
 import kz.smrtx.techmerch.utils.Aen;
 import kz.smrtx.techmerch.utils.RequestSender;
+import kz.smrtx.techmerch.utils.RequestSync;
 
 public class StatusesActivity extends AppCompatActivity {
 
@@ -56,6 +59,8 @@ public class StatusesActivity extends AppCompatActivity {
     private final Context context = this;
     private int salePointCode = -1;
     private int userCode;
+    private SwipeRefreshLayout refresher;
+    private CountDownTimer timer;
 
     // <----  list ---->
 
@@ -123,6 +128,7 @@ public class StatusesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statuses);
 
+        refresher = findViewById(R.id.refresher);
         noRequestsW = findViewById(R.id.noRequestsW);
         noRequestsA = findViewById(R.id.noRequestsA);
         noRequestsF = findViewById(R.id.noRequestsF);
@@ -189,7 +195,21 @@ public class StatusesActivity extends AppCompatActivity {
             openDialogCommentAcception();
         });
 
+        refresher.setOnRefreshListener(() -> new RequestSync(refresher));
         back.setOnClickListener(view -> onBackPressed());
+    }
+
+    private void setTimerCooldown() {
+        refresher.setRefreshing(true);
+        timer = new CountDownTimer(2000, 1000) {
+            @Override
+            public void onTick(long l) {}
+
+            @Override
+            public void onFinish() {
+                new RequestSync(refresher);
+            }
+        }.start();
     }
 
     private void listButtonIsPressed(boolean listIsOpen, ImageView arrowIcon, CardView contentView, int listNumber) {
@@ -638,6 +658,8 @@ public class StatusesActivity extends AppCompatActivity {
                 OperationsOnOutletFragment.getInstance().cancelVisitClear();
             else
                 SessionActivity.getInstance().cancelSessionClear();
+
+            setTimerCooldown();
         });
 
         executor.setOnClickListener(executorView -> {

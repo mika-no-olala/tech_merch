@@ -91,6 +91,7 @@
         android:id="@+id/consumable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLength="100"
         android:maxHeight="80sp"
         android:fontFamily="@font/bandera_pro"
         android:textSize="16sp"

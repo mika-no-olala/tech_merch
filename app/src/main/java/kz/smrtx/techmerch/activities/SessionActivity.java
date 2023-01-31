@@ -181,7 +181,7 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
         deleteSession = false;
     }
 
-    public void startRequestSending() {
+    public boolean startRequestSending() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             ComponentName componentName = new ComponentName(this, RequestSender.class);
             JobInfo jobInfo = new JobInfo.Builder(55, componentName)
@@ -193,14 +193,17 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
             if (resultCode == JobScheduler.RESULT_SUCCESS) {
                 Log.i("startRequestSending", "Job success");
                 createToast(getResources().getString(R.string.request_has_send), true);
+                return true;
             }
             else {
                 Log.e("startRequestSending", "Job failed");
                 createToast(getResources().getString(R.string.request_created_not_sended), true);
+                return false;
             }
         }
         else
             createToast(getResources().getString(R.string.request_success), true);
+        return false;
     }
 
     public void createToast(String text, boolean success) {

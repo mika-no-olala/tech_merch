@@ -249,7 +249,8 @@ public class CreateRequestActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void makeSummaryFragment() {
-        setAdapter();
+        Ius.setAdapterImagesList(this, recyclerView, photoList);
+
         cloud.animate().translationY(cloud.getHeight()).setDuration(300);
         cloud.setVisibility(View.GONE);
 
@@ -340,38 +341,6 @@ public class CreateRequestActivity extends AppCompatActivity {
 
         next.animate().translationY(0).setDuration(300);
         next.setVisibility(View.VISIBLE);
-    }
-
-    private void setAdapter() {
-        RecyclerView.LayoutManager layoutManager;
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-
-        if (photoList.isEmpty()) {
-            recyclerView.setVisibility(View.GONE);
-            return;
-        }
-
-        CardAdapterImages cardAdapter = new CardAdapterImages(photoList, this);
-        recyclerView.setAdapter(cardAdapter);
-        cardAdapter.setOnItemClickListener(position -> {
-            createDialog(photoList.get(position).getREP_PHOTO());
-        });
-    }
-
-    private void createDialog(String photoName) {
-        Dialog dialog = Ius.createDialog(this, R.layout.dialog_window_image, "");
-        ImageView image = dialog.findViewById(R.id.image);
-
-        File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + photoName);
-
-        if (file.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            image.setImageBitmap(bitmap);
-        }
-
-        dialog.show();
     }
 
     private boolean isNull(String text) {
@@ -492,6 +461,10 @@ public class CreateRequestActivity extends AppCompatActivity {
             request.setREQ_TYPE("Гарантийная");
         else
             request.setREQ_TYPE("Негарантийная");
+    }
+
+    public boolean isGuarantee() {
+        return guarantee;
     }
 
     public void setEquipment(String equipment) {

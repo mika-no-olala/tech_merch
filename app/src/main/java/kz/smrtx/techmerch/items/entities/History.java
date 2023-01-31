@@ -9,7 +9,8 @@ import com.google.gson.annotations.SerializedName;
 @Entity(tableName = "ST_REQUEST_HISTORY")
 public class History {
     @NonNull
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
+    @SerializedName("HIS_ID")
     private int id;
     @SerializedName("HIS_REQ_CODE")
     private String requestCode;

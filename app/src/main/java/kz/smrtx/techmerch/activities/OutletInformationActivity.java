@@ -171,6 +171,7 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
             if (w.size()==0) {
                 SessionActivity.getInstance().createToast(getString(R.string.no_warehouse_error), false);
                 Log.e("getWarehouse", "no warehouse!");
+                finish();
                 return;
             }
             warehouse = w.get(0);
@@ -282,7 +283,7 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
 
     @Override
     public void onBackPressed() {
-        int fragmentIndex = getSupportFragmentManager().getBackStackEntryCount();
+        int fragmentIndex = getSupportFragmentManager().getBackStackEntryCount() - 1;
         String pageNameStr = pageName.getText().toString();
         if (pageNameStr.equals(getResources().getString(R.string.outlet_information))) {
             finish();

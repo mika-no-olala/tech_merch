@@ -14,7 +14,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -41,23 +43,50 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import kz.smrtx.techmerch.activities.SyncActivity;
 import kz.smrtx.techmerch.adapters.CardAdapterImagePager;
 import kz.smrtx.techmerch.adapters.CardAdapterImages;
+import kz.smrtx.techmerch.items.entities.Consumable;
+import kz.smrtx.techmerch.items.entities.Element;
+import kz.smrtx.techmerch.items.entities.History;
+import kz.smrtx.techmerch.items.entities.Note;
 import kz.smrtx.techmerch.items.entities.Photo;
+import kz.smrtx.techmerch.items.entities.Request;
+import kz.smrtx.techmerch.items.entities.SalePoint;
+import kz.smrtx.techmerch.items.entities.User;
+import kz.smrtx.techmerch.items.entities.Warehouse;
+import kz.smrtx.techmerch.items.reqres.synctables.SyncTables;
+import kz.smrtx.techmerch.items.reqres.synctables.Table;
 import kz.smrtx.techmerch.utils.Aen;
 import kz.smrtx.techmerch.utils.CustomTypefaceSpan;
 import kz.smrtx.techmerch.utils.RequestSender;
 import kz.smrtx.techmerch.utils.ZipManager;
+import okhttp3.ResponseBody;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -520,6 +549,8 @@ public class Ius extends Application {
 
         return permission;
     }
+
+
 
     public static void refreshToken(Context context) {
         getApiService().getToken(LOGIN, PASSWORD).enqueue(new Callback<LoginResponse>() {

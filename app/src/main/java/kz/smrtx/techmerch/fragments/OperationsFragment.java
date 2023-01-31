@@ -145,6 +145,7 @@ public class OperationsFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            Log.i("GetSuppliesInfo", "checking supplies");
             quantity = warehouseJournalViewModel.getSuppliesQuantity();
             return null;
         }

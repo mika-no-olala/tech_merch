@@ -67,6 +67,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:exported="false">
+
         </activity>
         <activity
             android:name=".activities.SessionActivity"

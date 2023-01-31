@@ -420,7 +420,7 @@ public class SyncActivity extends AppCompatActivity {
     @SuppressWarnings("deprecation")
     @SuppressLint("StaticFieldLeak")
     private class DownloadImages extends AsyncTask<Void, Void, Void> {
-        
+
         int progressPercentage = 0;
         int progress = 0;
 
@@ -450,7 +450,7 @@ public class SyncActivity extends AppCompatActivity {
             Log.e("DownloadImages", "onCancelled");
             unlockButtons();
         }
-        
+
         @SuppressWarnings("ResultOfMethodCallIgnored")
         private void downloadImages() {
             try {
@@ -459,7 +459,7 @@ public class SyncActivity extends AppCompatActivity {
                     HttpURLConnection c = (HttpURLConnection) url.openConnection();
                     c.setRequestMethod("GET");
                     c.connect();
-                    
+
                     if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
                         Log.e("downloadImages", "Server returned HTTP " + c.getResponseCode()
                                 + " " + c.getResponseMessage() + " - " + downloadUrl);
@@ -540,7 +540,7 @@ public class SyncActivity extends AppCompatActivity {
         return file.exists();
     }
 
-    public boolean isExternalStorageWritable() {
+    public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
     }

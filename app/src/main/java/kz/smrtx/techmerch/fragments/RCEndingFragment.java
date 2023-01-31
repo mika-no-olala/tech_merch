@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -32,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
@@ -56,6 +58,7 @@ public class RCEndingFragment extends Fragment {
     private ImageView chosenImageView;
     private CardView chosenCardView;
     private ImageView photo_1, photo_2, photo_3, photo_4, photo_5, delete_1, delete_2, delete_3, delete_4, delete_5;
+    private int imgNumber;
     private final String[] photoNames = new String[5];
 
     public static RCEndingFragment getInstance() {
@@ -242,7 +245,7 @@ public class RCEndingFragment extends Fragment {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void changeNumberOfActiveImg(int changing) {
-        if ((numberOfActiveImg==5 && changing>0) || (numberOfActiveImg==1 && changing<0))
+        if (numberOfActiveImg==1 && changing<0)
             return;
 
         numberOfActiveImg = numberOfActiveImg + changing;
@@ -251,13 +254,21 @@ public class RCEndingFragment extends Fragment {
 
         if (changing>0) {
             chooseImageByNumber(numberOfActiveImg);
-            chosenCardView.setVisibility(View.VISIBLE);
-
             int id = getResources().getIdentifier("delete_" + (numberOfActiveImg - 1), "id", getContext().getPackageName());
             ImageView deleteButton = view.findViewById(id);
             deleteButton.setVisibility(View.VISIBLE);
+
+            chosenCardView.setVisibility(View.VISIBLE);
         }
         else if (changing<0) {
+            int lastPhoto = findLastPhotoNumber();
+            if (lastPhoto != imgNumber) {
+                shiftPhotos(lastPhoto);
+                chooseImageByNumber(lastPhoto);
+            }
+            else
+                photoNames[numberOfActiveImg-1] = null;
+
             chosenImageView.setPadding(66, 66, 66, 66);
             chosenImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_photo));
             chosenImageView.setTag("");
@@ -265,15 +276,47 @@ public class RCEndingFragment extends Fragment {
             int id = getResources().getIdentifier("delete_" + numberOfActiveImg, "id", getContext().getPackageName());
             ImageView deleteButton = view.findViewById(id);
             deleteButton.setVisibility(View.INVISIBLE);
-            photoNames[numberOfActiveImg - 1] = null;
             ((CreateRequestActivity)requireActivity()).setPhotos(photoNames);
+
+            if (numberOfActiveImg == 5)
+                return;
 
             chooseImageByNumber(numberOfActiveImg+1);
             chosenCardView.setVisibility(View.INVISIBLE);
         }
     }
 
+    private int findLastPhotoNumber() {
+        if (numberOfActiveImg!=5)
+            return numberOfActiveImg;
+
+        if (photoNames[4] == null)
+            return 4;
+
+        return 5;
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void shiftPhotos(int lastPhoto) {
+        int pointer = imgNumber; // for array we do minus one
+        File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        while(pointer!=lastPhoto) {
+            Bitmap bitmap = BitmapFactory.decodeFile(storageDir.getAbsolutePath() + "/" + photoNames[pointer] + ".jpg");
+            chooseImageByNumber(pointer);
+            chosenImageView.setImageBitmap(bitmap);
+
+            photoNames[pointer-1] = photoNames[pointer];
+
+            pointer++;
+        }
+        chooseImageByNumber(pointer);
+        chosenImageView.setImageBitmap(null);
+        photoNames[pointer-1] = null;
+    }
+
     private void chooseImageByNumber(int imgNumber) {
+        this.imgNumber = imgNumber;
         switch (imgNumber) {
             case 1:
                 chosenImageView = photo_1;

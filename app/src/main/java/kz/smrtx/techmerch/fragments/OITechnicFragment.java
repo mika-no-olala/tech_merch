@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,8 +36,10 @@ import java.util.List;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.activities.CreateRequestActivity;
 import kz.smrtx.techmerch.activities.OutletInformationActivity;
 import kz.smrtx.techmerch.activities.SessionActivity;
+import kz.smrtx.techmerch.adapters.CardAdapterImagePager;
 import kz.smrtx.techmerch.adapters.CardAdapterImages;
 import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
@@ -76,11 +79,8 @@ public class OITechnicFragment extends Fragment {
     private ImageView currentImageView;
     private ImageView chosenImageView;
     private CardView chosenCardView;
-    private ImageView photo_1;
-    private ImageView photo_2;
-    private ImageView photo_3;
-    private ImageView photo_4;
-    private ImageView photo_5;
+    private ImageView photo_1, photo_2, photo_3, photo_4, photo_5, delete_1, delete_2, delete_3, delete_4, delete_5;
+    private int imgNumber;
     private final String[] photoNames = new String[5];
 
     private FragmentListener listener;
@@ -154,11 +154,21 @@ public class OITechnicFragment extends Fragment {
         photo_3 = view.findViewById(R.id.photo_3);
         photo_4 = view.findViewById(R.id.photo_4);
         photo_5 = view.findViewById(R.id.photo_5);
+        delete_1 = view.findViewById(R.id.delete_1);
+        delete_2 = view.findViewById(R.id.delete_2);
+        delete_3 = view.findViewById(R.id.delete_3);
+        delete_4 = view.findViewById(R.id.delete_4);
+        delete_5 = view.findViewById(R.id.delete_5);
         photo_1.setOnClickListener(photo -> redirectClick(1));
         photo_2.setOnClickListener(photo -> redirectClick(2));
         photo_3.setOnClickListener(photo -> redirectClick(3));
         photo_4.setOnClickListener(photo -> redirectClick(4));
         photo_5.setOnClickListener(photo -> redirectClick(5));
+        delete_1.setOnClickListener(photo -> deleteImage(1));
+        delete_2.setOnClickListener(photo -> deleteImage(2));
+        delete_3.setOnClickListener(photo -> deleteImage(3));
+        delete_4.setOnClickListener(photo -> deleteImage(4));
+        delete_5.setOnClickListener(photo -> deleteImage(5));
     }
 
     private void getRequest(String requestCode) {
@@ -180,15 +190,6 @@ public class OITechnicFragment extends Fragment {
                 Ius.setAdapterImagesList(this.getContext(), recyclerViewTech, photoListTech);
             }
         });
-    }
-
-    private void createDialog(ImageView imageClicked) {
-        Dialog dialog = Ius.createDialog(this.getContext(), R.layout.dialog_window_image, "");
-        ImageView image = dialog.findViewById(R.id.image);
-
-        image.setImageDrawable(imageClicked.getDrawable());
-
-        dialog.show();
     }
 
     @SuppressLint("SetTextI18n")
@@ -281,7 +282,7 @@ public class OITechnicFragment extends Fragment {
         chooseImageByNumber(photoNumber);
         String tag = String.valueOf(chosenImageView.getTag());
         if(tag.equals("changed")) {
-            createDialog(chosenImageView);
+            createDialog(photoNumber);
             return;
         }
 
@@ -379,7 +380,7 @@ public class OITechnicFragment extends Fragment {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void changeNumberOfActiveImg(int changing) {
-        if ((numberOfActiveImg==5 && changing>0) || (numberOfActiveImg==1 && changing<0))
+        if (numberOfActiveImg==1 && changing<0)
             return;
 
         numberOfActiveImg = numberOfActiveImg + changing;
@@ -388,20 +389,68 @@ public class OITechnicFragment extends Fragment {
 
         if (changing>0) {
             chooseImageByNumber(numberOfActiveImg);
+            int id = getResources().getIdentifier("delete_" + (numberOfActiveImg - 1), "id", getContext().getPackageName());
+            ImageView deleteButton = view.findViewById(id);
+            deleteButton.setVisibility(View.VISIBLE);
+
             chosenCardView.setVisibility(View.VISIBLE);
         }
         else if (changing<0) {
-            chooseImageByNumber(numberOfActiveImg+1);
-            chosenCardView.setVisibility(View.INVISIBLE);
+            int lastPhoto = findLastPhotoNumber();
+            if (lastPhoto != imgNumber) {
+                shiftPhotos(lastPhoto);
+                chooseImageByNumber(lastPhoto);
+            }
+            else
+                photoNames[numberOfActiveImg-1] = null;
 
-            chooseImageByNumber(numberOfActiveImg);
-            chosenImageView.setPadding(22, 22, 22, 22);
+            chosenImageView.setPadding(66, 66, 66, 66);
             chosenImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_photo));
             chosenImageView.setTag("");
+
+            int id = getResources().getIdentifier("delete_" + numberOfActiveImg, "id", getContext().getPackageName());
+            ImageView deleteButton = view.findViewById(id);
+            deleteButton.setVisibility(View.INVISIBLE);
+
+            if (numberOfActiveImg == 5)
+                return;
+
+            chooseImageByNumber(numberOfActiveImg+1);
+            chosenCardView.setVisibility(View.INVISIBLE);
         }
     }
 
+    private int findLastPhotoNumber() {
+        if (numberOfActiveImg!=5)
+            return numberOfActiveImg;
+
+        if (photoNames[4] == null)
+            return 4;
+
+        return 5;
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void shiftPhotos(int lastPhoto) {
+        int pointer = imgNumber; // for array we do minus one
+        File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        while(pointer != lastPhoto) {
+            Bitmap bitmap = BitmapFactory.decodeFile(storageDir.getAbsolutePath() + "/" + photoNames[pointer] + ".jpg");
+            chooseImageByNumber(pointer);
+            chosenImageView.setImageBitmap(bitmap);
+
+            photoNames[pointer-1] = photoNames[pointer];
+
+            pointer++;
+        }
+        chooseImageByNumber(pointer);
+        chosenImageView.setImageBitmap(null);
+        photoNames[pointer-1] = null;
+    }
+
     private void chooseImageByNumber(int imgNumber) {
+        this.imgNumber = imgNumber;
         switch (imgNumber) {
             case 1:
                 chosenImageView = photo_1;
@@ -424,6 +473,32 @@ public class OITechnicFragment extends Fragment {
                 chosenCardView = view.findViewById(R.id.card_5);
                 break;
         }
+    }
+
+    public void deleteImage(int imgNumber) {
+        chooseImageByNumber(imgNumber);
+        changeNumberOfActiveImg(-1);
+    }
+
+    private void createDialog(int photoNumber) {
+        Dialog dialog = Ius.createDialog(this.getContext(), R.layout.dialog_window_image, "");
+        ViewPager viewPager = dialog.findViewById(R.id.imagePager);
+        CardAdapterImagePager adapter = new CardAdapterImagePager();
+
+        adapter.setAdapterWithString(this.getContext(), filterPhotoNames());
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(photoNumber - 1);
+
+        dialog.show();
+    }
+
+    private List<String> filterPhotoNames() {
+        List<String> filtered = new ArrayList<>();
+        for (String s : photoNames) {
+            if (s!=null)
+                filtered.add(s);
+        }
+        return filtered;
     }
 
     @Override
