@@ -32,6 +32,13 @@ public class Photo {
         this.NES_TO_UPDATE = NES_TO_UPDATE;
     }
 
+    @Override
+    public String toString() {
+        return "Photo{" +
+                "REP_PHOTO='" + REP_PHOTO + '\'' +
+                '}';
+    }
+
     public String getNES_TO_UPDATE() {
         return NES_TO_UPDATE;
     }

@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     Ius.writeSharedPreferences(context, Ius.USER_ROLE_NAME, user.getRoleName());
                     Ius.writeSharedPreferences(context, Ius.DEVICE_ID, Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
                     Ius.writeSharedPreferences(context, Ius.DATE_LOGIN, Ius.getDateByFormat(new Date(), "dd.MM.yyyy"));
+                    Ius.writeSharedPreferences(context, Ius.NEW_SUPPLIES, "0");
 
                     getUserCity(user.getCode());
 

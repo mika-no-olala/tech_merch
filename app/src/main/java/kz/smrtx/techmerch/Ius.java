@@ -337,6 +337,8 @@ public class Ius extends Application {
             recyclerView.setVisibility(View.GONE);
             return;
         }
+        else
+            recyclerView.setVisibility(View.VISIBLE);
 
         CardAdapterImages cardAdapter = new CardAdapterImages(photoList, context);
         recyclerView.setAdapter(cardAdapter);

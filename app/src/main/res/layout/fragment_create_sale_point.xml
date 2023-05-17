@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/lavender_background"
+    android:paddingHorizontal="3sp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10sp"
+        android:elevation="3sp"
+        tools:targetApi="lollipop"
+        android:layout_marginHorizontal="4sp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="319sp"
+            android:gravity="center"
+            android:background="@color/lavender_background">
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:padding="160sp"
+                android:src="@drawable/ic_photo"/>
+
+            <TextView
+                android:id="@+id/photoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/bandera_pro_bold"
+                android:paddingTop="120sp"
+                android:text="@string/add_photo"
+                android:textColor="@color/light_purple_for_line"
+                android:textSize="16sp" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <RelativeLayout
+        android:id="@+id/address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="23sp">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/button_map_pin"/>
+
+        <TextView
+            android:id="@+id/addressText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/bandera_pro_medium"
+            android:paddingRight="100sp"
+            android:text="@string/enter_address"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/name"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:maxLength="500"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/input_text"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:imeOptions="actionNext"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/entity"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/entity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:maxLength="100"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/input_text"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:imeOptions="actionNext"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/category"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:maxLength="50"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/input_text"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:imeOptions="actionNext"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sales_channel"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/salesChannel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:maxLength="50"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/input_text"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:imeOptions="actionNext"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/outlet_type"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:maxLength="50"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/input_text"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:imeOptions="actionNext"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/phone"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="80sp"
+        android:maxLength="100"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:hint="@string/input_text"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:imeOptions="actionNext"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        android:importantForAutofill="no"
+        tools:targetApi="lollipop" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/comment"
+        android:textSize="16sp"
+        android:fontFamily="@font/bandera_pro_medium"
+        android:layout_marginBottom="9sp"/>
+
+    <EditText
+        android:id="@+id/comment"
+        android:layout_width="match_parent"
+        android:layout_height="85sp"
+        android:maxHeight="200sp"
+        android:maxLength="500"
+        android:fontFamily="@font/bandera_pro"
+        android:textSize="16sp"
+        android:imeOptions="actionDone"
+        android:hint="@string/input_text"
+        android:textColorHint="@color/light_purple"
+        android:background="@drawable/background_edit_text"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:elevation="3sp"
+        android:layout_marginBottom="18sp"
+        android:padding="10sp"
+        tools:targetApi="lollipop" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/start"
+        style="@style/button"
+        android:text="@string/create"
+        android:layout_marginHorizontal="2sp"
+        android:layout_marginBottom="40sp"/>
+</LinearLayout>

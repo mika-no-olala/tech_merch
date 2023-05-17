@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -36,6 +38,7 @@ public class OperationsFragment extends Fragment {
     private String dateStarted;
     private WarehouseJournalViewModel warehouseJournalViewModel;
     private TextView suppliesTitle;
+    private int roleCode;
 
     private FragmentListener listener;
     public interface FragmentListener {
@@ -60,7 +63,7 @@ public class OperationsFragment extends Fragment {
             dateStarted = getArguments().getString("DATE_STARTED");
         }
 
-        int roleCode = Integer.parseInt(Ius.readSharedPreferences(this.getContext(), Ius.USER_ROLE_CODE));
+        roleCode = Integer.parseInt(Ius.readSharedPreferences(this.getContext(), Ius.USER_ROLE_CODE));
         warehouseJournalViewModel = new ViewModelProvider(this).get(WarehouseJournalViewModel.class);
 
         suppliesTitle = view.findViewById(R.id.suppliesTitle);
@@ -109,8 +112,8 @@ public class OperationsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        new GetSuppliesInfo(this.getContext(), warehouseJournalViewModel).execute();
+        if (roleCode == Aen.ROLE_MANAGER)
+            new GetSuppliesInfo(this.getContext(), warehouseJournalViewModel).execute();
     }
 
     @SuppressWarnings("deprecation")

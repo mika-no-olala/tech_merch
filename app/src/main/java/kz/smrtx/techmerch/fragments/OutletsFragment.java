@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class OutletsFragment extends Fragment {
         doSync = view.findViewById(R.id.doSync);
         SearchView search = view.findViewById(R.id.search);
         recyclerView = view.findViewById(R.id.recyclerView);
+        ImageView add = view.findViewById(R.id.add);
         choosePointsViewModel = new ViewModelProvider(this).get(ChoosePointsViewModel.class);
 
         createList();
@@ -80,6 +82,10 @@ public class OutletsFragment extends Fragment {
                 outletsFiltered = new ArrayList<>(outlets);
                 return false;
             }
+        });
+
+        add.setOnClickListener(addView -> {
+            ((SessionActivity)requireActivity()).openFragment(CreateSalePointFragment.getInstance(), true);
         });
 
         return view;

@@ -1,13 +1,17 @@
 package kz.smrtx.techmerch.utils;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.gson.Gson;
@@ -24,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 import kz.smrtx.techmerch.Ius;
+import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.StartActivity;
 import kz.smrtx.techmerch.api.StringQuery;
 import kz.smrtx.techmerch.items.entities.WarehouseJournal;
@@ -35,7 +40,7 @@ import retrofit2.Response;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class CheckEquipmentSupply extends JobService {
-    private Context context = this;
+    private Context context = StartActivity.getInstance();
     private boolean jobCancelled = false;
     private WarehouseJournalViewModel warehouseJournalViewModel;
 
@@ -59,13 +64,19 @@ public class CheckEquipmentSupply extends JobService {
                                 Log.e("CheckEquipmentSupply", "not Successful - " + response.code());
                                 return;
                             }
+
                             warehouseJournalViewModel.deleteAll();
                             try {
                                 JSONObject jsonObject = new JSONObject(Objects.requireNonNull(response.body()).string());
                                 Type type = new TypeToken<List<WarehouseJournal>>() {}.getType();
                                 List<WarehouseJournal> journal = new Gson().fromJson(jsonObject.getJSONArray("data").toString(), type);
-                                Log.e("CheckEquipmentSupply", "data size: " + journal.size() + " " + new Date());
+                                Log.i("CheckEquipmentSupply", "data size: " + journal.size() + " " + new Date());
                                 if (journal.size() > 0) {
+                                    int oldAmountSupplies = Integer.parseInt(Ius.readSharedPreferences(context, Ius.NEW_SUPPLIES));
+                                    if (oldAmountSupplies < journal.size())
+                                        moreSuppliesDetected(journal.size());
+
+                                    Ius.writeSharedPreferences(context, Ius.NEW_SUPPLIES, String.valueOf(journal.size()));
                                     warehouseJournalViewModel.insert(journal);
                                 }
                             } catch (JSONException | IOException e) {
@@ -90,5 +101,17 @@ public class CheckEquipmentSupply extends JobService {
         Log.i("CheckEquipmentSupply", "onStopJob");
         jobCancelled = true;
         return true;
+    }
+
+    private void moreSuppliesDetected(int amount) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(context.getString(R.string.new_delivery))
+                .setContentText(context.getString(R.string.supply_notification_1) + " " + amount + " " + context.getString(R.string.supply_notification_2));
+        Notification notification = builder.build();
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification);
+
     }
 }

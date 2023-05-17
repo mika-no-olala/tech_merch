@@ -123,6 +123,7 @@
     <string name="report_description">Заполнение ежемесячного отчета по расходным материалам</string>
     <string name="operations">Операции</string>
     <string name="outlets">Торговые точки</string>
+    <string name="new_sale_point">Новая Торговая точка</string>
     <string name="outlet_information">Информация ТТ</string>
     <string name="trms_requests">Заявки от TMR\'а</string>
     <string name="finish_work">Завершить работу</string>
@@ -132,6 +133,7 @@
     <string name="search_warehouse_hint">Оборудование, имя склада, улица</string>
     <string name="search">Поиск</string>
     <string name="address">Адрес</string>
+    <string name="enter_address">Укажите адрес</string>
     <string name="destination">Местоназначение</string>
     <string name="request_quantity">Заявок</string>
     <string name="request">Заявка</string>
@@ -155,6 +157,7 @@
     <string name="detail_information">Детальная информация</string>
     <string name="create_request">Создать заявку</string>
     <string name="create_note">Создать заметку</string>
+    <string name="create">Создать</string>
     <string name="create_request_description">Начать визит в ТТ для создания заявки на обслуживание оборудования</string>
     <string name="requests">Заявки</string>
     <string name="requests_description">Просмотр заявок на ТТ</string>
@@ -201,6 +204,7 @@
     <string name="comment">Комментарий</string>
     <string name="comments">Комментарии</string>
     <string name="add_photos">Добавить фотографии</string>
+    <string name="add_photo">Добавить фото</string>
     <string name="send">Отправить</string>
     <string name="add">Добавить</string>
     <string name="accept_send">Принять и отправить</string>
@@ -231,6 +235,10 @@
     <string name="warehouses_description">Просмотр складов и количество оборудования в них</string>
     <string name="acception">Подтверждение</string>
     <string name="supplies_dialog_text">На склад поступило всё оборудование из списка в нужном количестве?</string>
+    <string name="supply_notification_1">Подтверждения ожидают</string>
+    <string name="supply_notification_2">списка</string>
     <string name="acception_success">Поставка подтверждена</string>
     <string name="acception_error">Произошла ошибка</string>
+    <string name="name">Название</string>
+    <string name="input_text">Введите текст…</string>
 </resources>
