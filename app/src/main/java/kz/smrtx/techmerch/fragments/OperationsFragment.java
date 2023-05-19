@@ -28,6 +28,7 @@ import org.w3c.dom.Text;
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
 import kz.smrtx.techmerch.activities.CreateRequestActivity;
+import kz.smrtx.techmerch.activities.RequestStatusesActivity;
 import kz.smrtx.techmerch.activities.StatusesActivity;
 import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.items.viewmodels.WarehouseJournalViewModel;
@@ -78,6 +79,15 @@ public class OperationsFragment extends Fragment {
         CardView newDeliveries = view.findViewById(R.id.newDeliveries);
         listener.getPageName(getResources().getString(R.string.operations));
         startWork.setText(getResources().getString(R.string.start_work_check_point) + ": " + dateStarted);
+
+        ImageView test = view.findViewById(R.id.test);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), RequestStatusesActivity.class);
+                startActivity(intent);
+            }
+        });
 
         if (roleCode!=Aen.ROLE_TMR)
             outlet.setVisibility(View.GONE);

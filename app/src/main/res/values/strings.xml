@@ -20,7 +20,7 @@
     <string name="error">Ошибка</string>
     <string name="error_destination">Нельзя выбрать тот же адрес, на котором вы находитесь</string>
     <string name="error_certification">Ошибка: проверьте работоспособность Play Market и перезапустите приложение</string>
-    <string name="request_is_loading">Загружаем заявку…</string>
+    <string name="request_is_loading">Выберите заявку</string>
     <string name="supplies_are_loading">Проверяем поставки…</string>
     <string name="are_supplies_ok">Соответствуют ли поставки действительности?</string>
     <string name="server_error">Ошибка подключения к серверу</string>
@@ -47,6 +47,9 @@
     <string name="request_waiting_status">Ожидающие моего ответа</string>
     <string name="request_advancing_status">Продвигающиеся заявки</string>
     <string name="request_finished_status">Завершившиеся заявки</string>
+    <string name="request_waiting_status_short">Ожидающие</string>
+    <string name="request_advancing_status_short">В работе</string>
+    <string name="request_finished_status_short">Законченные</string>
     <string name="request_acception">Подтверждение заявки</string>
     <string name="request_completion">Выполнение заявки</string>
     <string name="request_hand_over">Передать заявку</string>
@@ -241,4 +244,6 @@
     <string name="acception_error">Произошла ошибка</string>
     <string name="name">Название</string>
     <string name="input_text">Введите текст…</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

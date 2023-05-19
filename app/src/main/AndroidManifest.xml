@@ -12,9 +12,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <queries>
+
         <!-- Browser -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
+
             <data android:scheme="http" />
         </intent>
 
@@ -32,24 +34,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TechMerch">
+        <activity
+            android:name=".activities.RequestStatusesActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
         <uses-library android:name="com.google.android.maps" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
-        
+
         <provider
-            android:authorities="com.example.android.fileprovider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_path"/>
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path" />
         </provider>
 
         <service
             android:name=".utils.RequestSender"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <service
             android:name=".utils.CheckEquipmentSupply"
             android:permission="android.permission.BIND_JOB_SERVICE" />
@@ -65,10 +76,8 @@
         <activity
             android:name=".activities.CreateRequestActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activities.SessionActivity"
             android:configChanges="orientation"
@@ -76,7 +85,7 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="orientation"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".activities.StartActivity"
             android:configChanges="orientation"

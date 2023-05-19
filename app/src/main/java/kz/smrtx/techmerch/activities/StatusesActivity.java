@@ -185,6 +185,7 @@ public class StatusesActivity extends AppCompatActivity {
         advancingButton.setOnClickListener(view -> listButtonIsPressed(advancingListIsOpen, advancingArrowIcon, advancingView, 2));
         finishedButton.setOnClickListener(view -> listButtonIsPressed(finishedListIsOpen, finishedArrowIcon, finishedView, 3));
 
+        // TODO: move
         negative.setOnClickListener(view -> {
             positiveButtonPressed = false;
             openDialogCommentAcception();
@@ -199,6 +200,7 @@ public class StatusesActivity extends AppCompatActivity {
         back.setOnClickListener(view -> onBackPressed());
     }
 
+    //TODO: maybe find logic to delay it, not using timer
     private void setTimerCooldown() {
         refresher.setRefreshing(true);
         timer = new CountDownTimer(2000, 1000) {
@@ -237,6 +239,7 @@ public class StatusesActivity extends AppCompatActivity {
         }
     }
 
+    // TODO: move to new class and technicStuff() too
     private void initializeSummaryStuff() {
         requestLoading = findViewById(R.id.requestLoading);
         codeSummary = findViewById(R.id.code);
