@@ -4,8 +4,19 @@
     android:id="@+id/summary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="30sp">
+
+    <TextView
+        android:id="@+id/requestLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/request_is_loading"
+        android:layout_gravity="center"
+        android:layout_marginVertical="40sp"/>
+
     <androidx.cardview.widget.CardView
+        android:id="@+id/card"
         style="@style/card"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -18,13 +29,6 @@
             android:paddingTop="20sp"
             android:paddingBottom="25sp"
             android:paddingHorizontal="22sp">
-            <TextView
-                android:id="@+id/requestLoading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/request_is_loading"
-                android:layout_gravity="center"/>
-
             <TextView
                 android:id="@+id/code"
                 android:layout_height="wrap_content"
@@ -106,7 +110,8 @@
         android:id="@+id/twoButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="20sp">
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/negative"
             style="@style/button"

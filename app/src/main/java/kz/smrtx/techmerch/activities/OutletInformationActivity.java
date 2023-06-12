@@ -214,6 +214,9 @@ public class OutletInformationActivity extends AppCompatActivity implements OISa
 
         SessionActivity.getInstance().startRequestSending();
         SessionActivity.getInstance().cancelSessionClear();
+        RequestStatusesActivity.getInstance().onBackPressed();
+        RequestStatusesActivity.getInstance().closeRequestView();
+
         finish();
     }
 

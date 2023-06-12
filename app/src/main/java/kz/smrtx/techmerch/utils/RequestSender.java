@@ -124,6 +124,8 @@ public class RequestSender extends JobService {
                 uploadFile(zipName, Ius.readSharedPreferences(SessionActivity.getInstance(), Ius.USER_CODE));
             }
 
+            Log.w("sss", "jobFinished");
+
             jobFinished(parameters, false);
         }).start();
     }

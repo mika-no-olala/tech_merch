@@ -25,6 +25,7 @@ import java.util.List;
 
 import kz.smrtx.techmerch.BuildConfig;
 import kz.smrtx.techmerch.activities.OutletInformationActivity;
+import kz.smrtx.techmerch.activities.RequestStatusesActivity;
 import kz.smrtx.techmerch.activities.StatusesActivity;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.NoteViewModel;
@@ -52,7 +53,7 @@ public class OperationsOnOutletFragment extends Fragment {
     private TextView notesTitle;
     private String salePointCode;
     private Date dateStarted;
-    private boolean deleteVisit;
+    private boolean deleteVisit = true;;
 
     private FragmentListener listener;
     public interface FragmentListener {
@@ -72,8 +73,6 @@ public class OperationsOnOutletFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_operations_on_outlet, container, false);
-
-        deleteVisit = true;
 
         listener.getPageName(getResources().getString(R.string.operations_on_outlet));
         name = view.findViewById(R.id.name);
@@ -191,7 +190,7 @@ public class OperationsOnOutletFragment extends Fragment {
     }
 
     private void openActivityStatuses() {
-        Intent intent = new Intent(this.getContext(), StatusesActivity.class);
+        Intent intent = new Intent(this.getContext(), RequestStatusesActivity.class);
         intent.putExtra("salePointCode", salePointCode);
         startActivity(intent);
     }

@@ -1,6 +1,8 @@
 package kz.smrtx.techmerch.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,22 +13,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import kz.smrtx.techmerch.Ius;
 import kz.smrtx.techmerch.R;
+import kz.smrtx.techmerch.activities.OutletInformationActivity;
+import kz.smrtx.techmerch.activities.RequestStatusesActivity;
+import kz.smrtx.techmerch.activities.SessionActivity;
 import kz.smrtx.techmerch.activities.StatusesActivity;
+import kz.smrtx.techmerch.adapters.CardAdapterString;
 import kz.smrtx.techmerch.items.entities.Photo;
 import kz.smrtx.techmerch.items.entities.Request;
 import kz.smrtx.techmerch.items.entities.User;
 import kz.smrtx.techmerch.items.viewmodels.ChoosePointsViewModel;
 import kz.smrtx.techmerch.items.viewmodels.HistoryViewModel;
 import kz.smrtx.techmerch.items.viewmodels.PhotoViewModel;
+import kz.smrtx.techmerch.items.viewmodels.RequestViewModel;
 import kz.smrtx.techmerch.items.viewmodels.UserViewModel;
 import kz.smrtx.techmerch.utils.Aen;
 
@@ -41,6 +52,7 @@ public class RSRequestFragment extends Fragment {
     private ChoosePointsViewModel choosePointsViewModel;
     private PhotoViewModel photoViewModel;
     private HistoryViewModel historyViewModel;
+    private RequestViewModel requestViewModel;
 
     private TextView requestLoading;
     private TextView codeSummary;
@@ -67,9 +79,12 @@ public class RSRequestFragment extends Fragment {
     private RecyclerView recyclerViewTMR;
     private RecyclerView recyclerViewTech;
     private EditText executor;
+    private CardView card;
 
+    private int userRole;
     private int executorRoleFound;
     private boolean requestIsOpened = false;
+    private boolean isTechnic;
 
     public static RSRequestFragment instance;
 
@@ -88,6 +103,7 @@ public class RSRequestFragment extends Fragment {
         choosePointsViewModel = new ViewModelProvider(this).get(ChoosePointsViewModel.class);
         photoViewModel = new ViewModelProvider(this).get(PhotoViewModel.class);
         historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
+        requestViewModel = new ViewModelProvider(this).get(RequestViewModel.class);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         noRequests = view.findViewById(R.id.noRequests);
@@ -110,10 +126,183 @@ public class RSRequestFragment extends Fragment {
 
         negative = view.findViewById(R.id.negative);
         positive = view.findViewById(R.id.positive);
+        technicButton = view.findViewById(R.id.technicButton);
         recyclerViewTMR = view.findViewById(R.id.recyclerViewTMR);
         recyclerViewTech = view.findViewById(R.id.recyclerViewTech);
+        card = view.findViewById(R.id.card);
+
+        closeRequestView();
+        isTechnic = Ius.readSharedPreferences(getContext(), Ius.USER_ROLE_CODE).equals(String.valueOf(Aen.ROLE_TECHNIC));
+        userRole = Integer.parseInt(Ius.readSharedPreferences(getContext(), Ius.USER_ROLE_CODE));
+
+        negative.setOnClickListener(button -> {
+            positiveButtonPressed = false;
+            openDialogCommentAcception();
+        });
+
+        positive.setOnClickListener(button -> {
+            positiveButtonPressed = true;
+            openDialogCommentAcception();
+        });
+
+        technicButton.setOnClickListener(button -> {
+            Intent intent = new Intent(getContext(), OutletInformationActivity.class);
+            intent.putExtra("salePointCode", request.getREQ_SAL_CODE());
+            intent.putExtra("scenario", "technic");
+            intent.putExtra("requestCode", request.getREQ_CODE());
+            startActivity(intent);
+        });
 
         return view;
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void openDialogCommentAcception() {
+        Dialog dialog = Ius.createDialog(getContext(), R.layout.dialog_window_request_acception, "");
+
+        boolean needComment = isCommentNeeded(userRole);
+        boolean needExecutor = isExecutorNeeded(userRole);
+
+        TextView title = dialog.findViewById(R.id.title);
+        EditText comment = dialog.findViewById(R.id.comment);
+        executor = dialog.findViewById(R.id.executor);
+        Button positive = dialog.findViewById(R.id.positive);
+
+        if (!positiveButtonPressed)
+            title.setText(getString(R.string.send_back));
+
+        else if (request.getREQ_STA_ID() == Aen.STATUS_WAITING_TMR)
+            title.setText(getString(R.string.end_request));
+
+        if (!needComment) {
+            comment.setVisibility(View.GONE);
+        }
+        if (needExecutor) {
+            executor.setVisibility(View.VISIBLE);
+        }
+
+        dialog.show();
+
+        positive.setOnClickListener(view -> {
+            String commentStr = "";
+            int executorCode = 0;
+
+            if (needComment) {
+                commentStr = comment.getText().toString().trim();
+                if (commentStr.length()==0) {
+                    SessionActivity.getInstance().createToast(getString(R.string.fill_field), false);
+                    return;
+                }
+            }
+            if (needExecutor) {
+                String executorStr = executor.getText().toString();
+                if (executorStr.length()==0) {
+                    SessionActivity.getInstance().createToast(getString(R.string.fill_field), false);
+                    return;
+                }
+
+                int indexOfDivider = executorStr.indexOf("-");
+                executorCode = Integer.parseInt(executorStr.substring(0, indexOfDivider - 1));
+            }
+
+            if (userRole == Aen.ROLE_MANAGER && !positiveButtonPressed) { // sss SET POSITIVE BUTTON FOR MANAGER
+                request.setREQ_STA_ID(Aen.STATUS_MANAGER_CANCELED);
+                request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
+            }
+
+            else if (userRole == Aen.ROLE_MANAGER) {
+                request.setREQ_STA_ID(Aen.getStatusByExecutorAfterManager(executorRoleFound));
+                request.setREQ_USE_CODE_APPOINTED(executorCode);
+            }
+
+            else if (userRole == Aen.ROLE_COORDINATOR && !positiveButtonPressed) {
+                request.setREQ_STA_ID(Aen.STATUS_COORDINATOR_CANCELED);
+                request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
+            }
+
+            else if (userRole == Aen.ROLE_COORDINATOR) {
+                request.setREQ_STA_ID(Aen.STATUS_WAITING_TECHNIC);
+                request.setREQ_USE_CODE_APPOINTED(executorCode);
+            }
+
+            else if (userRole == Aen.ROLE_TMR && !positiveButtonPressed) {
+                request.setREQ_STA_ID(Aen.STATUS_TMR_CANCELED);
+                request.setREQ_USE_CODE_APPOINTED(request.getREQ_USE_CODE());
+            }
+
+            else if (userRole == Aen.ROLE_TMR && request.getREQ_STA_ID() == Aen.STATUS_WAITING_TMR) {
+                request.setREQ_STA_ID(Aen.STATUS_FINISHED);
+                request.setREQ_USE_CODE_APPOINTED(8); // 8 is superadmin - means request is finished
+            }
+
+            else if (userRole == Aen.ROLE_TMR) {
+                request.setREQ_STA_ID(Aen.getStatusByExecutorAfterTMR(executorRoleFound));
+                request.setREQ_USE_CODE_APPOINTED(executorCode);
+            }
+
+            if (needComment) {
+                request.setREQ_COMMENT(Ius.saveApostrophe(commentStr));
+                Log.i("Convert comment", commentStr + " -> " + request.getREQ_COMMENT());
+            }
+
+            request.setREQ_USE_CODE(Integer.parseInt(Ius.readSharedPreferences(getContext(), Ius.USER_CODE)));
+            request.setREQ_UPDATED(Ius.getDateByFormat(new Date(), "dd.MM.yyyy HH:mm:ss"));
+            request.setNES_TO_UPDATE("yes");
+            requestViewModel.update(request);
+
+            SessionActivity.getInstance().startRequestSending();
+
+            dialog.cancel();
+
+            int salePointCode = ((RequestStatusesActivity)requireActivity()).getSalePointCode();
+            if (salePointCode!=-1)
+                OperationsOnOutletFragment.getInstance().cancelVisitClear();
+            else
+                SessionActivity.getInstance().cancelSessionClear();
+
+            closeRequestView();
+            ((RequestStatusesActivity)requireActivity()).setTimerCoolDown();
+        });
+
+        executor.setOnClickListener(executorView -> {
+            if (!executors.isEmpty()) {
+                openDialogUsers();
+                return;
+            }
+
+            SessionActivity.getInstance().createToast(getString(R.string.no_executor_error), false);
+        });
+    }
+
+    private void openDialogUsers() {
+        CardAdapterString adapter = new CardAdapterString();
+        adapter.setAdapterUser(executors);
+        Dialog dialog = Ius.createDialogList(getContext(), adapter);
+        SearchView search = dialog.findViewById(R.id.search);
+
+        search.setVisibility(View.GONE);
+
+        dialog.show();
+
+        adapter.setOnItemClickListener(position -> {
+            String userInfo = executors.get(position).getCode() + " - " + executors.get(position).getName();
+            executor.setText(userInfo);
+            dialog.cancel();
+        });
+    }
+
+    private boolean isCommentNeeded(int userRole) {
+        return (userRole == Aen.ROLE_MANAGER && !positiveButtonPressed)
+                || (userRole == Aen.ROLE_COORDINATOR && !positiveButtonPressed)
+                || userRole == Aen.ROLE_TECHNIC
+                || (userRole == Aen.ROLE_TMR && !(positiveButtonPressed && request.getREQ_STA_ID() == Aen.STATUS_WAITING_TMR));
+    }
+
+    private boolean isExecutorNeeded(int userRole) {
+        return ((userRole == Aen.ROLE_MANAGER
+                || userRole == Aen.ROLE_COORDINATOR
+                || (userRole == Aen.ROLE_TMR
+                && request.getREQ_STA_ID() != Aen.STATUS_WAITING_TMR)) && positiveButtonPressed);
     }
 
     private void findNecessaryRole(int roleToSearch) {
@@ -135,14 +324,47 @@ public class RSRequestFragment extends Fragment {
         });
     }
 
+    private void setButtons() {
+        int tabNumber = ((RequestStatusesActivity)requireActivity()).getLastTabNumber();
+
+        if (!isTechnic && tabNumber == 1) {  //waiting list
+            negative.setVisibility(View.VISIBLE);
+            positive.setVisibility(View.VISIBLE);
+        }
+        else {
+            negative.setVisibility(View.GONE);
+            positive.setVisibility(View.GONE);
+        }
+
+        if (isTechnic && tabNumber == 1)
+            technicButton.setVisibility(View.VISIBLE);
+        else
+            technicButton.setVisibility(View.GONE);
+    }
+
+    public void closeRequestView() {
+        requestLoading.setVisibility(View.VISIBLE);
+        card.setVisibility(View.GONE);
+        positive.setVisibility(View.GONE);
+        negative.setVisibility(View.GONE);
+        technicButton.setVisibility(View.GONE);
+    }
+
+    private void showRequestView() {
+        requestLoading.setVisibility(View.GONE);
+        card.setVisibility(View.VISIBLE);
+        positive.setVisibility(View.VISIBLE);
+        negative.setVisibility(View.VISIBLE);
+        technicButton.setVisibility(View.VISIBLE);
+    }
+
     @SuppressLint("SetTextI18n")
     public void setRequest(Request request) {
-        requestLoading.setVisibility(View.GONE);
-
         this.request = request;
         historyViewModel.getAllComments(request.getREQ_CODE()).observe(this, this::setComment);
 
-        int userRole = Integer.parseInt(Ius.readSharedPreferences(getContext(), Ius.USER_ROLE_CODE));
+        showRequestView();
+
         if (userRole== Aen.ROLE_TMR && request.getREQ_STA_ID()==Aen.STATUS_MANAGER_CANCELED)
             findNecessaryRole(Aen.ROLE_MANAGER);
 
@@ -243,6 +465,8 @@ public class RSRequestFragment extends Fragment {
             specialSummary.setText(Ius.makeTextBold(getContext(), getResources().getString(R.string.glo_equipment) + ": " + request.getREQ_WORK_SPECIAL()));
             specialSummary.setVisibility(View.VISIBLE);
         }
+
+        setButtons();
     }
 
     private boolean isNull(String text) {

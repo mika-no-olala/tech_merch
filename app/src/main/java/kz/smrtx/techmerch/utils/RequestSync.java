@@ -93,7 +93,6 @@ public class RequestSync {
             if (!table.getMVLTABLENAME().contains("REQUEST"))
                 continue;
             tableNames.add(table.getMVLTABLENAME());
-            Log.e("sss", table.getMVLTABLENAME());
             requests.add(Ius.getApiService().getSyncData(table.getMVLVIEWNAME(), table.getUSECODE().toString(), table.getMVLREFERENCE().toString()));
         }
 

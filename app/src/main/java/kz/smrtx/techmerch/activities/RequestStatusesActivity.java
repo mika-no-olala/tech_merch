@@ -53,8 +53,10 @@ public class RequestStatusesActivity extends AppCompatActivity {
     private ChoosePointsViewModel choosePointsViewModel;
     private SwipeRefreshLayout refresher;
 
+    private boolean isTechnic;
     private int userCode;
-    private int salePointCode;
+    private int salePointCode = -1;
+    private int lastTabNumber = 1;
     private List<Request> waitingList;
     private List<History> advancingList;
     private List<History> finishedList;
@@ -88,16 +90,14 @@ public class RequestStatusesActivity extends AppCompatActivity {
             salePointCode = Integer.parseInt(arguments.getString("salePointCode"));
             pageName.setText(getResources().getString(R.string.requests_statuses_sale_point));
         }
-        else {
+        else
             pageName.setText(getResources().getString(R.string.requests_statuses));
-        }
-
-//        getWaitingRequests(salePointCode);
-        getAdvancingRequests(salePointCode);
-        getFinishedRequests(salePointCode);
 
         back.setOnClickListener(view -> onBackPressed());
+
+        refresher.setDistanceToTriggerSync(500);
         refresher.setOnRefreshListener(() -> new RequestSync(refresher));
+
     }
 
     public RequestStatusesActivity() {
@@ -107,7 +107,9 @@ public class RequestStatusesActivity extends AppCompatActivity {
         return instance;
     }
 
-    private void setTimerCooldown() {
+    public void setTimerCoolDown() {
+        viewPager2.setCurrentItem(lastTabNumber);
+
         refresher.setRefreshing(true);
         new CountDownTimer(2000, 1000) {
             @Override
@@ -118,68 +120,6 @@ public class RequestStatusesActivity extends AppCompatActivity {
                 new RequestSync(refresher);
             }
         }.start();
-    }
-
-//    private void getWaitingRequests(int salePointCode) {
-//        Log.i("gettingRequests from", String.valueOf(userCode));
-//
-//        if (salePointCode!=-1) {
-//            requestViewModel.getRequestsByAppointed(userCode, salePointCode)
-//                    .observe(this, w -> {
-//                        if (w!=null) {
-//                            waitingList = w;
-//                            RSWaitingFragment fragment = (RSWaitingFragment) adapter.getRsWaiting();
-//                            fragment.setWaitingList(w);
-//                        }
-////                        setAdapter(waitingRecycler, noRequestsW, 1);
-////                        waitingTextView.setText(getResources().getString(R.string.request_waiting_status) + " (" + waitingList.size() + ")");
-//                        // TODO: set tab name, optimize all 3 methods to one
-//                    });
-//        }
-//        else {
-//            requestViewModel.getRequestsByAppointed(userCode)
-//                    .observe(this, w -> {
-//                        if (w!=null) {
-//                            waitingList = w;
-//                            RSWaitingFragment fragment = (RSWaitingFragment) adapter.getRsWaiting();
-//                            fragment.setWaitingList(w);
-//                        }
-////                        setAdapter(waitingRecycler, noRequestsW, 1);
-////                        waitingTextView.setText(getResources().getString(R.string.request_waiting_status) + " (" + waitingList.size() + ")");
-//                    });
-//        }
-//    }
-
-    @SuppressLint("SetTextI18n")
-    private void getAdvancingRequests(int salePointCode) {
-        if (salePointCode!=-1) {
-            historyViewModel.getHistoryListWhichAreRelatedTo(userCode, salePointCode)
-                    .observe(this, a -> {
-                        advancingList = a;
-                    });
-        }
-        else {
-            historyViewModel.getHistoryListWhichAreRelatedTo(userCode)
-                    .observe(this, a -> {
-                        advancingList = a;
-                    });
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void getFinishedRequests(int salePointCode) {
-        if (salePointCode!=-1) {
-            historyViewModel.getHistoryListWhichAreRelatedToAndFinished(userCode, salePointCode)
-                    .observe(this, f -> {
-                        finishedList = f;
-                    });
-        }
-        else {
-            historyViewModel.getHistoryListWhichAreRelatedToAndFinished(userCode)
-                    .observe(this, f -> {
-                        finishedList = f;
-                    });
-        }
     }
 
     public void checkNoRequestsInList(TextView noRequests, RecyclerView recyclerView, boolean listIsEmpty) {
@@ -199,20 +139,54 @@ public class RequestStatusesActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        boolean isTechnic = Ius.readSharedPreferences(this, Ius.USER_ROLE_CODE).equals(Aen.ROLE_TECHNIC);
-
         // while db is loading, /first case/ triggers. Need to set visibility back if it loads the data after
 //        RequestStatusesActivity.getInstance().checkNoRequestsInList(noRequests, recyclerView, waitingList.isEmpty());
 
         CardAdapterRequests cardAdapterRequests = new CardAdapterRequests(waitingList, this);
         recyclerView.setAdapter(cardAdapterRequests);
+
+        checkNoRequestsInList(noRequests, recyclerView, waitingList.isEmpty());
+
         cardAdapterRequests.setOnItemClickListener(position -> {
             request = waitingList.get(position);
-            Log.e("sssR", request.toString());
             viewPager2.setCurrentItem(0);
             RSRequestFragment requestFragment = (RSRequestFragment) adapter.getRsRequest();
             requestFragment.setRequest(request);
         });
+    }
+
+    public void setAdapterAdvAndFin(RecyclerView recyclerView, TextView noRequests, List<History> list) {
+        RecyclerView.LayoutManager layoutManager;
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        CardAdapterHistory cardAdapterHistory = new CardAdapterHistory(list, this);
+        checkNoRequestsInList(noRequests, recyclerView, list.isEmpty());
+
+        recyclerView.setAdapter(cardAdapterHistory);
+        cardAdapterHistory.setOnItemClickListener(position -> {
+            getRequest(list.get(position).getRequestCode());
+        });
+    }
+
+    private void getRequest(String code) {
+        Log.i("getRequest, code", code);
+        requestViewModel.getRequestByCode(code).observe(this, r -> {
+            if (r==null) {
+                Log.e("getRequest", "there is no request in db...");
+                return;
+            }
+            request = r;
+            viewPager2.setCurrentItem(0);
+            RSRequestFragment requestFragment = (RSRequestFragment) adapter.getRsRequest();
+            requestFragment.setRequest(request);
+        });
+    }
+
+    public void closeRequestView() {
+        RSRequestFragment requestFragment = (RSRequestFragment) adapter.getRsRequest();
+        requestFragment.closeRequestView();
     }
 
     private void setTabLayoutWithPager() {
@@ -245,6 +219,14 @@ public class RequestStatusesActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 tabLayout.selectTab(tabLayout.getTabAt(position-1));
+
+                if (position==0)
+                    refresher.setEnabled(false);
+                else {
+                    refresher.setEnabled(true);
+                    lastTabNumber = position;
+                }
+
             }
         });
 
@@ -258,7 +240,19 @@ public class RequestStatusesActivity extends AppCompatActivity {
         // viewPager doesn't create it at the beginning. So I need to create request page first
     }
 
+    @Override
+    public void onBackPressed() {
+        if (viewPager2.getCurrentItem()==0)
+            viewPager2.setCurrentItem(lastTabNumber);
+        else
+            super.onBackPressed();
+    }
+
     public int getSalePointCode() {
         return salePointCode;
+    }
+
+    public int getLastTabNumber() {
+        return lastTabNumber;
     }
 }

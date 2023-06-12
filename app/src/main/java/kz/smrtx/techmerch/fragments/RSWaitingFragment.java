@@ -53,20 +53,11 @@ public class RSWaitingFragment extends Fragment {
         return view;
     }
 
-    public void setWaitingList(List<Request> waitingList) {
-        if (waitingList==null) {
-            this.waitingList = new ArrayList<>();
-            return;
-        }
-
-        this.waitingList = waitingList;
-    }
-
     private void getWaitingRequests() {
         Log.i("gettingRequests from", String.valueOf(userCode));
 
         if (salePointCode!=-1) {
-            requestViewModel.getRequestsByAppointed(userCode)
+            requestViewModel.getRequestsByAppointed(userCode, salePointCode)
                     .observe(getViewLifecycleOwner(), w -> {
                         if (w!=null) {
                             waitingList = w;
@@ -76,14 +67,12 @@ public class RSWaitingFragment extends Fragment {
                     });
         }
         else {
-            requestViewModel.getRequestsByAppointed(userCode, salePointCode)
+            requestViewModel.getRequestsByAppointed(userCode)
                     .observe(getViewLifecycleOwner(), w -> {
                         if (w!=null) {
                             waitingList = w;
                             ((RequestStatusesActivity)requireActivity()).setAdapterWaiting(recyclerView, noRequests, waitingList);
                         }
-//                        setAdapter(waitingRecycler, noRequestsW, 1);
-//                        waitingTextView.setText(getResources().getString(R.string.request_waiting_status) + " (" + waitingList.size() + ")");
                     });
         }
     }

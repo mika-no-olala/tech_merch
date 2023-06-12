@@ -80,14 +80,14 @@ public class OperationsFragment extends Fragment {
         listener.getPageName(getResources().getString(R.string.operations));
         startWork.setText(getResources().getString(R.string.start_work_check_point) + ": " + dateStarted);
 
-        ImageView test = view.findViewById(R.id.test);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), RequestStatusesActivity.class);
-                startActivity(intent);
-            }
-        });
+//        ImageView test = view.findViewById(R.id.test);
+//        test.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getContext(), RequestStatusesActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         if (roleCode!=Aen.ROLE_TMR)
             outlet.setVisibility(View.GONE);

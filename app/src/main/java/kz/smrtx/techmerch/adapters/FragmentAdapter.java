@@ -70,5 +70,9 @@ public class FragmentAdapter extends FragmentStateAdapter {
         return rsRequest;
     }
 
+    public void resetRsRequest() {
+        rsRequest = new RSRequestFragment();
+    }
+
 
 }

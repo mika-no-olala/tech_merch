@@ -124,7 +124,7 @@ public class SessionActivity extends AppCompatActivity implements OperationsFrag
     }
 
     public void openActivityStatuses() {
-        Intent intent = new Intent(this, StatusesActivity.class);
+        Intent intent = new Intent(this, RequestStatusesActivity.class);
         startActivity(intent);
     }
 
